@@ -1,0 +1,151 @@
+﻿@using Mah.DataCollector.Entity.Entities
+
+@{
+    Dictionary<string, string>
+        requied = new Dictionary<string, string>();
+    requied.Add("true", "اجباری");
+    requied.Add("false", "");
+}
+
+@model int
+<script>
+    FieldList_Class = {
+        OnSelectedLayerChange: function () {
+            var dropDown = $("#ddlLayer").data("kendoDropDownList");
+            $.ajax({
+                type: "POST",
+                url: "/Setting/FieldsList",
+                data: { ClassID: dropDown.dataItem(dropDown.selectedIndex).Value },
+                success: function (data) {
+                    $("#TabStripper-2").html(data);
+                }
+            })
+        }, onDataRequestEnd: function (args) {
+            var grid = $("#FieldsGrid").data("kendoGrid");
+            if (args.type != "read") {
+                var doRead = true;
+                $.each(args.response.Errors, function (prop) {
+                    if (this.errors.length > 0) {
+                        doRead = false;
+                    }
+                })
+                if (doRead) {
+                    grid.dataSource.read();
+                }
+            }
+        },
+        showModelError: function (args) {
+            var grid = $("#FieldsGrid").data("kendoGrid");
+            var validationTemplate = kendo.template($("#ValidationMessageTemplate").html());
+            grid.editable.element.find(".validation-summary-errors").text("");
+            grid.one("dataBinding", function (e) {
+                e.preventDefault();
+                $.each(args.errors, function (propertyName) {
+                    var renderedTemplate = validationTemplate({ field: propertyName, messages: this.errors });
+                    grid.editable.element.find(".validation-summary-errors").append(renderedTemplate);
+                });
+            })
+        },
+        showDomainToFieldWindow: function (e) {
+            var tr = e.toElement.closest("tr");
+            
+            var grid = $("#FieldsGrid").data("kendoGrid");
+            var fieldId = grid.dataSource.getByUid(tr.getAttribute("data-uid")).ID;
+
+            $.ajax({
+                type: "GET",
+                url: "/Setting/AddDomainToField",
+                data: { fieldId: fieldId },
+                success: function (data) {
+                    $("#addDomainToFieldWin").html(data);
+                    var win = $("#addDomainToFieldWin").data("kendoWindow");
+                    win.center();
+                    var left = Number($(win.element[0].parentElement).css("left").replace("px", ""));
+                    win.setOptions({
+                        position: { left: left, top: 50 }
+                    });
+                    win.open();
+                }
+            });
+        },
+        addDomainToField:function(){
+
+    }
+
+    }
+
+
+</script>
+
+<script type="text/x-kendo-template" id="ValidationMessageTemplate">
+    # if (messages.length) { #
+    # for (var i = 0; i < messages.length; ++i) { #
+    <span>#= messages[i] #</span>
+    # } #
+    # } #
+</script>
+
+@{
+    int selectedClass = Model;
+    if (Model == -1 && ((List<Classes>)ViewBag.Classes).Count > 0)
+    {
+        selectedClass = ((List<Classes>)ViewBag.Classes)[0].ID;
+    }
+}
+<span>نمایش لیست ستون های جدول </span>
+@Html.Kendo().DropDownList().Name("ddlLayer").Items(items =>
+    {
+        foreach (var item in (List<Classes>)ViewBag.Classes)
+        {
+            items.Add().Value(item.ID.ToString()).Text(item.Caption).Selected(item.ID == selectedClass);
+        }
+    }).Events(events => events.Change("FieldList_Class.OnSelectedLayerChange"))
+
+@(Html.Kendo().Grid<DataCollector.Models.FieldsModel>()
+    .Name("FieldsGrid")
+    .Sortable().Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+    .Columns(cols =>
+    {
+        cols.Bound(a => a.ID).Hidden();
+        cols.Bound(a => a.Class_ID).Hidden();
+        cols.Bound(a => a.FIELD_Name).Title("نام ستون").Width(150);
+        cols.Bound(a => a.FIELD_Caption).Title("عنوان فارسی").Width(150);
+        cols.Bound(a => a.FIELD_Type).Title("نوع فیلد").Width(90);
+        cols.Bound(a => a.MIN_VALUE).Title("مقدار کمینه").Width(90);
+        cols.Bound(a => a.MAX_VALUE).Title("مقدار بیشینه").Width(90);
+        cols.ForeignKey(a => a.REQUIERD, requied, "key", "value").Title("اجباری").Width(90);
+        cols.ForeignKey(a => a.Domain_ID, (List<Domain>)ViewBag.DomainList, "ID", "Caption").Title("دامین").Width(90);
+        cols.Bound(a => a.DEF_VAL).Title("مقدار پیش فرض").Width(150);
+        cols.Command(cmd =>
+        {
+            cmd.Edit().UpdateText("اعمال").CancelText("انصراف").Text("ویرایش");
+            cmd.Destroy().Text("حذف");
+            cmd.Custom("SetDomain").Text("تنظیم دامین").Click("FieldList_Class.showDomainToFieldWindow");
+        }).Width(260);
+    })
+        .Editable(editable =>
+            {
+                editable.Mode(GridEditMode.PopUp).DisplayDeleteConfirmation("فیلد مورد نظر حذف شود؟");
+                editable.TemplateName("FieldsEditorTemplate");
+            })
+            .ToolBar(tool => tool.Create().Text("اضافه کردن فیلد جدید"))
+    .Resizable(a => a.Columns(true)).Scrollable()
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Model(model =>
+    {
+        model.Id(p => p.ID);
+        model.Field(p => p.Class_ID).DefaultValue(selectedClass);
+    })
+    .Read(read => read.Action("GetFields", "Setting", new { ClassID = selectedClass }))
+    .Create(create => create.Action("CreateField", "Setting"))
+    .Update(update => update.Action("UpdateField", "Setting"))
+    .Destroy(Destroy => Destroy.Action("DeleteField", "Setting"))
+        .Events(events =>
+        {
+            events.Error("FieldList_Class.showModelError").RequestEnd("FieldList_Class.onDataRequestEnd");
+        })
+    .PageSize(500)
+    ))
+
+@Html.Kendo().Window().LoadContentFrom("AddDomainToField", "setting", new { fieldId = -1 }).Name("addDomainToFieldWin").Visible(false).Title("انتخاب دامنه").Width(550)

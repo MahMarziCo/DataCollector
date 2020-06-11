@@ -1,0 +1,947 @@
+﻿@using DataCollector.Models.Map
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isSupervisor = User.IsInRole("SUPERVISOR");
+}
+
+@model  MapConfigViewModel
+@section headSection
+{
+    @Scripts.Render("~/bundle/Script/Symbol")
+    <script src="@Url.Content("~/Scripts/proj4.js")"></script>
+    <link href="@Url.Content("~/Content/ol.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/ol.js")"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXvwzlMvuHEUrTAbiZLUuXKzWMa3SImlA&language=fa&region=IR"></script>
+}
+
+@(Html.Kendo().Window().Name("layerWin").Visible(false).Width(250).Title("ليست لايه ها")
+        .Animation(anim =>
+                            {
+            anim.Open(effectsAction => effectsAction.SlideIn(SlideDirection.Left));
+            anim.Close(effect =>
+            {
+                effect.Reverse(true);
+                effect.SlideIn(SlideDirection.Left);
+            });
+        })
+
+.Content(
+    @Html.Kendo().ListBox().Name("layerList")
+                .DataTextField("Caption")
+                    .DataValueField("ID")
+                        .DataSource(dataSource =>
+                        {
+                                dataSource.Read(read => read.Action("GetClasses", "Classes"));
+                        }
+                    ).Events(events => events.DataBound("Map_Class.initLayer"))
+                .TemplateId("class-item-template").ToHtmlString())
+)
+
+
+
+@(Html.Kendo().Window().Name("featureEditWin").Visible(false).Title("ويرايش عارضه")
+        .Width(450).Actions(a => { a.Close(); })//.Resizable().Actions(a => { a.Maximize(); a.Close(); })
+.Content(
+            Html.Kendo().TabStrip().Name("featureEditTab").Items(items =>
+        {
+            items.Add().Text("جزييات").Selected(true).Content("");//.LoadContentFrom("FeatureEdit", "Map", (object)new { ClassName = "", objectid = -1 });
+            items.Add().Text("عکس ها").LoadContentFrom("FeaturePictures", "Map", (object)new { ClassName = "", ObjectId = -1 });
+        }).ToHtmlString()
+)/*.Draggable(true)*/.Events(action =>
+{
+//    action.Resize("Map_Class.OnEditWinMinimize");
+action.Maximize("Map_Class.OnEditWinMaximize");
+
+})
+)
+
+@(Html.Kendo().Window().Name("attributeTableWin").Visible(false).Title("جدول توصيفات").Height(300)
+                  .LoadContentFrom("AttributeTable", "Map", (object)new { ClassName = "" }).Draggable().Resizable().Actions(a => { a.Maximize(); a.Minimize(); a.Close(); }))
+
+
+
+<div id="map" style="height:100%;position: fixed; width: 100%;">
+</div>
+@Html.Kendo().ToolBar().Name("mapToolbar").Items(items =>
+{
+    items.Add().Template("<div id='zoomToMyLocation' class='k-button' style='cursor: pointer;'><img src='/Images/golocation.png' title='برو به مختصات من' /></div>");
+    items.Add().Template("<div id='showLayerList' class='k-button' style='cursor: pointer;'><img src='/Images/layers.png' title='نمايش ليست لايه ها' /></div>");
+    if (!isSupervisor)
+    {
+        items.Add().Template("<input id='layerDropdown'  style='width: 130px;' />").Overflow(ShowInOverflowPopup.Never);
+    }
+    items.Add().Type(CommandType.Button).Id("btnDrawLayer").Icon("edit").Togglable(true).HtmlAttributes(new { title = "شروع ترسیم" }).Toggle("Map_Class.InitDraw").Hidden(isSupervisor);
+
+}).HtmlAttributes(new { style = " width: 350px; margin-left: auto; margin-right: auto; background: none;border:none;text-align:center" })
+
+<div id="popup" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer glyphicon glyphicon-remove"></a>
+    <div id="popup-counter" class="ol-popup-counter">
+        <span id="popup-previos" class="glyphicon glyphicon-chevron-right" style="cursor:pointer"></span>
+        <span id="popup-current">5</span>
+        /
+        <span id="popup-count">10</span>
+        <span id="popup-next" class="glyphicon glyphicon-chevron-left" style="cursor:pointer"></span>
+    </div>
+    <div id="popup-content"></div>
+</div>
+
+
+<div id="loadingLayerWaiting" style="background-color:white; position:fixed; left:9px;bottom:9px; cursor:pointer;  "></div>
+
+<div id="detailModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="close" data-dismiss="modal">&times;</div>
+                <h5 id="editFeatureTitle" class="modal-title">ويرايش عارضه</h5>
+            </div>
+            <div id="editFeatureDiv" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul id="layerMenu">
+    <li class="searchMenuBottun" style="font-size:13px;">
+        <span style="cursor:pointer ;width:25px;" class=" glyphicon glyphicon-search"></span><span style="font-family:Vazir-Medium,Tahoma;">جدول توصيفات </span>
+    </li>
+    <li class="symbolMenuBottun" style="font-size:13px;">
+        <span style="cursor:pointer ;width:25px;" class=" glyphicon glyphicon-adjust"></span><span style="font-family:Vazir-Medium,Tahoma;">رنگ بندی</span>
+    </li>
+</ul>
+
+@Html.Partial("_SymbolTemplate")
+@Html.Kendo().Window().Name("StyleWindow").Visible(false).Title("تنظیم رنگ بندی").Width(550).Draggable(true).Content("")
+
+<script id="class-item-template" type="text/x-kendo-template">
+    <table style=" width:100%">
+        <tr>
+            <td style=" width: 25px;"><input type="checkbox" class="LayerNode" checked="checked" id="chb#: data.ID #" style="height: 25px; width: 20px;" /></td>
+            <td style="font-size: 20px;">#: data.Caption #</td>
+            <td style=" width: 25px;    text-align: left;">
+                <span style="cursor:pointer ;width:25px;" class="layerMenuBottun k-icon k-i-more-vertical"></span>
+
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="font-size: 10px;">
+                #: data.Class_name #
+            </td>
+            <td>
+                #=  SymbolClass.renderSymbol(data) #
+            </td>
+        </tr>
+        # if(data.UniqueField){
+        data.UniqueStyles.forEach(function (value, index) {
+        #
+        <tr>
+            <td></td>
+            <td>
+                #: value.TEXT #
+            </td>
+            <td>
+                #=  SymbolClass.renderSymbol({HasFlow:data.HasFlow ,Class_type: data.Class_type,StrokColor:value.StrokColor,Width:value.Width,FillColor:value.FillColor,StrokWidth:value.StrokWidth}) #
+            </td>
+        </tr>
+        #
+        });
+        } #
+    </table>
+</script>
+<script>
+    Map_Class = {
+        currentPositionSource: null,
+        format: new ol.format.WKT(),
+        infoCurrent: 0,
+        infoEvent: null,
+        infoFeatures: null,
+        layerContextMenu:null,
+        map: null,
+        overlay: null,
+        selectInteraction: null,
+        RequestSending: false,
+        RequestWaiting:false,
+        LastIdentifyLocation:null,
+        Draw:null,
+        Snaps:[],
+        Drawlayers: function(){
+            Map_Class.InitDraw();
+            if (Map_Class.RequestSending) {
+                Map_Class.RequestWaiting=true;
+                return;
+            }
+            Map_Class.RequestWaiting = false;
+            Map_Class.RequestSending = true;
+            try{
+                var items = $("#layerList").data("kendoListBox").dataItems();
+                var classes=[];
+                var uniqueFields = [];
+                var mapExtents=[];
+                var SRID=[];
+
+                var view = Map_Class.map.getView();
+                var extent = view.calculateExtent(Map_Class.map.getSize());
+                var lbPoint = ol.proj.toLonLat([extent[0],extent[1] ]);
+                var trPoint = ol.proj.toLonLat([extent[2],extent[3] ]);
+                //var mapExtent = [lbPoint[0],lbPoint[1],trPoint[0],trPoint[1]];
+                items.forEach(function (layerItem, index) {
+                    var layer = Map_Class.getLayer(layerItem.Class_name);
+                    var source = layer.getSource();
+                    if((layerItem.Scale &&   Map_Class.map.getView().getZoom() >= layerItem.Scale) || !layerItem.Scale)
+                    {
+                        if ($("#chb"+layerItem.ID)[0].checked) {
+                            SRID.push(layerItem.SpatialRefrence);
+                            var projLbPoint= ol.proj.fromLonLat([lbPoint[0],lbPoint[1]],"EPSG:"+layerItem.SpatialRefrence );
+                            var projTrPoint= ol.proj.fromLonLat([trPoint[0],trPoint[1]],"EPSG:"+layerItem.SpatialRefrence );
+                            mapExtents.push([projLbPoint[0],projLbPoint[1],projTrPoint[0],projTrPoint[1]]);
+                            classes.push(layerItem.Class_name);
+                            uniqueFields.push(layerItem.UniqueField);
+                        }
+                        else{
+                            source.clear();
+                        }
+                    }
+                    else
+                    {
+                        source.clear();
+                    }
+                });
+
+                if (classes.length==0) {
+                    $("#loadingLayerWaiting").text("هيچ لايه اي روشن نيست");
+                    Map_Class.RequestSending =false;
+                    return;
+                }
+
+                $("#loadingLayerWaiting").text("در حال دريافت...");
+                Map_Class.clearSnaps();
+
+                $.ajax({
+                    url: "@Url.Content("~/Map/GetFeatures")",
+                    type: "POST",
+                    data: { ClassNames: classes,UniqueFields:uniqueFields,pMapExtents : mapExtents,SRID:SRID,mapWidth:$("#map").width() },
+                    success: function (data) {
+                        Object.getOwnPropertyNames(data).forEach(function (layerName, index) {
+                            var layer= Map_Class.getLayer(layerName);
+                            if (layer == null) {
+                                return;
+                            }
+                            var format = new ol.format.WKT();
+
+                            var wktFeatures = [];
+                            $.each(data[layerName], function (index, value) {
+                                var feature = Map_Class.format.readFeature(value.geom, {
+                                    dataProjection: 'EPSG:' + layer.get('sr'),
+                                    featureProjection: 'EPSG:3857'
+                                });
+                                feature.setProperties(value);
+                                feature.setId(value.objectid);
+                                wktFeatures.push(feature);
+                            });
+
+                            var source = layer.getSource();
+                            source.clear();
+                            source.addFeatures(wktFeatures);
+                        });
+                        Map_Class.InitSnap();
+                        Map_Class.RequestSending =false;
+                        $("#loadingLayerWaiting").text("");
+                        if(Map_Class.RequestWaiting){
+                            setTimeout(Map_Class.Drawlayers(),1);
+                        }
+                    },
+                    error:function(){
+                        Map_Class.RequestSending =false;$("#loadingLayerWaiting").text("");
+                        if(Map_Class.RequestWaiting){
+                            setTimeout(Map_Class.Drawlayers(),1);
+                        }
+                    }
+                });
+            }catch(e) {
+                Map_Class.RequestWaiting = false;
+                Map_Class.RequestSending = false;
+            }
+        },
+        getLayer : function(layerName){
+            var layerArray = Map_Class.map.getLayers().getArray();
+            var layer = null;
+            for (var i = 0; i < layerArray.length; i++) {
+                if (layerArray[i].get('name') != undefined && layerArray[i].get('name') == layerName) {
+                    layer = layerArray[i];
+                    break;
+                }
+            }
+            return layer;
+        },
+        initMap: function() {
+            var raster = new ol.layer.Tile({
+                source: new ol.source.OSM()
+            });
+
+            Map_Class.overlay = new ol.Overlay({
+                element: $("#popup")[0],
+                autoPan: false,
+                autoPanAnimation: {
+                    duration: 250
+                }
+            });
+
+
+
+            Map_Class.currentPositionSource = new ol.source.Vector({
+                features: []
+            });
+
+            const currentPositionVector = new ol.layer.Vector({
+                source: Map_Class.currentPositionSource
+                , style: new ol.style.Style({
+                    image: new ol.style.Icon({
+                        anchor: [0.5, 1],
+                        src: '/Images/current-location.png'
+                    })
+                })
+            });
+
+            Map_Class.map = new ol.Map({
+                layers: [raster, currentPositionVector],
+                overlays: [Map_Class.overlay],
+                target: 'map',
+                view: new ol.View({
+                    center: [ @Html.Raw(Json.Encode(Model.MapDefCentroidX)),@Html.Raw(Json.Encode(Model.MapDefCentroidY))],
+                    zoom:  @Html.Raw(Json.Encode(Model.MapDefultZoom))
+                    })
+            });
+
+            Map_Class.selectInteraction = new ol.interaction.Select({hitTolerance:12});
+            Map_Class.map.addInteraction(Map_Class.selectInteraction);
+
+            Map_Class.map.on('singleclick', Map_Class.onMapClick);
+            Map_Class.map.on('moveend', function(){Map_Class.Drawlayers();});
+        },
+        setLayerSymbol: function (pLayer,pData) {
+            var fill = new ol.style.Fill({
+                    color: pData.FillColor
+                });
+                var stroke = new ol.style.Stroke({
+                    color: pData.StrokColor,
+                    width: pData.StrokWidth
+                });
+                var defaultStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        fill: fill,
+                        stroke: stroke,
+                        radius: pData.Width
+                    }),
+                    fill: fill,
+                    stroke: stroke
+                });
+            if (pData.UniqueField) {
+                var incomeLevels = [];
+                pData.UniqueStyles.forEach(function (value, index) {
+
+                    var fill = new ol.style.Fill({
+                        color: value.FillColor
+                    });
+                    var stroke = new ol.style.Stroke({
+                        color: value.StrokColor,
+                        width: value.StrokWidth
+                    });
+                    style =
+                        new ol.style.Style({
+                            image: new ol.style.Circle({
+                                fill: fill,
+                                stroke: stroke,
+                                radius: value.Width
+                            }),
+                            fill: fill,
+                            stroke: stroke,
+                        });
+                    incomeLevels[value.TEXT] = style;
+                })
+
+                function styleFunction(feature) {
+                    var styles = [];
+                    var level = feature.get(pData.UniqueField);
+                    if (!level || !incomeLevels[level]) {
+                        styles = [defaultStyle];
+                    }
+                    else
+                        styles = [incomeLevels[level]];
+                    if (pData.HasFlow && pData.Class_type == "POLYLINE") {
+                        var geometry = feature.getGeometry();
+                        geometry.forEachSegment(function (start, end) {
+                            var dx = end[0] - start[0];
+                            var dy = end[1] - start[1];
+                            var mx = (end[0] + start[0]) / 2;
+                            var my = (end[1] + start[1]) / 2;
+                            var middel = [mx, my]
+                            var rotation = Math.atan2(dy, dx);
+                            styles.push(new ol.style.Style({
+                                geometry: new ol.geom.Point(middel),
+                                image: new ol.style.Icon({
+                                    src: '/Images/arrow.png',
+                                    anchor: [0.75, 0.5],
+                                    rotateWithView: true,
+                                    rotation: -rotation
+                                })
+                            }));
+                        })
+                    };
+                    return styles;
+
+                }
+                pLayer.setStyle(styleFunction);
+            }
+            else {
+                pLayer.setStyle(function (feature) {
+                    var styles = [defaultStyle];
+                    if (pData.HasFlow && pData.Class_type == "POLYLINE") {
+                        var geometry = feature.getGeometry();
+                        geometry.forEachSegment(function (start, end) {
+                            var dx = end[0] - start[0];
+                            var dy = end[1] - start[1];
+                            var mx = (end[0] + start[0]) / 2;
+                            var my = (end[1] + start[1]) / 2;
+                            var middel = [mx, my]
+                            var rotation = Math.atan2(dy, dx);
+                            styles.push(new ol.style.Style({
+                                geometry: new ol.geom.Point(middel),
+                                image: new ol.style.Icon({
+                                    src: '/Images/arrow.png',
+                                    anchor: [0.75, 0.5],
+                                    rotateWithView: true,
+                                    rotation: -rotation
+                                })
+                            }));
+                        })
+                    };
+                    return styles;
+                });
+            }
+        },
+        initLayer: function () {
+            $(".LayerNode").change(Map_Class.LayerChangeVisibility);
+            var items = $("#layerList").data("kendoListBox").dataItems();
+            $("#layerDropdown").kendoDropDownList({
+                dataTextField: "Caption",
+                dataValueField: "Class_name",
+                dataSource:items,
+                change: Map_Class.InitDraw
+            });
+
+            items.forEach(function (item, index) {
+
+                var vectorSource = new ol.source.Vector({
+                    features: []
+                });
+                var vectorLayer = new ol.layer.Vector({
+                    source: vectorSource
+                });
+
+
+                vectorLayer.set('name', item.Class_name);
+                vectorLayer.set('caption', item.Caption);
+                vectorLayer.set("id", item.ID);
+                vectorLayer.set("sr", item.SpatialRefrence);
+
+                Map_Class.setLayerSymbol(vectorLayer,item);
+
+                Map_Class.map.addLayer(vectorLayer);
+
+
+            });
+            Map_Class.initMenu();
+
+            Map_Class.Drawlayers();
+        },
+        ShowAttributeTable: function (layerItem) {
+            $("#attributeTableWin").html("<div style='text-align:center;'><img style='height:  50px;' src='/Images/Loading.gif'/><br/>لطفا منتظر بمانيد. در حال دريافت اطلاعات...</div>");
+            $("#attributeTableWin").data("kendoWindow").center().open();
+            $.ajax({
+                type: "GET",
+                data: { ClassName :layerItem.Class_name },
+                url: "@Url.Content("~/Map/AttributeTable")",
+                success: function (data) {
+                    $("#attributeTableWin").html(data);
+                    $("#attributeTableWin").data("kendoWindow").title("جدول توصيفات "+ layerItem.Caption)
+                    $("#attributeTableWin").data("kendoWindow").setOptions({
+                        width: "99.9%",position: { left: 3, top:window.innerHeight-350}
+                    });
+                }
+            });
+        },
+        ShowSymbology: function (layerItem) {
+            if (!layerItem.UniqueStyles) { layerItem.UniqueStyles = [] };
+            var uniquSymbol = layerItem.UniqueStyles.map(a => {
+                return {
+                    Value: a.TEXT,
+                    Symbol: {
+                        FillColor: a.FillColor,
+                        StrokeColor: a.StrokColor,
+                        Width: a.Width,
+                        StrokeWidth: a.StrokWidth
+                    }
+                }
+            });
+            var classItem = {
+                ClassId: layerItem.ID, MaxScale: layerItem.Scale,
+                HasFlow: layerItem.HasFlow, ClassType: layerItem.Class_type,
+                UniqueField: layerItem.UniqueField,
+                Symbol: {
+                    FillColor: layerItem.FillColor, StrokeColor: layerItem.StrokColor,
+                    Width: layerItem.Width, StrokeWidth: layerItem.StrokWidth
+                },
+                UniqueItems:uniquSymbol
+            };
+            $.ajax({
+                    type: "POST",
+                    data: { classSymbol :classItem },
+                    url: "@Url.Content("~/Map/SymbologyView")",
+                    success: function (data) {
+                        $("#StyleWindow").html(data);
+                        $("#StyleWindow").data("kendoWindow").title("رنگ بندی "+ layerItem.Caption)
+                        $("#StyleWindow").data("kendoWindow").open();
+                        setTimeout(function () { $("#StyleWindow").data("kendoWindow").center(); }, 100);
+                        ClassSymbolClass.SaveStyleAction = function () {
+                            var data = ClassSymbolClass.Data;
+                            var uniqueItem = data.UniqueItems.map(a => {
+                                return {
+                                    TEXT: a.Value,
+                                    FillColor: a.Symbol.FillColor,
+                                    StrokColor: a.Symbol.StrokeColor,
+                                    Width: a.Symbol.Width,
+                                    StrokWidth: a.Symbol.StrokeWidth
+                                }
+                            });
+
+                            layerItem.Scale = data.MaxScale;
+                            layerItem.HasFlow = data.HasFlow;
+                            layerItem.UniqueField = data.UniqueField;
+                            layerItem.FillColor = data.Symbol.FillColor;
+                            layerItem.StrokColor = data.Symbol.StrokeColor;
+                            layerItem.Width = data.Symbol.Width;
+                            layerItem.StrokWidth = data.Symbol.StrokeWidth;
+                            layerItem.UniqueStyles = uniqueItem;
+
+                            var vectorLayer =Map_Class.getLayer(layerItem.Class_name);
+                            Map_Class.setLayerSymbol(vectorLayer, layerItem);
+                            $("#StyleWindow").data("kendoWindow").close();
+                            $("#layerList").data("kendoListBox").refresh();
+                        };
+                    }
+                });
+        },
+        initMenu : function () {
+                $("#layerMenu").kendoContextMenu({
+                    orientation: "vertical",
+                    direction: "left",
+                    showOn: "click touch",
+                    filter: ".layerMenuBottun",
+                    animation: {
+                        open: { effects: "fadeIn" },
+                        duration: 500
+                    },
+                    select: function (e) {
+                        var listBox = $("#layerList").data("kendoListBox");
+                        var layerItem = listBox.dataItem($(e.target).closest("li.k-item"));
+                        if ($(e.event.target).closest("li").hasClass("searchMenuBottun")) {
+                            Map_Class.ShowAttributeTable(layerItem);
+                        }
+                        else if($(e.event.target).closest("li").hasClass("symbolMenuBottun")) {
+                            Map_Class.ShowSymbology(layerItem);
+                        }
+                    },
+                    open:function(e){
+                        setTimeout(function(){
+                            var element = $("#layerMenu")[0];
+
+                            $(element.parentElement).css("left",(Number($(element.parentElement).css("left").replace("px",""))-150)+"px");
+                        },10);
+                    }
+                });
+        },
+
+        LayerChangeVisibility: function (e) {
+            Map_Class.Drawlayers();
+        },
+        clearSnaps:function(){
+            Map_Class.Snaps.forEach(function(snap,index){
+                Map_Class.map.removeInteraction(snap);
+            });
+            Map_Class.Snaps=[];
+        },
+        InitSnap:function(){
+            Map_Class.clearSnaps();
+            var btn = $("#btnDrawLayer").data("button");
+            if (!btn.options.selected)
+                return;
+            var layerDropdown =$("#layerDropdown").data("kendoDropDownList");
+            layerDropdown.dataItems().forEach(function(layerItem,index){
+                var layer =Map_Class.getLayer(layerItem.Class_name);
+                var snap = new ol.interaction.Snap({source: layer.getSource()});
+                Map_Class.map.addInteraction(snap);
+                Map_Class.Snaps.push(snap);
+            });
+        },
+        InitDraw:function(){
+            if (Map_Class.Draw != null) {
+                Map_Class.map.removeInteraction(Map_Class.Draw);
+                Map_Class.Draw=null;
+            }
+            var btn = $("#btnDrawLayer").data("button");
+            if (!btn.options.selected)
+            {
+                Map_Class.InitSnap();
+                return;
+            }
+
+            var layerDropdown =$("#layerDropdown").data("kendoDropDownList");
+            var selectedLayer =layerDropdown.dataItem(layerDropdown.selectedIndex);
+            if(selectedLayer.Scale > Map_Class.map.getView().getZoom())
+                return;
+
+            var classType = selectedLayer.Class_type;
+            var maxCount= 1;
+            var minCount= 1;
+            if (classType == "POINT")
+                classType = "Point";
+            else if (classType == "POLYLINE")
+            {
+                classType = "LineString";
+                maxCount =2;
+                minCount= 2;
+            }
+            else if (classType == "POLYGON")
+            {
+                classType = "Polygon";
+                minCount=3;
+                maxCount=10000;
+            }
+            Map_Class.Draw = new ol.interaction.Draw({
+                source:Map_Class.getLayer(layerDropdown.value()).getSource(),
+                type: classType,
+                snapTolerance: 20,
+                maxPoints:maxCount,
+                minPoints:minCount,
+                wrapX:true
+            });
+            Map_Class.Draw.addEventListener("drawend",function(e){
+                var layerDropdown =$("#layerDropdown").data("kendoDropDownList");
+                var selectedLayer =layerDropdown.dataItem(layerDropdown.selectedIndex);
+                var feature =e.feature.clone();
+                feature.getGeometry().transform('EPSG:3857','EPSG:'+selectedLayer.SpatialRefrence).getCoordinates();
+                var wkt =new ol.format.WKT();
+
+                $.ajax({
+                    type: "POST",
+                    data: { ClassName :selectedLayer.Class_name ,Shape:wkt.writeFeature(feature),SRID:selectedLayer.SpatialRefrence},
+                    url: "@Url.Content("~/Map/InsertFeature")",
+                    success: function (data) {
+                        if(data!= -1)
+                        {
+                            Map_Class.Drawlayers();
+                            Map_Class.showDetail(selectedLayer.Class_name,data,selectedLayer.Caption);
+                            $("#btnDrawLayer").data("button").toggle();
+                            Map_Class.InitDraw();
+                            setTimeout(function(){ Map_Class.overlay.setPosition(undefined)},500);
+                        }
+                        else{
+                            Layout_Class.ShowAlert("خطا در درج عارضه");
+                        }
+                    }
+
+                });
+
+            });
+            Map_Class.map.addInteraction(Map_Class.Draw);
+
+            Map_Class.InitSnap();
+        },
+        onMapClick:function(event){
+            var btn = $("#btnDrawLayer").data("button");
+            if (!btn.options.selected)
+                Map_Class.getInfo(event);
+        },
+        getInfo: function (event) {
+            var layerArray = Map_Class.map.getLayers().getArray();
+            var features = [];
+
+            var feature = Map_Class.map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
+                if (layer.get('name')) {
+                    features.push({ feature: feature, class_name: layer.get('name'), caption: layer.get('caption') });
+
+                }
+            }, {hitTolerance : 12});
+
+            if (features.length == 0) {
+                return;
+            }
+            if (features.length == 1) {
+                $("#popup-counter").hide();
+            }
+            else {
+                $("#popup-counter").show();
+            }
+            $("#popup-count").text(features.length);
+            Map_Class.infoFeatures = features;
+            Map_Class.infoCurrent = 0;
+            Map_Class.infoEvent = event;
+            Map_Class.showInfo(0);
+        },
+        showInfo: function (ind) {
+            if (ind == Map_Class.infoFeatures.length) {
+                ind = 0;
+            }
+            else if (ind == -1) {
+                ind = Map_Class.infoFeatures.length - 1;
+            }
+            Map_Class.infoCurrent = ind;
+            $("#popup-current").text(ind + 1);
+            var properties = Map_Class.infoFeatures[ind].feature.getProperties();
+
+            $("#popup-content")[0].innerHTML = ('<table style="width:220px;"> <tr style="    line-height: 30px;"><td>لايه</td><td>' + Map_Class.infoFeatures[ind].caption + '</td></tr>'
+                + '<tr  style="    line-height: 30px;"><td>شناسه عارضه</td><td>' + properties.objectid + '</td></tr>'
+                + '<tr><td></td><td style="text-align:right">'+
+                '<button  style="float: left;" class="btn btn-info" onclick="Map_Class.showDetail(\''+Map_Class.infoFeatures[ind].class_name+'\','+properties.objectid+',\''+Map_Class.infoFeatures[ind].caption+'\')"> ويرايش</buttn>'+
+                '<button  style="float: left;" class="btn btn-danger" onclick="Map_Class.deleteFeature(\''+Map_Class.infoFeatures[ind].class_name+'\','+properties.objectid+')"> حذف</buttn>'+
+                '</td></tr></table>');
+
+            Map_Class.selectInteraction.getFeatures().clear();
+            Map_Class.selectInteraction.getFeatures().push(Map_Class.infoFeatures[ind].feature);
+            Map_Class.overlay.setPosition(Map_Class.infoEvent.coordinate);
+            Map_Class.LastIdentifyLocation=Map_Class.infoEvent.coordinate;
+        },
+        deleteFeature: function (ClassName,ObjectId) {
+            Layout_Class.ShowConfirm("حذف عارضه","آیا از حذف عارضه مطمئنید؟ امکان بازگشت وجود ندارد",
+                [
+                    { text: 'بله',action:function(e)
+                    {
+                        $.ajax({
+                            type: "POST",
+                            data: { ClassName :ClassName ,ObjectID:ObjectId},
+                            url: "@Url.Content("~/Map/DeleteFeature")",
+                            success: function (data) {
+                                if(data)
+                                {
+                                    Map_Class.Drawlayers();
+                                    Map_Class.overlay.setPosition(undefined);
+                                    Map_Class.selectInteraction.getFeatures().clear();
+                                }
+                                else
+                                    Layout_Class.ShowAlert("خطا در هنگام حذف عارضه");
+                            }
+                        });
+                    }},
+                { text: 'خیر' , primary: true}
+                ]);
+        },
+        showDetail: function (ClassName,ObjectId,Caption) {
+            Map_Class.overlay.setPosition(undefined);
+            var tab = $("#featureEditTab").data("kendoTabStrip");
+            tab.select(tab.items()[0]);
+            $("#featureEditTab-1").html("<div style='text-align:center;'><img style='height:  50px;' src='/Images/Loading.gif'/><br/>لطفا منتظر بمانيد. در حال دريافت اطلاعات...</div>");
+            var win =$("#featureEditWin").data("kendoWindow");
+            win.center();
+            var left = Number($(win.element[0].parentElement).css("left").replace("px",""));
+            win.setOptions({
+                position: { left :left,  top:50 },
+                maxHeight: window.innerHeight-150
+            });
+            win.maximize();
+            win.open();
+            win.title("ويرايش عارضه " + Caption +" : "+ObjectId)
+            $.ajax({
+                type: "GET",
+                data: { ClassName :ClassName,  ObjectId :ObjectId },
+                url: "@Url.Content("~/Map/FeatureEdit")",
+                success: function (data) {
+                    $("#featureEditTab-1").html(data);
+
+
+                    if ($("#ADDRESS_FIELD").length>0 && $("#ADDRESS_FIELD")[0].value == "") {
+                        $("#ADDRESS_FIELD")[0].value ="در حال دریافت آدرس";
+                        var geocoder = new google.maps.Geocoder();
+                        var coord =ol.proj.toLonLat(Map_Class.LastIdentifyLocation);
+
+                        geocoder.geocode({
+                            'latLng': {lat: coord[1], lng: coord[0]}
+                        }, function(results, status) {
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                if (results[0]) {
+                                    var address = results[1].address_components[1].long_name+","+
+                                     results[1].address_components[0].long_name+","+
+                                     results[0].address_components[0].long_name;
+                                    $("#ADDRESS_FIELD")[0].value =address;
+                                }
+                            }
+                        });
+                    }
+                }
+
+            });
+            $.ajax({
+                type: "GET",
+                data: { ClassName :ClassName,  ObjectId :ObjectId },
+                url: "@Url.Content("~/Map/FeaturePictures")",
+                success: function (data) {
+                    $("#featureEditTab-2").html(data);
+
+                }
+
+            });
+        },
+        OnEditWinMaximize:function(){
+            $("#featureEditWin").parent().css("maxHeight", window.innerHeight + "px");
+            $("#featureEditWin").css("maxHeight", window.innerHeight + "px");},
+        OnEditWinMinimize:function(){
+            $("#featureEditWin").parent().css("maxHeight",( window.innerHeight-150) + "px");
+            $("#featureEditWin").css("maxHeight",( window.innerHeight-150) + "px");},
+
+        showCurrentPosiotion: function (zoomPlace) {
+            if (zoomPlace){
+                navigator.geolocation.getCurrentPosition(handle_geolocation_query,handle_errors);}
+            else{
+                navigator.geolocation.getCurrentPosition(handle_geolocation_query);}
+            function handle_errors(error)
+            {
+                switch(error.code)
+                {
+                    case error.PERMISSION_DENIED: Layout_Class.ShowAlert("لطفا موقيت خود را به اشتراک بگذاريد ");
+                        break;
+
+                    case error.POSITION_UNAVAILABLE: Layout_Class.ShowAlert("لطفا موقيتياب دستگاه خود را روشن کنيد");
+                        break;
+
+                    case error.TIMEOUT: Layout_Class.ShowAlert("اتصال به اينترنت قطع مي باشد");
+                        break;
+
+                    default: Layout_Class.ShowAlert("شما در خارح از محدوده دسترسي قرار داريد");
+                        break;
+                }
+            }
+            function handle_geolocation_query(pos) {
+                const coords = ol.proj.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
+                if (zoomPlace) {
+                    Map_Class.map.getView().animate({ center: coords, zoom: 17 });
+                }
+
+                $.each(Map_Class.currentPositionSource.getFeatures(), function (index, value) {
+                    Map_Class.currentPositionSource.removeFeature(value);
+                })
+                Map_Class.currentPositionSource.addFeature(new ol.Feature(new ol.geom.Point(coords)));
+            }
+        }
+    }
+    $().ready(function () {
+        Map_Class.initMap();
+
+        $("#showLayerList").click(function () {
+            var win = $("#layerWin").data("kendoWindow");
+            win.setOptions({position: { top:35}});
+            win.element.height(($("body").height() - $("#menu").height() - 55) + "px");
+            win.open();
+        })
+
+        $("#popup-closer").click(function () {
+            Map_Class.overlay.setPosition(undefined);
+            $("#popup-closer")[0].blur();
+            Map_Class.selectInteraction.getFeatures().clear();
+            return false;
+        });
+
+        $("#popup-previos").click(function () {
+            Map_Class.showInfo(Map_Class.infoCurrent - 1);
+        });
+        $("#popup-next").click(function () {
+            Map_Class.showInfo(Map_Class.infoCurrent + 1);
+        });
+
+        $("#zoomToMyLocation").click(function () {
+            Map_Class.showCurrentPosiotion(true);
+        });
+
+        setInterval(function (e) { Map_Class.showCurrentPosiotion(false) }, 5000);
+
+    });
+</script>
+<style>
+    html, body {
+        height: 100vh;
+    }
+
+    .ol-popup {
+        position: absolute;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+        min-width: 200px;
+    }
+
+        .ol-popup:after, .ol-popup:before {
+            top: 100%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .ol-popup:after {
+            border-top-color: white;
+            border-width: 10px;
+            left: 48px;
+            margin-left: -10px;
+        }
+
+        .ol-popup:before {
+            border-top-color: #cccccc;
+            border-width: 11px;
+            left: 48px;
+            margin-left: -11px;
+        }
+
+    .ol-popup-counter {
+        position: absolute;
+        top: 2px;
+        right: 15px;
+    }
+
+    .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        left: 8px;
+    }
+
+
+    #layerWin .k-listbox {
+        width: 100%;
+        height: 100%;
+    }
+
+    .symbol-POINT {
+        border: solid;
+    }
+
+    .symbol-POLYGON {
+        width: 20px;
+        height: 20px;
+        border: solid;
+    }
+
+    .symbol-POLYLINE {
+        width: 30px;
+        height: 0px;
+        border: solid;
+    }
+</style>

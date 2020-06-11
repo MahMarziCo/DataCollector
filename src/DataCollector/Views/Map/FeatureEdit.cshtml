@@ -1,0 +1,360 @@
+﻿@model Mah.DataCollector.Interface.Dto.Feature.FeatureEditModel
+
+<div>
+    @using (Ajax.BeginForm(ViewBag.IsSupervisor ? "FeatureSupervise" : "FeatureEdit", "Map", null, new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "FeatureEdit_Class.CloseWindow" }, new { id = "EditfeatureForm" }))
+    {
+
+        {
+            if (Model != null)
+            {
+                <div>
+                    @Html.Hidden("CLASS_NAME", Model.Class.Class_name)
+                    @Html.Hidden("OBJECTID", Model.ObjectId)
+                    @{if (ViewBag.NeedUserPositionLog)
+                    {
+                        @Html.Hidden("CURRENT_USER_COORDINATE", "", new { data_val = "true", data_val_required = "true" })
+                    }
+                    }
+                </div>
+                <div class="container-fluid">
+                    @foreach (var item in Model.FieldsValue.Where(a => a.field.FIELD_Name == "USER_ID_FIELD"))
+                    {
+                        @Html.Label(item.field.FIELD_Name, item.value.ToString(), new { style = "color:#929782;" })
+                    }
+
+                    @foreach (var item in Model.FieldsValue.Where(a => a.field.FIELD_Name == "DATEOF_FIELD"))
+                    {
+                        @Html.Label(item.field.FIELD_Name, item.value.ToString(), new { style = "color:#929782;    float: left; direction: ltr;" })
+                    }
+
+                    <table style="line-height:1.44">
+
+                        @foreach (var item in Model.FieldsValue.Where(a =>
+                            !(new List<string>() { "USER_ID_FIELD", "DATEOF_FIELD", "ADDRESS_FIELD", "SUPERVISOR_FIELD", "SUPERVISOR_DATOF_FIELD" }.Contains(a.field.FIELD_Name))
+                            ).OrderBy(a => a.field.ORDER))
+                        {
+                            <tr>
+                                <td style="width:30%; padding:6px">
+                                    @if ((item.field.REQUIERD ?? false) && !ViewBag.IsSupervisor)
+                                    {
+                                        <span style="color: red;float: left;margin: 10px -10px;">*</span>
+                                    }
+                                    @if (item.isDefault)
+                                    {
+                                        <span style="color: rgb(51, 204, 51);float: left;margin: 0px -10px;">*</span>
+                                    }
+                                    @Html.Label(item.field.FIELD_Name, item.field.FIELD_Caption, new { style = "color:#929782;" })
+
+                                </td>
+                                <td style="width:70%; padding:6px;    vertical-align: top;">
+                                    @if (!ViewBag.IsSupervisor)
+                                    {
+                                        Dictionary<string, object> attrib = new Dictionary<string, object>();
+                                        attrib.Add("class", "form-control ");
+                                        attrib.Add("data-val", "true");
+                                        attrib.Add("style", "padding :0px;");
+
+                                        if (item.field.REQUIERD == true)
+                                        {
+                                            attrib.Add("data-val-required", "true");
+                                        }
+                                        if (item.field.FIELD_Type == "TEXT")
+                                        {
+                                            if (item.field.MAX_VALUE != null)
+                                            {
+                                                attrib.Add("data-val-length", item.field.MAX_VALUE);
+                                            }
+                                            if (item.domains != null)
+                                            {
+                                                if (!item.domainIsMultiSelect)
+                                                {
+                                                    List<SelectListItem> domains = new List<SelectListItem>();
+                                                    domains.Add(new SelectListItem() { Text = "", Value = "", Selected = string.IsNullOrWhiteSpace(item.value.ToString()) });
+
+
+                                                    foreach (string domain in item.domains)
+                                                    {
+                                                        domains.Add(new SelectListItem() { Text = domain, Value = domain, Selected = domain == item.value.ToString() });
+                                                    }
+                                                    if (!item.domains.Contains(item.value.ToString()) && !string.IsNullOrWhiteSpace(item.value.ToString()))
+                                                    {
+                                                        domains.Add(new SelectListItem() { Text = item.value.ToString(), Value = item.value.ToString(), Selected = true });
+                                                    }
+                                                    @Html.DropDownList(@item.field.FIELD_Name, domains, attrib);
+                                                }
+                                                else
+                                                {
+                                                    List<string> domains = new List<string>();
+
+                                                    foreach (string domain in item.domains)
+                                                    {
+                                                        domains.Add(domain);
+                                                    }
+                                                    List<string> values = new List<string>();
+                                                    if (!string.IsNullOrWhiteSpace(item.value.ToString()))
+                                                    {
+                                                        values = item.value.ToString().Replace("،",",").Split(',').ToList();
+                                                        foreach (string value in values)
+                                                        {
+                                                            if (!domains.Contains(value))
+                                                            {
+                                                                domains.Add(value);
+                                                            }
+                                                        }
+                                                    }
+                                                    <span class="showMultiSelect glyphicon glyphicon-chevron-down" data-id="@item.field.FIELD_Name" style="left: 5px; top:10px;   z-index: 1;float: left;"></span>
+
+                                                    @Html.Kendo().MultiSelect().Name(@item.field.FIELD_Name).HtmlAttributes(attrib).BindTo(domains).TagMode(TagMode.Multiple).AutoClose(false).Value(values)
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBox(@item.field.FIELD_Name, @item.value.ToString(), attrib)
+                                            }
+                                        }
+                                        else if (item.field.FIELD_Type == "DOUBLE")
+                                        {
+
+                                            attrib.Add("type", "number");
+                                            attrib.Add("step", "any");
+                                            attrib.Add("data-val-number", "true");
+
+                                            if (item.field.MAX_VALUE != null)
+                                            {
+                                                attrib.Add("data-val-max", item.field.MAX_VALUE);
+                                            }
+                                            if (item.field.MIN_VALUE != null)
+                                            {
+                                                attrib.Add("data-val-min", item.field.MIN_VALUE);
+                                            }
+                                            @Html.TextBox(@item.field.FIELD_Name, @item.value, "{0:F}", attrib)
+                                        }
+                                        else if (item.field.FIELD_Type == "INT")
+                                        {
+                                            attrib.Add("type", "number");
+                                            attrib.Add("data-val-integer", "true");
+
+                                            if (item.field.MAX_VALUE != null)
+                                            {
+                                                attrib.Add("data-val-max", item.field.MAX_VALUE);
+                                            }
+                                            if (item.field.MIN_VALUE != null)
+                                            {
+                                                attrib.Add("data-val-min", item.field.MIN_VALUE);
+                                            }
+                                            @Html.TextBox(@item.field.FIELD_Name, @item.value.ToString(), attrib)
+                                        }
+                                        else if (item.field.FIELD_Type == "DATE")
+                                        {
+                                            @Html.TextBox(@item.field.FIELD_Name, @item.value.ToString(), attrib)
+                                        }
+                                        else if (item.field.FIELD_Type == "BOOL")
+                                        {
+                                            @Html.TextBox(@item.field.FIELD_Name, @item.value.ToString(), attrib)
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.Label(item.field.FIELD_Name, item.value.ToString())
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var item in Model.FieldsValue.Where(a => a.field.FIELD_Name == "ADDRESS_FIELD"))
+                        {
+                            <tr>
+                                <td style="width:30%; padding:6px">
+                                    @Html.Label(item.field.FIELD_Name, item.field.FIELD_Caption, new { style = "color:#929782;" })
+
+                                </td>
+                                <td style="width:70%; padding:6px;    vertical-align: top;">
+                                    @{Dictionary<string, object>
+                    attrib = new Dictionary<string, object>
+                        ();
+                                    attrib.Add("class", "form-control ");
+                                    attrib.Add("data-val", "true");
+                                    attrib.Add("style", "padding :0px;");
+                                    }
+                                    @if (!ViewBag.IsSupervisor)
+                                    {
+                                        @Html.TextArea(@item.field.FIELD_Name, @item.value.ToString(), attrib)
+                                    }
+                                    else if (item.field.FIELD_Name.ToUpper() == "ADDRESS_FIELD" && !ViewBag.IsSupervisor)
+                                    {
+                                        @Html.Label(item.field.FIELD_Name, item.value.ToString())
+
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        @if (ViewBag.IsSupervisor)
+                        {
+                            foreach (var item in Model.FieldsValue.Where(a => a.field.FIELD_Name == "SUPERVISOR_FIELD"))
+                            {
+                                <tr>
+                                    <td style="width:30%; padding:6px">
+                                        @Html.Label(item.field.FIELD_Name, item.field.FIELD_Caption, new { style = "color:#929782;" })
+
+                                    </td>
+                                    <td style="width:70%; padding:6px;    vertical-align: top;">
+                                        @{Dictionary<string, object>
+                    attrib = new Dictionary<string, object>
+                        ();
+                                        attrib.Add("class", "form-control ");
+                                        attrib.Add("data-val", "true");
+                                        attrib.Add("style", "padding :0px;");
+                                        }
+                                        @Html.TextArea(@item.field.FIELD_Name, @item.value.ToString(), attrib)
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            }
+
+        }
+        <div class="form-group">
+            @if (ViewBag.IsSupervisor)
+            {
+                <button id="SupervisefeatureFormSubmit" type="submit" style="width:100px;height:20px;padding:6px 12px" class="form-control btn btn-success">اعمال</button>
+            }
+            else
+            {
+                <button id="EditfeatureFormSubmit" type="submit" style="width:100px;height:20px;padding:6px 12px" class="form-control btn btn-success">اعمال</button>
+            }
+        </div>
+    }
+</div>
+<script>
+    FeatureEdit_Class = {
+        setSubmitEvent: function () {
+
+            $("#EditfeatureFormSubmit").click(function (event) {
+                try {
+                    if ($("#CURRENT_USER_COORDINATE").length > 0) {
+                        var feature = Map_Class.currentPositionSource.getFeatures()[0];
+                        var geom = feature.getGeometry();
+                        var coordinate = ol.proj.toLonLat(geom.getCoordinates(), "EPSG:3857");
+                        $("#CURRENT_USER_COORDINATE")[0].value = coordinate[0] + "," + coordinate[1];
+
+                    }
+                } catch (ex) {
+                    Layout_Class.ShowAlert('مکان شما توسط سیستم تشخیص داده نشد.مجددا تلاش کنید')
+                    event.preventDefault();
+                    return;
+                }
+                FeatureEdit_Class.Validate(event);
+            })
+        },
+        CloseWindow: function (data) {
+            $("#EditfeatureForm .validation-summary-errors").remove();
+            if (data.Status == "SUCCESS") {
+                $("<span class='alert alert-success' >انجام شد</span>").insertAfter($("#EditfeatureFormSubmit"));
+                setTimeout(function () { $("#featureEditWin").data("kendoWindow").close() }, 100);
+                Map_Class.Drawlayers();
+                Map_Class.selectInteraction.getFeatures().clear();
+            }
+            if (data.Status == "EXCEPTION") {
+                FeatureEdit_Class.InsertInputError($("#EditfeatureFormSubmit"), "در انجام عملیات خطایی رخ داده است");
+                console.log(data.message);
+                console.log(data.stackTrace);
+            }
+            if (data.Status == "ERROR") {
+                data.errors.forEach(function (value, index) {
+                    FeatureEdit_Class.InsertInputError($("#" + value.split(":")[0]), value.split(":")[1]);
+                })
+            }
+        },
+        InsertInputError: function (element, message) {
+            $("<span class='validation-summary-errors' >" + message + "</span>").insertAfter(element);
+        },
+        Validate: function (event) {
+            $("#EditfeatureForm .validation-summary-errors").remove();
+            $("#EditfeatureForm [data-val='true']").each(function (index, element) {
+                if (element.hasAttribute("data-val-required")) {
+                    if (element.value.length == 0) {
+                        FeatureEdit_Class.InsertInputError(element, "مقدار این فیلد لازم است");
+                        event.preventDefault();
+                        return;
+                    }
+                }
+                if (element.hasAttribute("data-val-length")) {
+                    if (element.value.length > Number(element.getAttribute("data-val-length"))) {
+                        FeatureEdit_Class.InsertInputError(element, "حداکثر طول این ستون " + Number(element.getAttribute("data-val-length")) + " حرف است");
+                        event.preventDefault();
+                        return;
+                    }
+                }
+                if (element.hasAttribute("data-val-integer") || element.hasAttribute("data-val-number")) {
+                    if (isNaN(Number(element.value))) {
+                        FeatureEdit_Class.InsertInputError(element, "مقدار عددی باید وارد شود");
+                        event.preventDefault();
+                        return;
+                    }
+                    if (element.hasAttribute("data-val-integer")) {
+                        if (element.value.length > 0 && !Number.isInteger(Number(element.value))) {
+                            FeatureEdit_Class.InsertInputError(element, "مقدار عدد صحیح باید وارد شود");
+                            event.preventDefault();
+                            return;
+                        }
+                    }
+                }
+                if (element.hasAttribute("data-val-max")) {
+                    if (element.value.trim() != "") {
+                        if (isNaN(Number(element.value))) {
+                            FeatureEdit_Class.InsertInputError(element, "مقدار عددی باید وارد شود");
+                            event.preventDefault();
+                            return;
+                        }
+                        else if (Number(element.value) > Number(element.getAttribute("data-val-max"))) {
+                            FeatureEdit_Class.InsertInputError(element, "مقدار عددی باید از" + Number(element.getAttribute("data-val-max")) + " کوچکتر باشد");
+                            event.preventDefault();
+                            return;
+                        }
+                    }
+                }
+                if (element.hasAttribute("data-val-min")) {
+                    if (element.value.trim() != "") {
+                        if (isNaN(Number(element.value))) {
+                            FeatureEdit_Class.InsertInputError(element, "مقدار عددی باید وارد شود");
+                            event.preventDefault();
+                            return;
+                        }
+                        else if (Number(element.value) < Number(element.getAttribute("data-val-min"))) {
+                            FeatureEdit_Class.InsertInputError(element, "مقدار عددی باید از" + Number(element.getAttribute("data-val-min")) + " بزرگتر باشد");
+                            event.preventDefault();
+                            return;
+                        }
+                    }
+                }
+            })
+
+        }
+    }
+    FeatureEdit_Class.setSubmitEvent();
+    $().ready(function () {
+        $(".showMultiSelect").click(function () {
+            var multiSelect = $("#" + this.getAttribute("data-id")).data("kendoMultiSelect");
+            multiSelect.open();
+
+        })
+    });
+</script>
+<style>
+    #EditfeatureForm .form-group input, #EditfeatureForm .form-group select {
+        padding: 1px;
+        box-sizing: border-box;
+    }
+
+    .form-control {
+        padding: 0px 12px;
+    }
+
+    .data-val-required::before {
+        content: "*";
+        color: red;
+    }
+</style>

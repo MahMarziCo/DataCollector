@@ -1,0 +1,48 @@
+﻿@model Mah.DataCollector.Entity.Entities.Classes
+
+<span class="validation-summary-errors"></span>
+
+<table style="width:100%" class="editor-table">
+    <tr style="display:none">
+        <td></td>
+        <td>@Html.Kendo().TextBoxFor(m => m.ID)</td>
+    </tr>
+    <tr>
+        <td>
+            نام لایه
+        </td>
+        <td style=" width: 250px;">@Html.Kendo().TextBoxFor(m => m.Class_name)</td>
+    </tr>
+    <tr>
+        <td>عنوان فارسی لایه</td>
+        <td>@Html.Kendo().TextBoxFor(m => m.Caption)</td>
+    </tr>
+    <tr>
+        <td>نوع لایه</td>
+        <td>
+            @(Html.Kendo().DropDownListFor(m => m.Class_type).Items(
+        items =>
+        {
+            items.Add().Text("نقطه ای").Value("POINT");
+            items.Add().Text("خطی").Value("POLYLINE");
+            items.Add().Text("سطحی").Value("POLYGON");
+        }))
+        </td>
+    </tr>
+
+    <tr>
+        <td>سیستم مختصات</td>
+        <td>
+            @(Html.Kendo().DropDownListFor(m => m.SpatialRefrence).Items(
+        items =>
+        {
+            items.Add().Text("WGS 84").Value("4326");
+            items.Add().Text("UTM 38").Value("32638");
+            items.Add().Text("UTM 39").Value("32639");
+            items.Add().Text("UTM 40").Value("32640");
+            items.Add().Text("UTM 41").Value("32641");
+
+        }))
+        </td>
+    </tr>
+</table>

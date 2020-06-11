@@ -1,0 +1,15 @@
+﻿@Scripts.Render("~/bundle/Script/Symbol")
+
+@{
+    ViewBag.Title = "تنظیمات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container" style="padding-top:30px;">
+@(Html.Kendo().TabStrip().Name("TabStripper").Items(
+    items =>
+    {
+        items.Add().Text("تنظیمات لایه ها").Selected(true).LoadContentFrom("LayerList", "Setting");
+        items.Add().Text("تنظیم ستون ها ").LoadContentFrom("FieldsList", "Setting", new { ClassID = -1 });
+    }
+))
+</div>

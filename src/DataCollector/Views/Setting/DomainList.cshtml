@@ -1,0 +1,176 @@
+﻿@model int
+
+
+@using Mah.DataCollector.Entity.Entities
+
+
+<script>
+    DomainList_Class = {
+        OnSelectedDomainChange: function () {
+            var dropDown = $("#ddlDomains").data("kendoDropDownList");
+            DomainList_Class.reload();
+        },
+        onDataRequestEnd: function (args) {
+            var grid = $("#DomainGrid").data("kendoGrid");
+            if (args.type != "read") {
+                var doRead = true;
+                $.each(args.response.Errors, function (prop) {
+                    if (this.errors.length > 0) {
+                        doRead = false;
+                    }
+                })
+                if (doRead) {
+                    grid.dataSource.read();
+                }
+            }
+        },
+        showModelError: function (args) {
+            var grid = $("#DomainGrid").data("kendoGrid");
+            var validationTemplate = kendo.template($("#ValidationMessageTemplate").html());
+            grid.editable.element.find(".validation-summary-errors").text("");
+            grid.one("dataBinding", function (e) {
+                e.preventDefault();
+                $.each(args.errors, function (propertyName) {
+                    var renderedTemplate = validationTemplate({ field: propertyName, messages: this.errors });
+                    grid.editable.element.find(".validation-summary-errors").append(renderedTemplate);
+                });
+            })
+        },
+        submitNewDomain: function (data) {
+            $("#EditDomainForm")[0].parentElement.innerHTML = data;
+            if (data.indexOf("input-validation-error") > -1 || data.indexOf("validation-summary-errors") > -1) return;
+            DomainList_Class.reload();
+            $("#createDomainWin").data("kendoWindow").close();
+        },
+        addNewDomain: function (args) {
+            var dropDown = $("#ddlDomains").data("kendoDropDownList");
+            $.ajax({
+                type: "GET",
+                url: "/Setting/EditDomain",
+                data: { DomainId: -1 },
+                success: function (data) {
+                    if (data) {
+                        $("#createDomainWin").html(data);
+                        $("#createDomainWin").data("kendoWindow").center().open();
+                    }
+                }
+            })
+        },
+        updateDomain: function (args) {
+            var dropDown = $("#ddlDomains").data("kendoDropDownList");
+            $.ajax({
+                type: "GET",
+                url: "/Setting/EditDomain",
+                data: { DomainId: dropDown.dataItem(dropDown.selectedIndex).ID },
+                success: function (data) {
+                    if (data) {
+                        $("#createDomainWin").html(data);
+                        $("#createDomainWin").data("kendoWindow").center().open();
+                    }
+                }
+            })
+        },
+        deleteDomain: function (args) {
+            var dropDown = $("#ddlDomains").data("kendoDropDownList");
+            Layout_Class.ShowConfirm("حذف دامنه", "آیا دامین را حذف میکنید؟!",
+                [
+                    {
+                        text: 'بله', action: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: "/Setting/DeleteDomain",
+                                data: { pID: dropDown.dataItem(dropDown.selectedIndex).ID },
+                                success: function (data) {
+                                    if (data) {
+                                        DomainList_Class.reload();
+                                    }
+                                    else {
+                                        Layout_Class.ShowAlert("حذف دامنه با خطا مواجه شد");
+                                    }
+                                }
+                            })
+                        }
+                    },
+                { text: 'خیر', primary: true }
+                ]);
+        },
+        reload: function () {
+            var dropDown = $("#ddlDomains").data("kendoDropDownList");
+            $.ajax({
+                type: "POST",
+                url: "/Setting/DomainList",
+                data: { DomainID: dropDown.dataItem(dropDown.selectedIndex).ID },
+                success: function (data) {
+                    $($("#DomainListContainer")[0].parentElement).html(data);
+                }
+            })
+        }
+
+    }
+
+
+</script>
+
+<script type="text/x-kendo-template" id="ValidationMessageTemplate">
+    # if (messages.length) { #
+    # for (var i = 0; i < messages.length; ++i) { #
+    <span>#= messages[i] #</span>
+    # } #
+    # } #
+</script>
+
+<div id="DomainListContainer">
+    عنوان دامین
+    @(Html.Kendo().DropDownList().Name("ddlDomains").Value(Model.ToString())
+    .DataSource(ds => { ds.Read("GetAllDomains", "Setting"); })
+    .DataTextField("Caption").DataValueField("ID")
+    .Events(events => events.Change("DomainList_Class.OnSelectedDomainChange")))
+    @(Html.Kendo().Button().Name("btnAddDomain").Content("ایجاد دامنه جدید").Icon("plus").Events(events => events.Click("DomainList_Class.addNewDomain")))
+
+    @{if (Model != -1)
+    {
+        @(Html.Kendo().Button().Name("btnUpdateDomain").Content("ویرایش دامنه").Icon("edit").Events(events => events.Click("DomainList_Class.updateDomain")))
+
+        @(Html.Kendo().Button().Name("btnDeleteDomain").Content("حذف دامنه").Icon("delete").Events(events => events.Click("DomainList_Class.deleteDomain")))
+
+        @(Html.Kendo().Grid<DomainValue>()
+    .Name("DomainGrid")
+    .Sortable().Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+    .Columns(cols =>
+    {
+        cols.Bound(a => a.ID).Hidden();
+        cols.Bound(a => a.Value).Title("مقدار");
+        cols.Command(cmd =>
+        {
+            cmd.Edit().UpdateText("اعمال").CancelText("انصراف").Text("ویرایش");
+            cmd.Destroy().Text("حذف");
+        }).Width(260);
+    })
+        .Editable(editable =>
+            {
+                editable.Mode(GridEditMode.PopUp).DisplayDeleteConfirmation("مقدار دامنه مورد نظر حذف شود؟");
+                editable.TemplateName("DomainValueEditorTemplate");
+            })
+            .ToolBar(tool => tool.Create().Text("اضافه کردن مقدار جدید به دامنه"))
+    .Resizable(a => a.Columns(true)).Scrollable()
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Model(model =>
+    {
+        model.Id(p => p.ID);
+        model.Field(p => p.Domain_ID).DefaultValue(Model);
+    })
+        .Read(read => read.Action("GetDomainValues", "Setting", new { DomainID = Model }))
+        .Create(create => create.Action("CreateDomainValue", "Setting"))
+        .Update(update => update.Action("UpdateDomainValue", "Setting"))
+       .Destroy(Destroy => Destroy.Action("DeleteDomainValue", "Setting"))
+        .Events(events =>
+        {
+            events.Error("DomainList_Class.showModelError").RequestEnd("DomainList_Class.onDataRequestEnd");
+        })
+    .PageSize(500)
+    ))
+    }}
+
+    @Html.Kendo().Window().LoadContentFrom("EditDomain", "setting", new { DomainId = -1 }).Name("createDomainWin").Visible(false).Title("ایجاد دامنه جدید").Width(250)
+</div>

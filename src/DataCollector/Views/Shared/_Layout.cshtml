@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        var href = window.location.href.toLowerCase();
+        if (href.startsWith("http:/") && !href.startsWith("http://localhost")) { window.location.href = href.replace("http:/", "https:/") };
+    </script>
+
+    @{
+        if (string.IsNullOrEmpty(ViewBag.Title))
+        {
+            ViewBag.Title = System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + "/" + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+        }
+
+    }
+    <title>
+        @ViewBag.Title
+    </title>
+    <link rel="icon" href="@Url.Content("~/Content/favicon.ico")" />
+
+    @Scripts.Render("~/bundle/Script/jquery")
+
+
+    @Scripts.Render("~/bundles/Script/modernizr")
+
+    @Scripts.Render("~/bundles/Script/bootstrap")
+
+    @Styles.Render("~/bundles/Style/css")
+
+
+    @Styles.Render("~/bundles/Style/JalliDate")
+
+
+    @Styles.Render("~/bundles/Style/Mah")
+
+
+    @Styles.Render("~/bundles/Style/Kendo")
+
+    @Scripts.Render("~/bundle/Script/Kendo")
+
+    @Scripts.Render("~/bundle/Script/JalliDate")
+
+    @Scripts.Render("~/bundle/Script/Mah")
+
+    @RenderSection("headSection", false)
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+</head>
+<body class="k-rtl">
+
+
+    @Html.Kendo().Menu().Name("menu").Items(items =>
+{
+    items.Add().Text("<span class='glyphicon glyphicon-menu-hamburger'></span>").Encoded(false).Items(child =>
+    {
+        child.Add().Text("<span class='glyphicon glyphicon-globe'></span>نقشه").Url("/Map/Index").Encoded(false);
+        child.Add().Text("<span class='glyphicon glyphicon-cog'></span>تنظیمات").Url("/Setting/Index").Encoded(false);
+        child.Add().Text("<span class='glyphicon glyphicon-user'></span>مدیریت کاربران").Url("/Account/Manage").Encoded(false);
+        child.Add().Text("<span class='glyphicon glyphicon-map-marker'></span>مشاهده کاربران").Url("/Account/UserView").Encoded(false);
+        child.Add().Text("<span class='glyphicon glyphicon-lock'></span> تغییر رمز عبور").HtmlAttributes(new { id = "changePassword" }).Encoded(false);
+        child.Add().Text("<span class='glyphicon glyphicon-info-sign'></span>درباره ما").HtmlAttributes(new { id = "aboutUs" }).Encoded(false);
+        child.Add().Text(" <span class='glyphicon glyphicon-log-out'></span> خروج").Url("/Account/LogOut").Encoded(false);
+    }
+            );
+    items.Add().Text(System.Configuration.ConfigurationManager.AppSettings["ApplicationName"]).HtmlAttributes(new { @class = "hidden-xs" });
+
+    items.Add().Text(User.Identity.Name).HtmlAttributes(new { style = "float:left" });
+})
+
+    @Html.Kendo().Window().Title("تغییر رمز عبور").Name("changePassWin").LoadContentFrom("ChangePassword", "Account", (object)new { UserName = User.Identity.Name }).Visible(false)
+    @Html.Kendo().Window().Title("درباره ما").Name("aboutUsWin").Visible(false).Content(
+    @<div class="container" style="text-align:center">
+        <div class="row">
+            <div class="col-md-12">
+                <img src="~/Images/Logo.svg" style=" max-width: 250px;   height: auto;" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                نرم افزار موجود توسط گروه نرم افزار مکان افزار حافظ تولید و توسعه یافته است.
+                <br />
+                این نسخه از نرم افزار به سفارش شرکت جامع کار سپاهان و فقط قابل استفاده در این شرکت است.
+                <br />
+                هر گونه واگذاری  به غیر و یا کپی برداری از این نرم افزار که بدون هماهنگی با گروه توسعه نرم افزار باشد قابل پیگیری است
+
+                <br />
+                کلیه حقوق مادی و معنوی این نرم افزار متعلق به گروه توسعه نرم افزاری است و هرگونه استفاده غیر از آن صحیح نمی باشد.
+                <br/>
+                تلفن تماس با گروه نرم افزاری: 09194035279 (احمدی)
+                <br />
+                <img src="~/Images/MH.png" style="height:25px" />
+            </div>
+        </div>
+    </div>
+
+            )
+
+
+    @RenderBody()
+
+    <script>
+        $("#changePassword").click(function () { $("#changePassWin").data("kendoWindow").center().open() })
+        $("#aboutUs").click(function () { $("#aboutUsWin").data("kendoWindow").maximize().open() })
+
+    </script>
+</body>
+
+</html>

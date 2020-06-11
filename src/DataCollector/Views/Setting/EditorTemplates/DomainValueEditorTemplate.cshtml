@@ -1,0 +1,13 @@
+﻿@model Mah.DataCollector.Entity.Entities.DomainValue
+
+@Html.HiddenFor(a => a.Domain)
+@Html.HiddenFor(a => a.Domain_ID)
+
+<span class="validation-summary-errors"></span>
+
+<table style="width:100%" class="editor-table">
+    <tr>
+        <td>مقدار دامنه</td>
+        <td>@Html.Kendo().TextBoxFor(m => m.Value)</td>
+    </tr>
+</table>

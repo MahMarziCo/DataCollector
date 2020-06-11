@@ -1,0 +1,357 @@
+﻿@using DataCollector.Models
+
+@model ClassSymbolViewModel
+
+<style>
+    .symbol-item {
+        cursor: pointer;
+    }
+</style>
+<script>
+    $().ready(function () {
+        $("#SymbolType").data().kendoDropDownList.trigger("change");
+        ClassSymbolClass.OnUniqueSymbolFieldChange();
+        ClassSymbolClass.RenderSymbol();
+        $("#SymbolConfigClassFlow").change(() => {
+            ClassSymbolClass.Data.HasFlow = $("#SymbolConfigClassFlow").prop("checked");
+            ClassSymbolClass.RenderSymbol();
+        });
+        $("#SymbolConfig .k-grid").on("click",".symbol-item",
+            ClassSymbolClass.SelectGridItemSymbol
+        );
+        $("#SymbolConfig .SimpleSymbol").click(ClassSymbolClass.SelectSimpleItemSymbol);
+    });
+
+    var ClassSymbolClass = {
+        Data:@Html.Raw(Json.Encode(Model)),
+        RenderSymbol: function () {
+
+            var template = kendo.template($("#symbol-template").html());
+            var defStyle = template({
+                Class_type: ClassSymbolClass.Data.ClassType,
+                Width: ClassSymbolClass.Data.Symbol.Width,
+                StrokColor: ClassSymbolClass.Data.Symbol.StrokeColor,
+                FillColor: ClassSymbolClass.Data.Symbol.FillColor,
+                StrokWidth: ClassSymbolClass.Data.Symbol.StrokeWidth,
+                HasFlow: ClassSymbolClass.Data.HasFlow
+            });
+            $("#SymbolConfig .SimpleSymbol").html(defStyle);
+            ClassSymbolClass.RenderUniquSymbol();
+        },
+        RefreshModel: function () {
+            var grid = $("#SymbolConfig .UniqueSymbolGrid").data().kendoGrid;
+            var uniqueItems = grid.dataSource.data().map(item => {
+                return {
+                    Symbol: {
+                        Width: item.Width,
+                        StrokeColor: item.StrokColor,
+                        FillColor: item.FillColor,
+                        StrokeWidth: item.StrokWidth
+                    },
+                    Value: item.Value
+                }
+            });
+            ClassSymbolClass.Data.UniqueItems = uniqueItems;
+        },
+        RenderUniquSymbol: function () {
+            var data= ClassSymbolClass.Data.UniqueItems.map((item,ind) => {
+                return {
+                    Id:ind,
+                    Class_type: ClassSymbolClass.Data.ClassType,
+                    Width: item.Symbol.Width,
+                    StrokColor: item.Symbol.StrokeColor,
+                    FillColor: item.Symbol.FillColor,
+                    StrokWidth: item.Symbol.StrokeWidth,
+                    HasFlow: ClassSymbolClass.Data.HasFlow,
+                    Value: item.Value
+                }
+            });
+            var grid = $("#SymbolConfig .UniqueSymbolGrid").data().kendoGrid;
+            if (grid) { grid.dataSource.data(data); }
+            else {
+                $("#SymbolConfig .UniqueSymbolGrid").kendoGrid({
+                    dataSource: {
+                        batch: true,
+                        data: data,
+                        change: ClassSymbolClass.RefreshModel,
+                        schema: {
+                            model: {
+                                id: "Id",
+                                fields: {
+                                    Id: { editable: false },
+                                    Value: {}
+                                }
+                            }
+                        }
+                    },
+                    toolbar: kendo.template("<a onClick='ClassSymbolClass.CreateUniqueStyle()' role='button' class='k-button k-button-icontext' style='min-width: 0px;' href='\\#'>" +
+                        "<span class= 'k-icon k-i-plus' title='اضافه کردن مقدار جدید' > "
+                        + "</span ></a >"),
+                    editable: true,
+                    height: 250,
+                    columns: [{
+                        title: "مقدار",
+                        field: "Value"
+                    }, {
+                        template: $("#symbol-template").html(),
+                        field: "Id",
+                        title: "نمایش",
+                        width: 75
+                    },
+                    {
+                        field: "Id",
+                        template: "<a onClick='ClassSymbolClass.DeleteRecord(this)' role='button' class='k-button k-button-icontext' style='min-width: 0px;' href='\\#'>" +
+                            "<span class= 'k-icon k-i-close' title='حذف' > "
+                            + "</span ></a > ",
+                        title: "&nbsp;", width: 60
+                    }]
+                });
+            }
+        },
+        SymbolTypeOnChange: function () {
+            $("#SymbolConfig .UniqueSymbol").hide();
+            if ($("#SymbolType").val() == "Unique") {
+                $("#SymbolConfig .UniqueSymbol").show();
+            }
+        },
+        DeleteRecord: function (element) {
+            var grid = $(element).closest(".k-grid").data().kendoGrid;
+            var item = grid.dataItem($(element).closest("tr"));
+            grid.dataSource.remove(item);
+        },
+        CreateUniqueStyle: function () {
+            var grid = $("#SymbolConfig .UniqueSymbolGrid").data().kendoGrid;
+            var newId = 0; grid.dataItems().forEach(item => { if (item.Id > newId) { newId = item.Id } });
+
+           var item = {
+                    Id:newId,
+                    Class_type: ClassSymbolClass.Data.ClassType,
+                    Width: 5,
+                    StrokColor: ClassSymbolClass.RandomColor(),
+                    FillColor: ClassSymbolClass.RandomColor(),
+                    StrokWidth: 2,
+                    HasFlow: ClassSymbolClass.Data.HasFlow,
+                    Value: ""
+                }
+            grid.dataSource.add(item);
+        },
+        RandomColor: function () {
+            return '#'+Math.floor(Math.random()*16777215).toString(16);
+        },
+        SelectSimpleItemSymbol: function () {
+            var dataItem={
+                Class_type: ClassSymbolClass.Data.ClassType,
+                Width: ClassSymbolClass.Data.Symbol.Width,
+                StrokColor: ClassSymbolClass.Data.Symbol.StrokeColor,
+                FillColor: ClassSymbolClass.Data.Symbol.FillColor,
+                StrokWidth: ClassSymbolClass.Data.Symbol.StrokeWidth
+            };
+            ClassSymbolClass.ShowSymbolPicker(dataItem, function () {
+                ClassSymbolClass.Data.Symbol.StrokeColor = $("#SymbolPicker_StrokColor").val();
+                ClassSymbolClass.Data.Symbol.FillColor = $("#SymbolPicker_FillColor").val();
+                ClassSymbolClass.Data.Symbol.StrokeWidth = $("#SymbolPicker_StrokWidth").val();
+                ClassSymbolClass.Data.Symbol.Width = $("#SymbolPicker_Width").val();
+
+                ClassSymbolClass.RenderSymbol();
+                $("#SymbolPickerWindow").data().kendoWindow.close();
+            });
+        },
+        SelectGridItemSymbol: function () {
+            var grid = $(this).closest(".k-grid").data().kendoGrid;
+            var dataItem = grid.dataItem($(this).closest("tr"));
+            ClassSymbolClass.ShowSymbolPicker(dataItem, function () {
+                dataItem.StrokColor = $("#SymbolPicker_StrokColor").val();
+                dataItem.FillColor = $("#SymbolPicker_FillColor").val();
+                dataItem.StrokWidth = $("#SymbolPicker_StrokWidth").val();
+                dataItem.Width = $("#SymbolPicker_Width").val();
+                grid.refresh();
+                $("#SymbolPickerWindow").data().kendoWindow.close();
+                ClassSymbolClass.RefreshModel();
+            });
+        },
+        ShowSymbolPicker: function (data,applyAction) {
+            var win = $("#SymbolPickerWindow").data().kendoWindow;
+            var template = kendo.template($("#SymbolPicker").html());
+            var defStyle = template(data);
+            win.content(defStyle);
+            $("#SymbolPicker_Width").kendoNumericTextBox();
+            $("#SymbolPicker_StrokWidth").kendoNumericTextBox();
+            $("#SymbolPicker_FillColor").kendoColorPicker({
+                buttons: false,
+                opacity: true
+        });
+            $("#SymbolPicker_StrokColor").kendoColorPicker({
+                buttons: false,
+                opacity: true
+            });
+            $("#SymbolPicker_OkBtn").click(applyAction);
+            win.center().open();
+        },
+        OnUniqueSymbolFieldChange: function () {
+            var grid = $("#SymbolConfig .UniqueSymbolGrid").data().kendoGrid;
+            if (grid) {
+                grid.dataSource.data([]);
+            }
+            var fieldDropDown = $("#UniqueSymbolFieldSelect").data().kendoDropDownList;
+            if (fieldDropDown.dataItem().Domain_ID) {
+                $("#SymbolConfig_GetDomainValue").show();
+            }
+            else {
+                $("#SymbolConfig_GetDomainValue").hide();
+            }
+            if(fieldDropDown.dataItem().ID){
+                $("#SymbolConfig_GetDistinctValue").show();
+            }
+            else {
+                $("#SymbolConfig_GetDistinctValue").hide();
+            }
+            
+            ClassSymbolClass.Data.UniqueField = fieldDropDown.value();
+        },
+        GetDomainValues: function () {
+            var fieldDropDown = $("#UniqueSymbolFieldSelect").data().kendoDropDownList;
+            var domainId = fieldDropDown.dataItem().Domain_ID;
+            $.ajax({
+                type: "GET",
+                url: "/Setting/GetDomainValueText",
+                data: { DomainID: domainId },
+                success: function (data) {
+                    var grid = $("#SymbolConfig .UniqueSymbolGrid").data().kendoGrid;
+                    data.forEach(item => {
+                        var newId = 0;
+                        grid.dataItems().forEach(item => { if (item.Id > newId) { newId = item.Id } });
+
+                        var item = {
+                            Id: newId,
+                            Class_type: ClassSymbolClass.Data.ClassType,
+                            Width: 5,
+                            StrokColor: ClassSymbolClass.RandomColor(),
+                            FillColor: ClassSymbolClass.RandomColor(),
+                            StrokWidth: 2,
+                            HasFlow: ClassSymbolClass.Data.HasFlow,
+                            Value: item
+                        }
+                        grid.dataSource.add(item);
+                    })
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        },
+        GetFieldDistinctValues: function () {
+            var fieldDropDown = $("#UniqueSymbolFieldSelect").data().kendoDropDownList;
+            var fieldName = fieldDropDown.value();
+            $.ajax({
+                type: "GET",
+                url: "/Setting/GetFieldDistinctValues",
+                data: { ClassID: @Html.Raw(Model.ClassId),FieldName: fieldName},
+                success: function (data) {
+                    var grid = $("#SymbolConfig .UniqueSymbolGrid").data().kendoGrid;
+                    data.forEach(item => {
+                        var newId = 0;
+                        grid.dataItems().forEach(item => { if (item.Id > newId) { newId = item.Id } });
+
+                        var item = {
+                            Id: newId,
+                            Class_type: ClassSymbolClass.Data.ClassType,
+                            Width: 5,
+                            StrokColor: ClassSymbolClass.RandomColor(),
+                            FillColor: ClassSymbolClass.RandomColor(),
+                            StrokWidth: 2,
+                            HasFlow: ClassSymbolClass.Data.HasFlow,
+                            Value: item
+                        }
+                        grid.dataSource.add(item);
+                    })
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        },
+        SaveStyles: function () {
+            if ($("#SymbolType").val() == "Simple") {
+                ClassSymbolClass.Data.UniqueItems = [];
+                ClassSymbolClass.Data.UniqueField = "";
+            }
+            if (ClassSymbolClass.SaveStyleAction) {
+                ClassSymbolClass.SaveStyleAction(ClassSymbolClass.Data);
+            }
+        }
+    }
+</script>
+
+<div id="SymbolConfig">
+
+    <div>
+        نوع سیمبولوژی
+        @(Html.Kendo().DropDownList().Name("SymbolType")
+        .BindTo(new List<SelectListItem>() { new SelectListItem() { Text="ساده",Value="Simple"},
+    new SelectListItem() { Text="مقادیر متمایز",Value="Unique"}})
+    .Events(e => e.Change("ClassSymbolClass.SymbolTypeOnChange"))
+    .Value(string.IsNullOrEmpty(Model.UniqueField) ? "Simple" : "Unique")
+        )
+    </div>
+    <div style="margin-top:20px">
+        <span style="width:40%">
+            مقیاس نمایش
+            @(Html.Kendo().NumericTextBox()
+                .Name("SymbolConfigClassScale").Min(1).Max(28).Value(Model.MaxScale)
+                .Events(e => e.Change("()=> { ClassSymbolClass.Data.MaxScale=$('#SymbolConfigClassScale').val(); }"))
+            )
+        </span>
+        @if (Model.ClassType == "POLYLINE")
+        {
+            <span style="width:40%;margin-right : 30px;">
+                @Html.Kendo().CheckBox().Label("جهت دار").Name("SymbolConfigClassFlow").Checked(Model.HasFlow)
+            </span>
+        }
+    </div>
+    <div style="margin-top:20px">
+        <span>
+            رنگ بندی پیش فرض
+        </span>
+        <span style="float:left;margin-left:50px;" class="SimpleSymbol symbol-item">
+
+        </span>
+    </div>
+    <div class="UniqueSymbol" style="margin-top:20px">
+        رنگ بندی  بر اساس: @(Html.Kendo().DropDownList().Name("UniqueSymbolFieldSelect")
+.DataSource(ds =>
+{
+ds.Read(r => r.Action("GetClassFields", "Setting", new { ClassId = Model.ClassId }));
+}).Value(Model.UniqueField).OptionLabel("یک فیلد را انتخاب کنید")
+.DataValueField("FIELD_Name").DataTextField("FIELD_Caption")
+.Events(e => e.Change("ClassSymbolClass.OnUniqueSymbolFieldChange"))
+        )
+        <a id="SymbolConfig_GetDistinctValue" onClick="ClassSymbolClass.GetFieldDistinctValues()" title="دریافت تمام مقادیر" role='button' class='k-button k-button-icontext' href='#'>
+            <span class='k-icon k-i-download'></span>
+        </a>
+        <a id="SymbolConfig_GetDomainValue" onClick="ClassSymbolClass.GetDomainValues()" title=" دریافت  مقادیر دامنه" role='button' class='k-button k-button-icontext' href='#'>
+            <span class='k-icon k-i-download'></span>
+        </a>
+        <div class="UniqueSymbolGrid">
+
+        </div>
+    </div>
+    <div style="width:100%;margin-top:10px;">
+        <a id="SymbolConfig_OkBtn" role='button' onClick="ClassSymbolClass.SaveStyles()"  class='k-button k-button-icontext' style='float:left' href='#'>
+            <span class='k-icon k-i-check'>
+            </span>
+            تایید
+        </a>
+    </div>
+</div>
+
+@(Html.Kendo().Window()
+    .Name("SymbolPickerWindow")
+    .Title("تعیین سیمبول")
+    .Width(250)
+    .Height(180)
+    .Modal(true)
+    .Content("")
+    .Visible(false)
+)
+
+

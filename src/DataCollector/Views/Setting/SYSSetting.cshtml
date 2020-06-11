@@ -1,0 +1,125 @@
+﻿@model DataCollector.Models.SysSettingParam
+@{
+    ViewBag.Title = "SYSSetting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+ }
+@section headSection
+{
+    <link href="@Url.Content("~/Content/ol.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/ol.js")"></script>
+}
+
+<div class="container" style=" padding:10px;">
+    <div class="row">
+        <div class="col-md-6">
+            <label>تاریخ انقضا نرم افزار</label>
+            <input type="text" id="jalDate" class="pdate  pcalbtn" style="line-height:30px; width:100px" disabled>
+            <span id="btnChangeExpiretime" class="btn btn-success">اعمال</span>
+            <input type="text" id="ggDate" style="display:none" class="pdate wide">
+        </div>
+        <div class="col-md-6">
+            <label>تایید اعتبار لایسنس نرم افزار</label>
+            <span id="btnSetLicenseValidate" class="btn btn-success">اعمال</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="map" style="width:100%;height:450px;"></div>
+            <span id="btnSetMapExtent" style=" position: absolute; top: 3px;" class="btn btn-success">ثبت محدوده نقشه</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    SysSetting_Class = {
+        calendar: null,
+        map:null,
+        initDate: function () {
+            SysSetting_Class.calendar = new AMIB.persianCalendar('jalDate', {
+                extraInputID: 'ggDate',
+                extraInputFormat: 'YYYY/MM/DD',
+                initialDate: @(Html.Raw(Model.ExpireDate))
+                }
+                       )
+        },
+        btnChangeExpiretime_Click:function(e){
+            $.ajax({
+                url:"@Url.Content("~/Setting/SetExpireTime")",
+                type:"GET",
+                data: {ExpireDate:$("#ggDate")[0].value},
+                success:function(data)
+                {
+                    if(!data){
+                        Layout_Class.ShowAlert("خطا در ذخیره مقدار");
+                    }
+                    else{
+                        Layout_Class.ShowAlert("مقداز ذخیره شد","تبریک");
+                    }
+                }
+            })
+
+        },
+        btnSetLicenseValidate_Click:function(){
+            $.ajax({
+                url:"@Url.Content("~/Setting/SetLicenseValidate")",
+                type:"GET",
+                success:function(data)
+                {
+                    if(!data){
+                        Layout_Class.ShowAlert("خطا در ذخیره مقدار");
+                    }
+                    else{
+                        Layout_Class.ShowAlert("مقداز ذخیره شد","تبریک");
+                    }
+                }
+            })
+        },
+        btnSetMapExtent_Click:function(){
+            var view=SysSetting_Class.map.getView();
+            $.ajax({
+                url:"@Url.Content("~/Setting/SetMapExtent")",
+                type:"GET",
+                data:{CenterX: view.getCenter()[0],CenterY: view.getCenter()[1], Zoom:view.getZoom()},
+                success:function(data)
+                {
+                    if(!data){
+                        Layout_Class.ShowAlert("خطا در ثبت محدوده نقشه");
+                    }
+                    else{
+                        Layout_Class.ShowAlert("محدوده نقشه ذخیره شد","تبریک");
+                    }
+                }
+            })
+        },
+        initMap: function () {
+            SysSetting_Class.map = new ol.Map({
+                layers: [
+                  new ol.layer.Tile({
+                      source: new ol.source.OSM()
+                  })
+                ],
+                target: 'map',
+                controls: ol.control.defaults({
+                    attributionOptions: {
+                        collapsible: false
+                    }
+                }),
+                view: new ol.View({
+                    center: [ @Html.Raw(Json.Encode(Model.MapDefCentroidX)),@Html.Raw(Json.Encode(Model.MapDefCentroidY))],
+                    zoom:  @Html.Raw(Json.Encode(Model.MapDefultZoom))//10
+                    })
+            });
+        }
+    };
+
+    $().ready(
+0
+        function () {
+            SysSetting_Class.initDate();
+            SysSetting_Class.initMap();
+            $("#btnChangeExpiretime").click(SysSetting_Class.btnChangeExpiretime_Click);
+            $("#btnSetLicenseValidate").click(SysSetting_Class.btnSetLicenseValidate_Click);
+            $("#btnSetMapExtent").click(SysSetting_Class.btnSetMapExtent_Click);
+        }
+    )
+</script>

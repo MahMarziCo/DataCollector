@@ -1,0 +1,269 @@
+﻿@using DataCollector.Models.Map
+
+@{
+    ViewBag.Title = "مشاهده کاربران";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+
+@model MapConfigViewModel
+
+@section headSection
+{
+    <link href="@Url.Content("~/Content/ol.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/ol.js")"></script>
+
+}
+
+<div style="height:100%;  position: fixed; width:100%  ">
+    @(Html.Kendo().Splitter().Name("splitter").HtmlAttributes(new { style = "height:100%" }).Orientation(SplitterOrientation.Horizontal).Panes(panes =>
+    {
+        panes.Add().Resizable(false).Content(
+            @<div id="map" class="map" tabindex="0" style="height:100%;width: 100% ">
+
+            </div>);
+        panes.Add().Size("250px").Resizable(false).Content(
+            @<div style=" height:98%;width: 90%;background-color: rgba(211, 209, 209, 0.97); text-align:center" class="container">
+                <br />
+                @Html.Kendo().Button().Name("usersview").Content("مشاهده آخرین موقعیت کاربران")
+                <div style="text-align: right;    margin: 10px 0px 0px 5px;    border: 1px solid black;    padding: 15px;    border-radius: 10px;">
+                    <label> انتخاب کاربر:</label><br />
+                    @(Html.Kendo().DropDownList().Name("userDropDown")
+                        .DataSource(ds=> ds.Read("UserList_Read","Account"))
+                        .DataTextField("UserName")
+                        .DataValueField("UserId")
+                        .SelectedIndex(0)
+                    )
+                    <br /><br />
+                    <label> تاریخ:</label><br />
+                    <input type="text" id="jalDate" class="pdate  pcalbtn" style="line-height:30px; width:80%" disabled><br>
+                    <span class="field-validation-error" id="dataError" style="display:none">تاریخ را انتخاب کنید</span>
+                    <input type="text" id="ggDate" style="display:none" class="pdate wide"><br />
+                    @Html.Kendo().Button().Name("userTrace").Content("مشاهده مسیر کاربر")
+                    <div id="userMsg" style="display:none" class="alert alert-danger">کاربر در این تاریخ فعالیتی نداشته است</div>
+                </div>
+            </div>
+                );
+    })
+    )
+</div>
+<style>
+    html, body {
+        height: 100%;
+    }
+</style>
+<script>
+   
+    UserMap_Class = {
+        map: null,
+        calendar: null,
+        usersPositionSource: null,
+        usersPositionVector: null,
+        userTrackSource: null,
+        initDate: function () {
+            UserMap_Class.calendar = new AMIB.persianCalendar('jalDate', {
+                extraInputID: 'ggDate',
+                extraInputFormat: 'YYYY/MM/DD'
+            }
+                       )
+        },
+        styleFunction : function (feature) {
+            var geometry = feature.getGeometry();
+            var styles = [
+                // linestring
+                new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: '#4357c7',
+                        width: 2.5
+                    })
+                })
+            ];
+
+            geometry.forEachSegment(function (start, end) {
+                var dx = end[0] - start[0];
+                var dy = end[1] - start[1];
+                var mx = (end[0] + start[0]) / 2;
+                var my = (end[1] + start[1]) / 2;
+                var middel = [mx, my]
+                var rotation = Math.atan2(dy, dx);
+
+                styles.push(new ol.style.Style({
+                    geometry: new ol.geom.Point(middel),
+                    image: new ol.style.Icon({
+                        src:'/Images/arrow.png',
+                        anchor: [0.75, 0.5],
+                        rotateWithView: true,
+                        rotation: -rotation
+                    })
+                }));
+            });
+            return styles;
+        },
+        style : new ol.style.Style({
+            text: new ol.style.Text({
+                font: 'bold 15px "Vazir-Medium", "Arial Unicode MS", "sans-serif"',
+                //align:align.
+                placement: 'point',
+                offsetX: 0,
+                offsetY: 20,
+                scale: 0.7,
+                fill: new ol.style.Fill({
+                    color: '#b6ff00'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: "",
+                    width: 4
+                })
+            }),
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: '/Images/current-location.png'
+            })
+
+        }),
+        labling: function (feature, needTime) {
+            var gregorianDate = feature.get('dateTime').split("T");
+            gregorianDateStr = gregorianDate[0].split("-");
+            var gYear = gregorianDateStr[0];
+            var gMonth = gregorianDateStr[1];
+            var gDay = gregorianDateStr[2];
+            var gTime = gregorianDate[1].substr(0, 5);
+            var jdDate = gregorian_to_jd(Number(gYear), Number(gMonth), Number(gDay));
+            var jalaliDate = jd_to_persian(jdDate);
+            var lable = feature.get('userName') + "\n" + jalaliDate + "\r(" + gTime + ")";
+            if (needTime) {
+                return gTime;
+            } else {
+                return lable;
+            }
+        },
+        drawVector: function (user, type) {
+            var arrayCoords =[];
+            user.forEach(function (value, index) {
+                var stCoords = value.Coordinate.split(",");
+                var coords = ol.proj.fromLonLat([Number(stCoords[0]), Number(stCoords[1])]);
+                arrayCoords.push(coords);
+                var dateTime = value.DateTime;
+                var feature = new ol.Feature(new ol.geom.Point(coords));
+                feature.set("dateTime", value.DateTime);
+                feature.set("userName", value.User_name);
+                //feature.set("id", value.id);
+                UserMap_Class.usersPositionSource.addFeature(feature);
+                //var a = UserMap_Class.usersPositionSource.getFeatures()[index - 1];
+                //var ax = a.getGeometry().getCoordinates()[0];
+                //var ay = a.getGeometry().getCoordinates()[1];
+                //var b = UserMap_Class.usersPositionSource.getFeatures()[index];
+                //var bx = b.getGeometry().getCoordinates()[0];
+                //var by = b.getGeometry().getCoordinates()[1];
+              
+            });
+            if (type) {
+                if ( arrayCoords.length>1) {
+                for (var i = 1; i < arrayCoords.length; i++) {
+                        
+                    var points = [arrayCoords[i-1], arrayCoords[i]]
+                    var polyline = new ol.Feature({ geometry: new ol.geom.LineString(points), name: 'Line' })
+                    UserMap_Class.userTrackSource.addFeature(polyline);
+                };
+            };
+            };
+        },
+        
+        initMap: function () {
+            UserMap_Class.map = new ol.Map({
+                layers: [
+                  new ol.layer.Tile({
+                      source: new ol.source.OSM()
+                  })
+                ],
+                target: 'map',
+                controls: ol.control.defaults({
+                    attributionOptions: {
+                        collapsible: false
+                    }
+                }),
+                view: new ol.View({
+                    center: [ @Html.Raw(Json.Encode(Model.MapDefCentroidX)),@Html.Raw(Json.Encode(Model.MapDefCentroidY))],
+                    zoom:  @Html.Raw(Json.Encode(Model.MapDefultZoom))//10
+                    })
+            });
+            UserMap_Class.usersPositionSource = new ol.source.Vector({
+                features: [],
+            });
+            UserMap_Class.userTrackSource = new ol.source.Vector({
+                features: [],
+            });
+            UserMap_Class.usersPositionVector = new ol.layer.Vector({
+                source: UserMap_Class.usersPositionSource,
+            });
+            UserMap_Class.userTrackVector = new ol.layer.Vector({
+                source: UserMap_Class.userTrackSource,
+            });
+            UserMap_Class.map.addLayer(UserMap_Class.usersPositionVector);
+
+            UserMap_Class.map.addLayer(UserMap_Class.userTrackVector);
+        }
+    };
+
+    $().ready(
+
+        function () {
+            UserMap_Class.initMap();
+            UserMap_Class.initDate();
+            $('#usersview').click(function () {
+                $.ajax({
+                    url:"@Url.Content("~/Account/UsersLastLocation")",
+                    type:"GET",
+                    success:function(users)
+                    {
+                        UserMap_Class.usersPositionSource.clear();
+                        UserMap_Class.userTrackSource.clear();
+                        UserMap_Class.drawVector(users, false);
+                        UserMap_Class.usersPositionVector.setStyle(function (feature) {
+                            UserMap_Class.style.getText().setText(UserMap_Class.labling(feature, false));
+                            return UserMap_Class.style;
+                        });
+                        UserMap_Class.map.getView().fit(UserMap_Class.usersPositionSource.getExtent(),{ duration:  1000,easing:0 });
+
+                    }
+                })
+
+            });
+            $('#userTrace').click(function () {
+                var userName = $("#userDropDown").data().kendoDropDownList.text();
+                var date = $("#ggDate")[0].value;
+                if (date == "") {
+                    $("#dataError").css("display","");
+                    return;
+                }
+                else{
+                    $("#dataError").css("display","none");
+                }
+                $.ajax({
+                    url:"@Url.Content("~/Account/UsersLocationTrack")",
+                    type:"GET",
+                    data:{UserName:userName, DateOf: date},
+                    success:function(users)
+                    {
+                        
+                        UserMap_Class.usersPositionSource.clear();
+                        UserMap_Class.userTrackSource.clear();
+                        if (users.length==0) {
+                            $("#userMsg").css("display","");
+                            return;
+                        }else{
+                            $("#userMsg").css("display","none");
+                        }
+                        UserMap_Class.drawVector(users, true);
+                        UserMap_Class.usersPositionVector.setStyle(function (feature) {
+                            UserMap_Class.style.getText().setText(UserMap_Class.labling(feature, true));
+                            return UserMap_Class.style;
+                        });
+                        UserMap_Class.userTrackVector.setStyle(UserMap_Class.styleFunction);
+                        UserMap_Class.map.getView().fit(UserMap_Class.usersPositionSource.getExtent(),{ duration:1000,easing:0 });
+                        
+                    }
+                });
+            })
+        });
+</script>

@@ -1,0 +1,183 @@
+﻿
+@Html.Partial("_SymbolTemplate")
+
+@{
+    Dictionary<string, string> classTypes = new Dictionary<string, string>();
+    classTypes.Add("POINT", "نقطه ای");
+    classTypes.Add("POLYLINE", "خطی");
+    classTypes.Add("POLYGON", "سطحی");
+
+
+    Dictionary<string, string> refrences = new Dictionary<string, string>();
+    refrences.Add("4326", "WGS 84");
+    refrences.Add("32638", "UTM 38");
+    refrences.Add("32639", "UTM 39");
+    refrences.Add("32640", "UTM 40");
+    refrences.Add("32641", "UTM 41");
+
+    Dictionary<string, string> flows = new Dictionary<string, string>();
+    flows.Add("true", "دارد");
+    flows.Add("false", "ندارد");
+}
+
+
+<script>
+    LayerList_Class = {
+        onDataRequestEnd: function (args) {
+            var grid = $("#LayerGrid").data("kendoGrid");
+            if (args.type != "read") {
+                var doRead = true;
+                $.each(args.response.Errors, function (prop) {
+                    if (this.errors.length > 0) {
+                        doRead = false;
+                    }
+                })
+                if (doRead) {
+                    grid.dataSource.read();
+                }
+            }
+        },
+        showModelError: function (args) {
+            var grid = $("#LayerGrid").data("kendoGrid");//.dateSource.read();
+            var validationTemplate = kendo.template($("#ValidationMessageTemplate").html());
+            grid.one("dataBinding", function (e) {
+                e.preventDefault();
+                $.each(args.errors, function (propertyName) {
+                    var renderedTemplate = validationTemplate({ field: propertyName, messages: this.errors });
+                    grid.editable.element.find(".validation-summary-errors").append(renderedTemplate);
+                });
+            })
+        },
+        showStyleWindow: function (e) {
+            var tr = e.toElement.closest("tr");
+
+            var grid = $("#LayerGrid").data("kendoGrid");
+            var classId = grid.dataSource.getByUid(tr.getAttribute("data-uid")).ID;
+
+            $.ajax({
+                type: "GET",
+                url: "/Setting/GetClassSymbol",
+                data: { classId },
+                success: function (data) {
+                    $("#UniqueStyleWindow").html(data);
+                    var win = $("#UniqueStyleWindow").data("kendoWindow");
+                    win.center();
+                    var left = Number($(win.element[0].parentElement).css("left").replace("px", ""));
+                    win.setOptions({
+                        position: { left: left, top: 50 }
+                    });
+                    ClassSymbolClass.SaveStyleAction = function () {
+                        $.ajax({
+                            url: "/Setting/SetClassSymbol",
+                            type:"POST",
+                            data: {
+                                model: ClassSymbolClass.Data
+                            },
+                            success: function () {
+                                $("#UniqueStyleWindow").data().kendoWindow.close();
+                            },
+                            error: function () {
+
+                            }
+                        });
+                    };
+                    win.open();
+                }
+            });
+        },
+        showSpecialFieldsWindow: function (e) {
+            var tr = e.toElement.closest("tr");
+
+            var grid = $("#LayerGrid").data("kendoGrid");
+            var classId = grid.dataSource.getByUid(tr.getAttribute("data-uid")).ID;
+
+            $.ajax({
+                type: "GET",
+                url: "/Setting/ClassesSpecialFields",
+                data: { ClassID: classId },
+                success: function (data) {
+                    $("#SpecialFieldsWindow").html(data);
+                    var win = $("#SpecialFieldsWindow").data("kendoWindow");
+                    win.center();
+                    var left = Number($(win.element[0].parentElement).css("left").replace("px", ""));
+                    win.setOptions({
+                        position: { left: left, top: 50 }
+                    });
+                    win.open();
+                }
+            });
+        }
+    }
+
+
+</script>
+
+<script type="text/x-kendo-template" id="ValidationMessageTemplate">
+    # if (messages.length) { #
+    # for (var i = 0; i < messages.length; ++i) { #
+    <span>#= messages[i] #</span>
+    # } #
+    # } #
+</script>
+
+لیست لایه های نرم افزار
+
+
+@(Html.Kendo().Grid<Mah.DataCollector.Entity.Entities.Classes>()
+    .Name("LayerGrid")
+    .Sortable().Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+    .Columns(cols =>
+    {
+    cols.Bound(a => a.ID).Visible(false);
+    cols.Bound(a => a.Class_name).Title("نام لایه").Width(150);
+    cols.Bound(a => a.Caption).Title("عنوان فارسی").Width(150);
+    cols.ForeignKey(a => a.Class_type, classTypes, "key", "value").Title("نوع لایه").Width(90);
+    cols.ForeignKey(a => a.SpatialRefrence, refrences, "key", "value").Title("سیستم مختصات").Width(150);
+    cols.Command(command =>
+    {
+    command.Edit().UpdateText("اعمال").CancelText("انصراف").Text("ویرایش");
+    command.Destroy().Text("حذف");
+    command.Custom("SetUniqueStyle").Text("تنظیم رنگ بندی").Click("LayerList_Class.showStyleWindow");
+    command.Custom("SetSpecialFields").Text("تنظیم ستون های خاص").Click("LayerList_Class.showSpecialFieldsWindow");
+    }).Width(450);
+    }).ToolBar(toolbar => toolbar.Create().Text("ایجاد لایه جدید"))
+    .Editable(editable =>
+    {
+    editable.Mode(GridEditMode.PopUp).DisplayDeleteConfirmation("لایه را حذف میکنید؟");
+    editable.TemplateName("ClassesEditorTemplate");
+    })
+    .Resizable(a => a.Columns(true)).Scrollable()
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Model(model =>
+    {
+    model.Id(p => p.ID);
+    })
+    .Read(read => read.Action("GetClasses", "Setting"))
+    .Create(create =>
+    {
+    create.Action("CreateClasses", "Setting");
+    })
+    .Update("UpdateClasses", "Setting")
+    .Destroy("DestroyClasses", "Setting")
+    .Events(events =>
+    {
+    events.Error("LayerList_Class.showModelError").RequestEnd("LayerList_Class.onDataRequestEnd");
+    })
+    .PageSize(500)))
+
+@Html.Kendo().Window().Name("UniqueStyleWindow").Visible(false).Title("تنظیم رنگ بندی").Width(550).Draggable(true).Content("")
+@Html.Kendo().Window().LoadContentFrom("ClassesSpecialFields", "setting", new { ClassID = -1 }).Name("SpecialFieldsWindow").Visible(false).Title("تنظیم ستون های خاص").Width(350).Draggable(true)
+
+
+<style>
+    .k-button:hover, .k-button.k-state-hover {
+        border-color: #ff9242;
+        background-color: #ff9242;
+    }
+
+    .k-button:focus, .k-button.k-state-focused {
+        border-color: #ff9242;
+        background-color: #ff9242;
+    }
+</style>

@@ -1,0 +1,889 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\Mah\Desktop\DataCollectorPub</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>12/28/2017 09:39:46</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.pdb">
+      <publishTime>12/28/2017 09:39:46</publishTime>
+    </File>
+    <File Include="bin/bg-BG/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/cs-CZ/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/da-DK/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/DataAccess.dll">
+      <publishTime>04/23/2020 23:47:47</publishTime>
+    </File>
+    <File Include="bin/DataAccess.dll.config">
+      <publishTime>08/22/2019 00:18:57</publishTime>
+    </File>
+    <File Include="bin/DataAccess.pdb">
+      <publishTime>04/23/2020 23:47:47</publishTime>
+    </File>
+    <File Include="bin/DataCollector.dll">
+      <publishTime>04/26/2020 22:40:15</publishTime>
+    </File>
+    <File Include="bin/DataCollector.pdb">
+      <publishTime>04/26/2020 22:40:15</publishTime>
+    </File>
+    <File Include="bin/de-DE/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>12/28/2017 20:58:14</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>12/28/2017 20:58:14</publishTime>
+    </File>
+    <File Include="bin/es-ES/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/fr-CA/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/fr-FR/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/he-IL/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/it-IT/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/Kendo.Mvc.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/Mah.Common.dll">
+      <publishTime>04/23/2020 23:47:47</publishTime>
+    </File>
+    <File Include="bin/Mah.Common.dll.config">
+      <publishTime>08/22/2019 00:00:03</publishTime>
+    </File>
+    <File Include="bin/Mah.Common.pdb">
+      <publishTime>04/23/2020 23:47:47</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.BusinessLayer.dll">
+      <publishTime>04/23/2020 23:47:46</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.BusinessLayer.pdb">
+      <publishTime>04/23/2020 23:47:46</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.dll">
+      <publishTime>04/23/2020 23:47:48</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.dll.config">
+      <publishTime>02/28/2020 19:37:50</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.pdb">
+      <publishTime>04/23/2020 23:47:48</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.Interface.dll">
+      <publishTime>04/23/2020 23:47:47</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.Interface.pdb">
+      <publishTime>04/23/2020 23:47:47</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.Service.dll">
+      <publishTime>04/23/2020 23:47:49</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.Service.dll.config">
+      <publishTime>08/22/2019 00:18:33</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.Service.pdb">
+      <publishTime>04/23/2020 23:47:49</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
+      <publishTime>12/28/2017 20:58:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.EntityFramework.dll">
+      <publishTime>12/28/2017 20:58:16</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.dll">
+      <publishTime>12/28/2017 10:11:30</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
+      <publishTime>12/28/2017 10:11:30</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Cookies.dll">
+      <publishTime>12/28/2017 10:12:00</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.dll">
+      <publishTime>12/28/2017 10:12:00</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.OAuth.dll">
+      <publishTime>12/30/2017 01:27:32</publishTime>
+    </File>
+    <File Include="bin/Microsoft.SqlServer.Types.dll">
+      <publishTime>01/18/2018 06:57:40</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>12/28/2017 09:39:42</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>01/21/2018 21:13:31</publishTime>
+    </File>
+    <File Include="bin/nl-NL/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/Owin.dll">
+      <publishTime>12/28/2017 10:11:30</publishTime>
+    </File>
+    <File Include="bin/pl-PL/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/pt-BR/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/pt-PT/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/ro-RO/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/ru-RU/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/sk-SK/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/SqlServerTypes/x64/msvcr120.dll">
+      <publishTime>01/18/2018 06:58:32</publishTime>
+    </File>
+    <File Include="bin/SqlServerTypes/x64/SqlServerSpatial140.dll">
+      <publishTime>01/18/2018 06:58:32</publishTime>
+    </File>
+    <File Include="bin/SqlServerTypes/x86/msvcr120.dll">
+      <publishTime>01/18/2018 06:58:32</publishTime>
+    </File>
+    <File Include="bin/SqlServerTypes/x86/SqlServerSpatial140.dll">
+      <publishTime>01/18/2018 06:58:32</publishTime>
+    </File>
+    <File Include="bin/sv-SE/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>07/09/2013 11:04:28</publishTime>
+    </File>
+    <File Include="bin/System.Runtime.CompilerServices.Unsafe.dll">
+      <publishTime>08/02/2019 00:10:54</publishTime>
+    </File>
+    <File Include="bin/System.Threading.Tasks.Extensions.dll">
+      <publishTime>08/02/2019 00:12:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>08/02/2019 00:12:10</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>07/09/2013 11:04:28</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>08/02/2019 00:12:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>12/28/2017 09:39:38</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>08/02/2019 00:12:10</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>08/02/2019 00:12:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>08/02/2019 00:12:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>08/02/2019 00:12:11</publishTime>
+    </File>
+    <File Include="bin/tr-TR/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/uk-UA/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="bin/Unity.Abstractions.dll">
+      <publishTime>08/02/2019 00:12:12</publishTime>
+    </File>
+    <File Include="bin/Unity.Abstractions.pdb">
+      <publishTime>08/02/2019 00:12:12</publishTime>
+    </File>
+    <File Include="bin/Unity.Container.dll">
+      <publishTime>08/02/2019 00:12:12</publishTime>
+    </File>
+    <File Include="bin/Unity.Container.pdb">
+      <publishTime>08/02/2019 00:12:12</publishTime>
+    </File>
+    <File Include="bin/Unity.Mvc.dll">
+      <publishTime>08/02/2019 00:12:13</publishTime>
+    </File>
+    <File Include="bin/Unity.Mvc.pdb">
+      <publishTime>08/02/2019 00:12:13</publishTime>
+    </File>
+    <File Include="bin/WebActivatorEx.dll">
+      <publishTime>08/02/2019 00:12:13</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>12/28/2017 09:39:46</publishTime>
+    </File>
+    <File Include="bin/zh-CN/Kendo.Mvc.resources.dll">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Content/bootstrap-rtl-min.css">
+      <publishTime>01/22/2018 09:46:38</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.css">
+      <publishTime>12/28/2017 09:39:50</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.css.map">
+      <publishTime>02/28/2020 17:05:41</publishTime>
+    </File>
+    <File Include="Content/bootstrap-theme.min.css">
+      <publishTime>12/28/2017 09:39:50</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css">
+      <publishTime>12/29/2017 21:55:30</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css.map">
+      <publishTime>12/28/2017 09:39:50</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css">
+      <publishTime>12/28/2017 09:39:50</publishTime>
+    </File>
+    <File Include="Content/favicon.ico">
+      <publishTime>01/28/2018 09:22:08</publishTime>
+    </File>
+    <File Include="Content/JalaliDate/js-persian-cal.css">
+      <publishTime>01/06/2018 07:44:18</publishTime>
+    </File>
+    <File Include="Content/JalaliDate/jspc-royal-blue.css">
+      <publishTime>01/06/2018 07:45:58</publishTime>
+    </File>
+    <File Include="Content/JalaliDate/main.css">
+      <publishTime>01/06/2018 07:44:18</publishTime>
+    </File>
+    <File Include="Content/Kendo/Flat/loading.gif">
+      <publishTime>01/06/2018 09:25:58</publishTime>
+    </File>
+    <File Include="Content/Kendo/Fonts/glyphs/WebComponentsIcons.eot">
+      <publishTime>12/29/2017 08:37:36</publishTime>
+    </File>
+    <File Include="Content/Kendo/Fonts/glyphs/WebComponentsIcons.ttf">
+      <publishTime>12/29/2017 08:37:20</publishTime>
+    </File>
+    <File Include="Content/Kendo/Fonts/glyphs/WebComponentsIcons.woff">
+      <publishTime>12/29/2017 08:37:34</publishTime>
+    </File>
+    <File Include="Content/Kendo/Images/kendoui.ttf">
+      <publishTime>12/29/2017 08:08:46</publishTime>
+    </File>
+    <File Include="Content/Kendo/Images/kendoui.woff">
+      <publishTime>12/29/2017 08:08:46</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.blueopal.css">
+      <publishTime>12/29/2017 08:25:46</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.common.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.default.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.fiori.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.flat.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.highcontrast.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.mobile.all.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.moonlight.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.nova.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.rtl.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/Kendo/kendo.silver.css">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Content/LineSymbol/FullPage.css">
+      <publishTime>01/10/2018 20:46:15</publishTime>
+    </File>
+    <File Include="Content/Mah/Layout.css">
+      <publishTime>01/20/2018 10:41:02</publishTime>
+    </File>
+    <File Include="Content/ol.css">
+      <publishTime>12/15/2017 05:03:56</publishTime>
+    </File>
+    <File Include="Content/Script-1.0.0/Layout.js">
+      <publishTime>02/17/2018 06:22:32</publishTime>
+    </File>
+    <File Include="Content/Styles-1.0.0/Layout.css">
+      <publishTime>01/20/2018 10:41:02</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>12/28/2017 09:39:50</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>12/28/2017 09:39:50</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>12/28/2017 09:39:50</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>12/28/2017 09:39:50</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff2">
+      <publishTime>12/28/2017 09:39:48</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/CHANGELOG.md">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.eot">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.ttf">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.woff">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.woff2">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-FD-WOL.eot">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-FD-WOL.ttf">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-FD-WOL.woff">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-FD-WOL.woff2">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.eot">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.ttf">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.woff">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.woff2">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.eot">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.ttf">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff2">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.eot">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.ttf">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.woff">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.woff2">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Bold-FD.eot">
+      <publishTime>10/12/2017 19:59:52</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Bold-FD.ttf">
+      <publishTime>10/12/2017 19:59:52</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Bold-FD.woff">
+      <publishTime>10/12/2017 19:59:52</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Bold-FD.woff2">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-FD.eot">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-FD.ttf">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-FD.woff">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-FD.woff2">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Light-FD.eot">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Light-FD.ttf">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Light-FD.woff">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Light-FD.woff2">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Medium-FD.eot">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Medium-FD.ttf">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Medium-FD.woff">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Medium-FD.woff2">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Thin-FD.eot">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Thin-FD.ttf">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Thin-FD.woff">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Farsi-Digits/Vazir-Thin-FD.woff2">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/LICENSE">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/README.md">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Bold.eot">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Bold.ttf">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Bold.woff">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Bold.woff2">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Light.eot">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Light.ttf">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Light.woff">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Light.woff2">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Medium.eot">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Medium.ttf">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Medium.woff">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Medium.woff2">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Thin.eot">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Thin.ttf">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Thin.woff">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir-Thin.woff2">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir.eot">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir.ttf">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir.woff">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Vazir.woff2">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Bold-WOL.eot">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Bold-WOL.ttf">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Bold-WOL.woff">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Bold-WOL.woff2">
+      <publishTime>10/12/2017 19:59:54</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Light-WOL.eot">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Light-WOL.ttf">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Light-WOL.woff">
+      <publishTime>10/12/2017 19:59:56</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Light-WOL.woff2">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Medium-WOL.eot">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Medium-WOL.ttf">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Medium-WOL.woff">
+      <publishTime>10/12/2017 19:59:58</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Medium-WOL.woff2">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Thin-WOL.eot">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Thin-WOL.ttf">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Thin-WOL.woff">
+      <publishTime>10/12/2017 20:00:00</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-Thin-WOL.woff2">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-WOL.eot">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-WOL.ttf">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-WOL.woff">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="fonts/vazir-font/Without-Latin/Vazir-WOL.woff2">
+      <publishTime>10/12/2017 20:00:02</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>12/28/2017 09:39:14</publishTime>
+    </File>
+    <File Include="Images/arrow.png">
+      <publishTime>02/11/2018 11:42:28</publishTime>
+    </File>
+    <File Include="Images/calendar.png">
+      <publishTime>01/06/2018 07:44:20</publishTime>
+    </File>
+    <File Include="Images/current-location.png">
+      <publishTime>12/15/2017 10:28:44</publishTime>
+    </File>
+    <File Include="Images/golocation.png">
+      <publishTime>12/15/2017 10:08:32</publishTime>
+    </File>
+    <File Include="Images/icon.png">
+      <publishTime>01/15/2018 07:56:58</publishTime>
+    </File>
+    <File Include="Images/layers.png">
+      <publishTime>12/29/2017 23:48:54</publishTime>
+    </File>
+    <File Include="Images/Loading.gif">
+      <publishTime>01/05/2018 04:18:42</publishTime>
+    </File>
+    <File Include="Images/lock-user-symbol.png">
+      <publishTime>01/11/2018 12:43:12</publishTime>
+    </File>
+    <File Include="Images/Logo.svg">
+      <publishTime>04/10/2018 09:04:52</publishTime>
+    </File>
+    <File Include="Images/MH.png">
+      <publishTime>02/19/2018 10:54:44</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>02/28/2020 18:45:52</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.js">
+      <publishTime>12/28/2017 09:39:48</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.min.js">
+      <publishTime>12/28/2017 09:39:48</publishTime>
+    </File>
+    <File Include="Scripts/JalaliDate/js-persian-cal.min.js">
+      <publishTime>01/06/2018 07:44:20</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.js">
+      <publishTime>01/04/2018 08:29:36</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.min.js">
+      <publishTime>01/04/2018 08:29:36</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.min.map">
+      <publishTime>01/04/2018 08:29:36</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.slim.js">
+      <publishTime>01/04/2018 08:29:36</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.slim.min.js">
+      <publishTime>01/04/2018 08:29:36</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.2.1.slim.min.map">
+      <publishTime>01/04/2018 08:29:34</publishTime>
+    </File>
+    <File Include="Scripts/jquery.unobtrusive-ajax.js">
+      <publishTime>12/28/2017 09:47:50</publishTime>
+    </File>
+    <File Include="Scripts/jquery.unobtrusive-ajax.min.js">
+      <publishTime>12/28/2017 09:47:50</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.js">
+      <publishTime>12/28/2017 09:48:00</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.min.js">
+      <publishTime>12/28/2017 09:48:00</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.unobtrusive.js">
+      <publishTime>12/28/2017 09:48:02</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.unobtrusive.min.js">
+      <publishTime>12/28/2017 09:48:00</publishTime>
+    </File>
+    <File Include="Scripts/kendo.modernizr.custom.js">
+      <publishTime>12/28/2017 08:17:08</publishTime>
+    </File>
+    <File Include="Scripts/Kendo/jszip.min.js">
+      <publishTime>12/29/2017 07:42:10</publishTime>
+    </File>
+    <File Include="Scripts/Kendo/kendo.all.js">
+      <publishTime>05/04/2017 20:12:10</publishTime>
+    </File>
+    <File Include="Scripts/Kendo/kendo.aspnetmvc.js">
+      <publishTime>05/04/2017 20:12:12</publishTime>
+    </File>
+    <File Include="Scripts/LineSymbol/FullPage.js">
+      <publishTime>01/10/2018 20:46:15</publishTime>
+    </File>
+    <File Include="Scripts/LineSymbol/SVGLineSymbol.js">
+      <publishTime>01/10/2018 20:46:15</publishTime>
+    </File>
+    <File Include="Scripts/Mah/Layout.js">
+      <publishTime>02/17/2018 06:22:32</publishTime>
+    </File>
+    <File Include="Scripts/Mah/Symbol.js">
+      <publishTime>08/20/2019 11:01:03</publishTime>
+    </File>
+    <File Include="Scripts/modernizr-2.6.2.js">
+      <publishTime>12/28/2017 09:39:44</publishTime>
+    </File>
+    <File Include="Scripts/npm.js">
+      <publishTime>12/28/2017 09:39:48</publishTime>
+    </File>
+    <File Include="Scripts/ol.js">
+      <publishTime>12/15/2017 05:03:44</publishTime>
+    </File>
+    <File Include="Scripts/proj4.js">
+      <publishTime>01/29/2018 10:27:10</publishTime>
+    </File>
+    <File Include="Scripts/respond.js">
+      <publishTime>12/28/2017 09:39:48</publishTime>
+    </File>
+    <File Include="Scripts/respond.min.js">
+      <publishTime>12/28/2017 09:39:48</publishTime>
+    </File>
+    <File Include="Scripts/_references.js">
+      <publishTime>02/17/2018 05:25:16</publishTime>
+    </File>
+    <File Include="SqlServerTypes/readme.htm">
+      <publishTime>01/18/2018 06:58:14</publishTime>
+    </File>
+    <File Include="SqlServerTypes/x64/msvcr120.dll">
+      <publishTime>01/18/2018 06:58:32</publishTime>
+    </File>
+    <File Include="SqlServerTypes/x64/SqlServerSpatial140.dll">
+      <publishTime>01/18/2018 06:58:32</publishTime>
+    </File>
+    <File Include="SqlServerTypes/x86/msvcr120.dll">
+      <publishTime>01/18/2018 06:58:32</publishTime>
+    </File>
+    <File Include="SqlServerTypes/x86/SqlServerSpatial140.dll">
+      <publishTime>01/18/2018 06:58:32</publishTime>
+    </File>
+    <File Include="Views/Account/ChangePassword.cshtml">
+      <publishTime>01/11/2018 11:54:58</publishTime>
+    </File>
+    <File Include="Views/Account/ChangePasswordControl.cshtml">
+      <publishTime>01/01/2018 09:34:16</publishTime>
+    </File>
+    <File Include="Views/Account/EditUser.cshtml">
+      <publishTime>02/14/2018 09:15:50</publishTime>
+    </File>
+    <File Include="Views/Account/LogIn.cshtml">
+      <publishTime>08/02/2019 12:43:03</publishTime>
+    </File>
+    <File Include="Views/Account/Manage.cshtml">
+      <publishTime>02/11/2018 19:07:54</publishTime>
+    </File>
+    <File Include="Views/Account/Register.cshtml">
+      <publishTime>02/14/2018 09:18:24</publishTime>
+    </File>
+    <File Include="Views/Account/ResetPassword.cshtml">
+      <publishTime>01/11/2018 16:24:54</publishTime>
+    </File>
+    <File Include="Views/Account/UserAccessDeny.cshtml">
+      <publishTime>01/11/2018 12:45:18</publishTime>
+    </File>
+    <File Include="Views/Account/UserView.cshtml">
+      <publishTime>08/02/2019 14:55:25</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>01/11/2018 05:00:44</publishTime>
+    </File>
+    <File Include="Views/Map/AttributeTable.cshtml">
+      <publishTime>08/02/2019 00:37:46</publishTime>
+    </File>
+    <File Include="Views/Map/FeatureEdit.cshtml">
+      <publishTime>08/02/2019 13:41:23</publishTime>
+    </File>
+    <File Include="Views/Map/FeaturePictures.cshtml">
+      <publishTime>08/02/2019 00:37:04</publishTime>
+    </File>
+    <File Include="Views/Map/Index.cshtml">
+      <publishTime>04/24/2020 22:24:20</publishTime>
+    </File>
+    <File Include="Views/Setting/AddDomainToField.cshtml">
+      <publishTime>02/05/2018 09:15:56</publishTime>
+    </File>
+    <File Include="Views/Setting/ClassesSpecialFields.cshtml">
+      <publishTime>08/02/2019 00:37:04</publishTime>
+    </File>
+    <File Include="Views/Setting/ClassSymbol.cshtml">
+      <publishTime>08/21/2019 23:21:23</publishTime>
+    </File>
+    <File Include="Views/Setting/DomainList.cshtml">
+      <publishTime>08/02/2019 00:37:04</publishTime>
+    </File>
+    <File Include="Views/Setting/EditDomain.cshtml">
+      <publishTime>08/02/2019 00:37:04</publishTime>
+    </File>
+    <File Include="Views/Setting/EditorTemplates/ClassesEditorTemplate.cshtml">
+      <publishTime>08/14/2019 22:30:13</publishTime>
+    </File>
+    <File Include="Views/Setting/EditorTemplates/DomainValueEditorTemplate.cshtml">
+      <publishTime>08/02/2019 00:37:04</publishTime>
+    </File>
+    <File Include="Views/Setting/EditorTemplates/FieldsEditorTemplate.cshtml">
+      <publishTime>02/28/2018 09:53:38</publishTime>
+    </File>
+    <File Include="Views/Setting/EditorTemplates/UniqueStyleEditorTemplate.cshtml">
+      <publishTime>08/20/2019 19:53:18</publishTime>
+    </File>
+    <File Include="Views/Setting/FieldsList.cshtml">
+      <publishTime>08/02/2019 00:37:04</publishTime>
+    </File>
+    <File Include="Views/Setting/Index.cshtml">
+      <publishTime>08/20/2019 12:30:48</publishTime>
+    </File>
+    <File Include="Views/Setting/LayerList.cshtml">
+      <publishTime>08/21/2019 00:34:52</publishTime>
+    </File>
+    <File Include="Views/Setting/SYSSetting.cshtml">
+      <publishTime>02/28/2020 17:05:42</publishTime>
+    </File>
+    <File Include="Views/Setting/UniqueStylesList.cshtml">
+      <publishTime>02/17/2018 06:25:30</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Boolean.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Currency.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Date.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/DateTime.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Email.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/EmailAddress.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/GridForeignKey.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Integer.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Number.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Password.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/String.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Time.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Url.cshtml">
+      <publishTime>10/26/2017 16:59:56</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout.cshtml">
+      <publishTime>08/02/2019 22:41:46</publishTime>
+    </File>
+    <File Include="Views/Shared/_SymbolTemplate.cshtml">
+      <publishTime>08/21/2019 21:14:27</publishTime>
+    </File>
+    <File Include="Views/UserView/Index.cshtml">
+      <publishTime>01/13/2018 23:09:18</publishTime>
+    </File>
+    <File Include="Views/Web.config">
+      <publishTime>12/28/2017 09:39:58</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>12/28/2017 09:39:52</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>04/26/2020 22:40:16</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

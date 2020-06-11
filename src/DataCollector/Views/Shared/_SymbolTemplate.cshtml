@@ -1,0 +1,51 @@
+﻿
+<script id="symbol-template" type="text/x-kendo-template">
+    <span style="position:relative" class="symbol-item">
+        # if(data.HasFlow && data.Class_type=='POLYLINE'){#
+        <span class="k-icon k-i-arrow-chevron-left" style="color: #: data.StrokColor #;position: absolute;top: -10px;left: 5px;font-size: 22px;"></span>
+        #} #
+        <span class="symbol-#: data.Class_type #" style="margin:auto; display:block;border-style: solid;
+              width:#: (data.Class_type=='POINT' ?(data.Width*2):data.Class_type=="POLYLINE" ?30:20)+"px" #;
+              height:#: (data.Class_type=='POINT' ?(data.Width*2):data.Class_type=="POLYLINE" ?0:20)+"px" #;
+              border-radius:#: (data.Class_type=='POINT' ?(data.Width*2):0)+"px" #;
+              border-color:#: data.StrokColor #; background-color:#: data.FillColor # ; border-width:#: data.Class_type=="POLYLINE"? (data.StrokWidth/2): data.StrokWidth #px">
+        </span>
+    </span>
+</script>
+
+<script id="SymbolPicker" type="text/x-kendo-template">
+    <table>
+        # if(data.Class_type=='POINT'){#
+        <tr>
+            <td>شعاع</td>
+            <td>
+                <input id="SymbolPicker_Width" type="number" value="#: data.Width #" min="0" style="width:100px" />
+            </td>
+        </tr>
+        #}#
+        # if(data.Class_type!='POLYLINE'  ){#
+        <tr>
+            <td>رنگ زمینه</td>
+            <td><input id="SymbolPicker_FillColor" value="#: data.FillColor #" /></td>
+        </tr>
+        #}#
+        <tr>
+            <td>عرض حاشیه</td>
+            <td><input id="SymbolPicker_StrokWidth" type="number" value="#: data.StrokWidth #" min="0" style="width:100px" /></td>
+        </tr>
+
+        <tr>
+            <td>رنگ حاشیه</td>
+            <td><input id="SymbolPicker_StrokColor" value="#: data.StrokColor #" /></td>
+        </tr>
+        <tr>
+            <td>
+                <a id="SymbolPicker_OkBtn" role='button' class='k-button k-button-icontext' style='position:absolute;left:15px;bottom:15px;' href='\\#'>
+                    <span class='k-icon k-i-check'>
+                    </span>
+                    تایید
+                </a>
+            </td>
+        </tr>
+    </table>
+</script>

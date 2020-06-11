@@ -1,0 +1,82 @@
+﻿@model DataCollector.Models.FieldsModel
+
+<span class="validation-summary-errors"></span>
+<script>
+    FieldEditor_Class = {
+        OnSelectedFieldChange: function () {
+            var dropDown = $("#FIELD_Name").data("kendoDropDownList");
+            if (dropDown.selectedIndex > -1) {
+                var fieldType = dropDown.dataItem(dropDown.selectedIndex).Value;
+                $("#FIELD_Type").attr("value", fieldType);
+                $("#disFieldType").text(fieldType);
+                $("#FIELD_Type").change();
+                if (fieldType == "DOUBLE" || fieldType == "INT")
+                    $(".RangeFields").show();
+                else
+                    $(".RangeFields").hide();
+            }
+        }
+    }
+</script>
+
+<table style="width:100%" class="editor-table">
+    <tr style="display:none">
+        <td></td>
+        <td>@Html.Kendo().TextBoxFor(m => m.ID)</td>
+    </tr>
+    <tr style="display:none">
+        <td></td>
+        <td>@Html.Kendo().TextBoxFor(m => m.Class_ID)</td>
+    </tr>
+    <tr>
+        <td>
+            نام فیلد
+        </td>
+        <td style=" width: 250px;">@(Html.Kendo().DropDownListFor(a => a.FIELD_Name)
+        .DataSource(a => a.Read("GetClassFieldsFromDB", "Setting", new { ClassID = Model.Class_ID }))
+        .DataValueField("Key")
+        .DataTextField("Key")
+        .Events(events => { events.Change("FieldEditor_Class.OnSelectedFieldChange");
+        events.DataBound("FieldEditor_Class.OnSelectedFieldChange");
+        }
+        ))</td>
+    </tr>
+    <tr>
+        <td>نوع ستون</td>
+        <td>
+            @(Html.HiddenFor(a => a.FIELD_Type))
+            <span id="disFieldType">@Model.FIELD_Type</span>
+        </td>
+    </tr>
+    <tr>
+        <td>عنوان فارسی </td>
+        <td>@Html.Kendo().TextBoxFor(m => m.FIELD_Caption)</td>
+    </tr>
+    <tr class="RangeFields">
+        <td>مقدار کمینه</td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.MIN_VALUE))
+        </td>
+    </tr>
+    <tr class="RangeFields">
+        <td>مقدار بیشینه</td>
+        <td>
+            @(Html.Kendo().NumericTextBoxFor(m => m.MAX_VALUE))
+        </td>
+
+    </tr>
+    <tr>
+        <td>اجباری یا اختیاری</td>
+        <td>
+            @(Html.Kendo().CheckBoxFor(m => m.REQUIERD).Label("اجباری است"))
+        </td>
+    </tr>
+    <tr>
+        <td>مقدار پیش فرض</td>
+        <td>
+            @Html.Kendo().TextBoxFor(m => m.DEF_VAL)
+        </td>
+    </tr>
+
+</table>
+

@@ -1,0 +1,16 @@
+﻿@model Mah.DataCollector.Entity.Entities.Domain
+
+
+@using (Ajax.BeginForm("EditDomain", "Setting", null, new AjaxOptions() { OnSuccess = "DomainList_Class.submitNewDomain", HttpMethod = "POST" }, new { id = "EditDomainForm" }))
+{
+    <div class="from-group" style="width:90%">
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(a=> a.ID)
+        @Html.Label("نام دامنه")
+        @Html.TextBoxFor(a => a.Caption, new { @class = "form-control",style = "height:20px; text-align: center" })
+        @Html.Kendo().CheckBoxFor(a=> a.MultiSelect).Label("چند انتخابی")
+        
+    </div>
+        @Html.Kendo().Button().Name("btnSubmit").Content("اعمال")
+    }

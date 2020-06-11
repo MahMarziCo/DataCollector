@@ -1,0 +1,21 @@
+﻿@model Mah.DataCollector.Entity.Entities.UniqueStyle
+
+<span class="validation-summary-errors"></span>
+
+<table style="width:100%" class="editor-table">
+    <tr style="display:none">
+        <td></td>
+        <td>@Html.Kendo().TextBoxFor(m => m.ID)</td>
+    </tr>
+    <tr style="display:none">
+        <td>
+            نام لایه
+        </td>
+        <td style=" width: 250px;">@Html.Kendo().TextBoxFor(m => m.CLASS_ID)</td>
+    </tr>
+    <tr>
+        <td>مقدار</td>
+        <td>@Html.Kendo().TextBoxFor(m => m.TEXT)</td>
+    </tr>
+    
+</table>

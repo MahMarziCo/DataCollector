@@ -1,0 +1,123 @@
+﻿@using System.Data
+@model Mah.DataCollector.Entity.Entities.Classes
+<script>
+    AttributeTable_Class = {
+        showFeatureOnMap: function (e) {
+            e.preventDefault();
+
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var className =$("#hdnAttributeClassName")[0].value;
+            $.ajax({
+                type: "GET",
+                data: { ClassName: className, ObjectID: dataItem.OBJECTID },
+                url: "@Url.Content("~/Map/GetObjectShape")",
+                success: function (data) {
+                    if (data) {
+                        var layer = Map_Class.getLayer(className);
+                        var feature = Map_Class.format.readFeature(data, {
+                            dataProjection: 'EPSG:' + layer.get('sr'),
+                            featureProjection: 'EPSG:3857'
+                        });
+                        var geom = feature.getGeometry();
+                        if (geom.getType() == "Point") {
+                            Map_Class.map.getView().animate({ center: feature.getGeometry().getCoordinates(), zoom: 18 });
+                        }
+                        else
+                            Map_Class.map.getView().fit(feature.getGeometry().getExtent(), { duration: 1000, easing: 0 });
+                        var features =Map_Class.selectInteraction.getFeatures();
+                        features.clear();
+                        features.push(feature);
+                    }
+                    else {
+                        Layout_Class.ShowAlert("خطا در دریافت عارضه");
+                    }
+                }
+
+            });
+        }
+    }
+</script>
+@{if (Model != null)
+{
+    @Html.HiddenFor(a => a.Class_name, new { id = "hdnAttributeClassName" })
+    @(Html.Kendo().Grid<dynamic>().Name("attributeTableGrid")
+            .Sortable().Filterable(ftb =>
+            {
+                ftb.Mode(GridFilterMode.Row);
+                ftb.Operators(
+                    op =>
+                    {
+                        op.ForString(fs =>
+                            {
+                                fs.IsEqualTo("برابر است با");
+                                fs.Contains("شامل");
+                                fs.IsEmpty("خالی است");
+                                fs.IsNull("مقدار null است");
+                                fs.IsNotEmpty("خالی نیست");
+                                fs.DoesNotContain("شامل نیست");
+                                fs.EndsWith("پایان با");
+                                fs.StartsWith("شروع میشود با");
+                                fs.IsNotEqualTo("برابر نیست با");
+                                fs.IsNotNull("مقدار nullنیست");
+                            });
+                        op.ForNumber(fn =>
+                        {
+                            fn.IsEqualTo("برابر است با");
+                            fn.IsGreaterThan("بزرگتر از");
+                            fn.IsGreaterThanOrEqualTo("بزرگتر یا مساوی با");
+                            fn.IsLessThan("کوچکتر از");
+                            fn.IsLessThanOrEqualTo("کوچکتر یا مساوی با");
+                            fn.IsNull("خالی است");
+                            fn.IsNotEqualTo("برابر نیست با");
+                            fn.IsNotNull("خالی نیست");
+                        });
+                    });
+            }
+            ).Groupable().Pageable()
+            .ToolBar(tools => tools.Excel()).Excel(excel => excel
+            .FileName(Model + ".xlsx")
+            .Filterable(true)
+        ).Resizable(a => a.Columns(true)).Scrollable()
+    .Columns(cols =>
+    {
+        cols.Command(a =>
+        {
+            a.Custom("btnShowFeatureOnMap").Click("AttributeTable_Class.showFeatureOnMap").Text(" ").HtmlAttributes(new { title = "زوم به عارضه", @class = "k-icon k-i-search", style = "height: 25px;" });
+        }).Width(90).Locked(true);
+        cols.Bound("OBJECTID").Title("شناسه").Width(100);
+        foreach (Mah.DataCollector.Entity.Entities.Fields col in (List<Mah.DataCollector.Entity.Entities.Fields>)ViewBag.Fields)
+        {
+            cols.Bound(col.FIELD_Name).Title(col.FIELD_Caption).Width(150);
+        }
+        if (!string.IsNullOrEmpty(Model.UserId))
+            cols.Bound(Model.UserId).Title("نام کاربر").Width(100);
+        if (!string.IsNullOrEmpty(Model.DateOf))
+            cols.Bound(Model.DateOf).Title("تاریخ ویرایش").Width(100);
+        if (!string.IsNullOrEmpty(Model.AdressField))
+            cols.Bound(Model.AdressField).Title("آدرس").Width(200);
+        if (!string.IsNullOrEmpty(Model.SupervisorField))
+            cols.Bound(Model.SupervisorField).Title("وضعیت نظارت").Width(100);
+        if (!string.IsNullOrEmpty(Model.SupervisorDateOfField))
+            cols.Bound(Model.SupervisorDateOfField).Title("تاریخ نظارت").Width(100);
+    })
+        .DataSource(dataSource => dataSource
+                .Ajax()
+                        .Read(read => read.Action("AttributeTable_Read", "Map", new { ClassName = Model.Class_name }))
+                .PageSize(500)
+            ))
+
+}
+else
+{
+    <div>hi there</div>
+}
+}
+
+<style>
+    .k-button:hover {
+        border-color: #ff9242;
+        background-color: #ff9242;
+    }
+</style>
+
+

@@ -1,0 +1,169 @@
+﻿@using Mah.DataCollector.Entity.Entities
+@model List<Feature_Pic>
+
+@{
+    bool isSueperVisor = User.IsInRole("SUPERVISOR");
+}
+<table id="pictureTable" style="width:100%">
+    <thead>
+
+        <tr>
+            <td>نام فایل</td>
+            <td>نام کاربر</td>
+            <td>تاریخ ثبت</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (Feature_Pic item in Model)
+            {
+                <tr>
+                    <td>@item.Name_Of</td>
+                    <td>@item.USER_NAME</td>
+                    <td>@item.DateOf</td>
+                    <td style="width:30px"><span class="glyphicon glyphicon-camera imageBtn showImageBtn" data-toggle="tooltip" title="مشاهده" data-src="@item.Save_ID"></span> </td>
+                    @if (!isSueperVisor)
+                    {
+                        <td style="width:30px"><span class="glyphicon glyphicon-trash imageBtn deleteimageBtn" data-toggle="tooltip" title="حذف" data-oid="@item.ID"></span> </td>
+                    }
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div style="WIDTH:100% ; margin-left:auto;margin-right:auto; text-align:center">
+    <img id="imageHolder" src="" style="display:none; max-width:100%;" />
+</div>
+
+@if (!isSueperVisor)
+{
+    <div class="form-group row">
+
+        <div class="col-sm-8">
+            <label for="uploadFile" class="btn btn-info"><i class="glyphicon glyphicon-camera"></i>عکس جدید </label>
+            <span id="imageProgress"></span>
+            <input id="uploadFile" multiple="multiple" type="file" accept="image/*" style="visibility: hidden;" />
+        </div>
+    </div>
+    <span id="savePictureSuccess" style="display:none" class="alert alert-success">عکس با موفقیت ذخیره شد</span>
+    <span id="savePictureError" style="display:none" class="alert alert-danger">ذخیره عکس با خطا مواجه شد</span>
+}
+
+<script>
+    Picture_Class={
+        ClassName: null,
+        ObjectId: null,
+        Upload:function () {
+
+            // Checking whether FormData is available in browser
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#uploadFile").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name , files[i]);
+                }
+                fileData.append('username', 'hi');
+
+                $.ajax({
+                    url: '/Map/FileUpload?ObjectId='+Picture_Class.ObjectId+'&ClassName='+Picture_Class.ClassName,
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    xhr: function () {  // Custom XMLHttpRequest
+                        var myXhr = $.ajaxSettings.xhr();
+                        if (myXhr.upload) { // Check if upload property exists
+                            //update progressbar percent complete
+                            var imageProgress = "#imageProgress";
+                            $(imageProgress).text("0%");
+                            // For handling the progress of the upload
+                            myXhr.upload.addEventListener('progress', function (e) {
+                                if (e.lengthComputable) {
+                                    var percentage = Math.floor((e.loaded / e.total) * 100);
+                                    //update progressbar percent complete
+                                    $(imageProgress).text(percentage + '%');
+                                    if (percentage == 100) {
+                                        $(imageProgress).hide();
+                                    }
+                                }
+                            }, false);
+                        }
+                        return myXhr;
+                    },
+                    success: function (result) {
+                        $("#savePictureSuccess").show();
+                        setTimeout(function(e){$("#savePictureSuccess").hide();},3000);
+
+                        $.ajax({
+                            type: "GET",
+                            data: {ClassName: Picture_Class.ClassName,
+                                ObjectId:Picture_Class.ObjectId},
+                            url: "@Url.Content("~/Map/FeaturePictures")",
+                            success: function (data) {
+                                $("#featureEditTab-2").html(data);
+
+                            }
+
+                        });
+                    },
+                    error: function (err) {
+                        $("#savePictureError").show();
+                        setTimeout(function(e){$("#savePictureError").hide();},3000);
+                    }
+                });
+            } else {
+                Layout_Class.ShowAlert("مرورگر شما فاخوانی فایل را پشتیبانی نمی کند");
+            }
+        }
+    };
+    $().ready(function () {
+        Picture_Class.ClassName= @Html.Raw(Json.Encode(ViewBag.ClassName == null ? -1 : ViewBag.ClassName));
+        Picture_Class.ObjectId= @Html.Raw(Json.Encode(ViewBag.ObjectId == null ? -1 : ViewBag.ObjectId));
+
+        $(".showImageBtn").click(function (e) {
+            var src = e.toElement.attributes["data-src"];
+            $("#imageHolder").width($("#imageHolder")[0].parentElement.offsetWidth);
+            $("#imageHolder")[0].src = "/Uploads/" + src.value;
+            $("#imageHolder").fadeIn();
+        });
+        $(".deleteimageBtn").click(function (e) {
+            Layout_Class.ShowConfirm("حذف عکس","آیا مطمئنید عکس را حذف می کنید؟!",
+                [
+                    { text: 'بله',action:function()
+                    {
+                        var src = e.toElement.attributes["data-oid"];
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Content("~/Map/DeleteFeaturePicture")",
+                            data: { OID: src.value },
+                            success: function () {
+                                $.ajax({
+                                    type: "GET",
+                                    data: {ClassName: Picture_Class.ClassName,
+                                        ObjectId:Picture_Class.ObjectId},
+                                    url: "@Url.Content("~/Map/FeaturePictures")",
+                                    success: function (data) {
+                                        $("#featureEditTab-2").html(data);
+
+                                    }
+
+                                });
+                            }
+                        })
+                    }},
+                { text: 'خیر' , primary: true}
+                ]);
+        });
+        $("#uploadFile").change(Picture_Class.Upload);
+    })
+</script>

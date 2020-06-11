@@ -1,0 +1,38 @@
+﻿<script>
+    AddDomainToList_Class = {
+        onBtnSelectDomain: function () {
+            var domainId = $("#ddlDomains").data("kendoDropDownList").value();
+            var FieldId= $("#FieldId")[0].value;
+            $.ajax({
+                url: "/setting/AddDomainToField",
+                type: "POST",
+                data:{FieldID:FieldId, DomainID:domainId},
+                success:function(data)
+                {
+                    $("#success").show();
+                    setTimeout(function () { $("#success").hide(); },1000)
+                    $("#addDomainToFieldWin").data("kendoWindow").close();
+                    $("#FieldsGrid").data("kendoGrid").dataSource.read();
+                }
+            })
+
+        }
+    }
+</script>
+@{
+    if (ViewBag.FieldID!=-2)
+    {
+        @Html.Hidden("FieldId", (object)ViewBag.FieldID)
+
+        <div>
+            @Html.Partial("DomainList", (int?)ViewBag.DomainID ?? -1)
+        </div>
+
+        @Html.Kendo().Button().Name("btnSelectDomain").Content("اعمال").Events(events => events.Click("AddDomainToList_Class.onBtnSelectDomain"))
+        <span id="success" class="alert alert-success" style="display:none;">ذخیره شد</span>
+    }
+    else
+    {
+        <div>دامین فقط برای فیلد های متنی قابل تعریف است</div>
+    }
+}

@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "مدیریت کاربران";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    Dictionary<string,string> roleDic= new Dictionary<string,string> ();
+    roleDic.Add("ADMIN","مدیر");
+    roleDic.Add("USER","کاربر");
+    roleDic.Add("SUPERVISOR","ناظر");
+    SelectList roles=new SelectList(roleDic);
+    
+       
+       
+}
+
+<div class="container" style="padding-top:30px;">
+    لیست کاربران سیستم
+    @(Html.Kendo().Grid<DataCollector.Models.UserModel>()
+        .Name("UserGrid")
+        .Sortable().Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+        .Columns(cols =>
+        {
+            cols.Bound("UserName").Title("نام کاربری");
+            cols.ForeignKey(a => a.Role, roleDic, "Key", "Value").Title("نقش کاربر");
+            cols.Command(cmd => cmd.Custom("btnDeleteUser").Text("حذف").IconClass("k-icon  k-i-delete").Click("ManageUser_Class.DeleteUser")).Width(50);
+            cols.Command(cmd => cmd.Custom("btnResetPass").Text("تغییر رمز عبور").IconClass("k-icon  k-i-lock").Click("ManageUser_Class.ResetUserPass")).Width(140);
+            cols.Command(cmd => cmd.Custom("btnEditRole").Text("ویرایش کاربر").IconClass("k-icon  k-i-edit").Click("ManageUser_Class.EditUserRole")).Width(135);
+            
+        }).ToolBar(toolbar =>
+    {
+        toolbar.Template(@<text>
+            <div class="toolbarContainer">
+                <a href="\\#" class="k-pager-refresh k-link k-button" id="btnAddNewUser" title="ایجاد کاربر جدید"><span class="k-icon k-i-add"></span>ایجاد کاربر جدید</a>
+            </div>
+        </text>);
+    })
+                        .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Read(read => read.Action("UserList_Manege", "Account"))
+                                .PageSize(500)
+                            ))
+
+</div>
+
+@(Html.Kendo().Window().Name("createUserWin").Visible(false).Title("ایجاد کاربر جدید")
+      .LoadContentFrom("Register", "Account", (object)new { ClassName = "" }).Draggable())
+
+@(Html.Kendo().Window().Name("resetPassWin").Visible(false).Title("تغییر رمز کاربر")
+      .LoadContentFrom("ResetPassword", "Account", (object)new { ClassName = "" }).Draggable())
+
+@(Html.Kendo().Window().Name("edituserWin").Visible(false).Title("ویرایش کاربر")
+      .LoadContentFrom("EditUser", "Account", (object)new { ClassName = "" }).Draggable())
+
+@(Html.Kendo().Dialog().Name("deleteUserDilog").Title("حذف کاربر").Actions(a =>{
+    a.Add().Text("بله").Action("ManageUser_Class.OkDeleteUser");
+    a.Add().Text("خیر").Action("ManageUser_Class.CancelDeleteUser");
+    
+}).Visible(false))
+
+<script>
+    ManageUser_Class = {
+        selectedUser: null,
+        EditUserRole: function (e) {
+            var dataItem = $("#UserGrid").data("kendoGrid").dataItem(e.toElement.closest("tr"));
+            $.ajax({
+                type: "GET",
+                url: "/Account/EditUser",
+                data: { UserName: dataItem.UserName },
+                success: function (data) {
+                    $("#EditUserForm")[0].parentElement.innerHTML = data;
+                    $("#edituserWin").data("kendoWindow").center().open();
+                }
+            });
+        },
+        ResetUserPass:function(e){
+            var dataItem = $("#UserGrid").data("kendoGrid").dataItem(e.toElement.closest("tr"));
+            $.ajax({
+                type: "GET",
+                url: "/Account/ResetPassword",
+                data: { UserName: dataItem.UserName },
+                success: function (data) {
+                    $("#RessetPasswordForm")[0].parentElement.innerHTML = data;
+                    $("#resetPassWin").data("kendoWindow").center().open();
+                }
+            });
+        },
+        DeleteUser: function (e) {
+            var dataItem = $("#UserGrid").data("kendoGrid").dataItem(e.toElement.closest("tr"));
+            ManageUser_Class.selectedUser = dataItem.UserName;
+            $("#deleteUserDilog").data("kendoDialog").content("آیا از حذف کاربر "+ dataItem.UserName + " مطمئن هستید؟<br/> امکان بازگشت وجود ندارد");
+            $("#deleteUserDilog").data("kendoDialog").open();
+        },
+        OkDeleteUser: function (e) {
+            $.ajax({
+                url: "/Account/UnRegister",
+                data:{UserName :ManageUser_Class.selectedUser },
+                success: function (result) {
+                    $("#UserGrid").data("kendoGrid").dataSource.read();
+                    $("#deleteUserDilog").data("kendoDialog").close();
+                },
+                failure: function (result) {
+                    $("#UserGrid").data("kendoGrid").dataSource.read();
+                    $("#deleteUserDilog").data("kendoDialog").close();
+                }
+            });
+
+        },
+        CancelDeleteUser: function (e) {
+            $("#deleteUserDilog").data("kendoDialog").close();
+        }
+    };
+    $(function () {
+        $("#btnAddNewUser").click(function (e) {
+            e.preventDefault();
+            $("#createUserWin").data("kendoWindow").center().open();
+        })
+    })
+</script>
+<style>
+    .k-button:hover, .k-button.k-state-hover {
+        border-color: #ff9242;
+        background-color: #ff9242;
+    }
+
+    .k-button:focus, .k-button.k-state-focused {
+        border-color: #ff9242;
+        background-color: #ff9242;
+    }
+</style>
