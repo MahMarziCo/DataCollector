@@ -1,24 +1,21 @@
-﻿using DataCollector.Models;
+﻿using DataAccess.Logic;
+using DataCollector.Models;
+using DataCollector.Models.Map;
+using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Mah.Common.Encrypt;
+using Mah.DataCollector.Web.Filters;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
-using Kendo.Mvc.Extensions;
-using DataCollector.Filters;
-using Mah.DataCollector.Entity.Entities;
-using DataAccess.Logic;
-using System.Globalization;
-using Mah.Common.Encrypt;
-using DataCollector.Models.Map;
 
-namespace DataCollector.Controllers
+namespace Mah.DataCollector.Web.Controllers
 {
     [AllowAnonymous]
     public class AccountController : Controller
@@ -89,7 +86,6 @@ namespace DataCollector.Controllers
         [HttpPost]
         public async Task<ActionResult> LogIn(AccountModel model)
         {
-
             if (!ModelState.IsValid)
             {
                 model.Password = "";
@@ -125,7 +121,6 @@ namespace DataCollector.Controllers
                 var identity = await _UserManager.CreateIdentityAsync(
                     user, DefaultAuthenticationTypes.ApplicationCookie);
                 AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = model.IsPersistent }, identity);
-
 
                 return Redirect(GetRedirectUrl(model.ReturnUrl));
             }
@@ -266,18 +261,10 @@ namespace DataCollector.Controllers
 
         [UserRoleFilterAttribute(RoleIds = "ADMIN")]
         [HttpPost]
-        public async Task<ActionResult> ResetPassword(RegisterModel model)
+        public ActionResult ResetPassword(RegisterModel model)
         {
             if (!ModelState.IsValid)
             {
-                //List<ModelError> errors = new List<ModelError>();
-                //foreach (ModelState modelState in ViewData.ModelState.Values)
-                //{
-                //    foreach (ModelError error in modelState.Errors)
-                //    {
-                //        errors.Add(error);
-                //    }
-                //}
                 return PartialView(model);
             }
             try
@@ -321,7 +308,7 @@ namespace DataCollector.Controllers
             return PartialView(model);
         }
 
-        [UserRoleFilterAttribute(RoleIds = "ADMIN,SUPERVISOR")]
+        [UserRoleFilter(RoleIds = "ADMIN,SUPERVISOR")]
         public ActionResult UserView()
         {
             MapConfigViewModel mapConfigViewModel = new MapConfigViewModel();
@@ -332,14 +319,14 @@ namespace DataCollector.Controllers
             return View(mapConfigViewModel);
         }
 
-        [UserRoleFilterAttribute(RoleIds = "ADMIN,SUPERVISOR")]
+        [UserRoleFilter(RoleIds = "ADMIN,SUPERVISOR")]
         public JsonResult UsersLastLocation()
         {
             List<UserLocation> users = _UserLocationBL.UsersLastLocation();
             return Json(users.Select(a => new { a.User_name, a.Coordinate, DateTime = a.DateTime.Value.ToString("yyyy-MM-ddTHH:mm:ss") }), JsonRequestBehavior.AllowGet);
         }
 
-        [UserRoleFilterAttribute(RoleIds = "ADMIN,SUPERVISOR")]
+        [UserRoleFilter(RoleIds = "ADMIN,SUPERVISOR")]
         public JsonResult UsersLocationTrack(string UserName, string DateOf)
         {
             DateTime date;
@@ -350,14 +337,14 @@ namespace DataCollector.Controllers
         }
 
 
-        [UserRoleFilterAttribute(RoleIds = "ADMIN")]
+        [UserRoleFilter(RoleIds = "ADMIN")]
         public ActionResult Manage()
         {
             return View();
         }
 
 
-        [UserRoleFilterAttribute(RoleIds = "ADMIN")]
+        [UserRoleFilter(RoleIds = "ADMIN")]
         public JsonResult UserList_Manege([DataSourceRequest]DataSourceRequest request)
         {
             List<UserModel> userList = UserList();

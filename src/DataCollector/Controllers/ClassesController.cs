@@ -7,7 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace DataCollector.Controllers
+namespace Mah.DataCollector.Web.Controllers
 {
     public class ClassesController : Controller
     {

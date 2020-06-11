@@ -2,7 +2,7 @@ using System;
 using DataCollector.App_Start.UnityConfig;
 using Unity;
 
-namespace DataCollector
+namespace Mah.DataCollector.Web
 {
     /// <summary>
     /// Specifies the Unity configuration for the main container.

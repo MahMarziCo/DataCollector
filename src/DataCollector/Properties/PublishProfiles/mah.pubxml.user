@@ -25,19 +25,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/26/2017 16:59:56</publishTime>
     </File>
     <File Include="bin/DataAccess.dll">
-      <publishTime>04/23/2020 23:47:47</publishTime>
+      <publishTime>04/23/2020 00:44:10</publishTime>
     </File>
     <File Include="bin/DataAccess.dll.config">
       <publishTime>08/22/2019 00:18:57</publishTime>
     </File>
     <File Include="bin/DataAccess.pdb">
-      <publishTime>04/23/2020 23:47:47</publishTime>
+      <publishTime>04/23/2020 00:44:10</publishTime>
     </File>
     <File Include="bin/DataCollector.dll">
-      <publishTime>04/26/2020 22:40:15</publishTime>
+      <publishTime>04/26/2020 11:46:37</publishTime>
     </File>
     <File Include="bin/DataCollector.pdb">
-      <publishTime>04/26/2020 22:40:15</publishTime>
+      <publishTime>04/25/2020 23:06:38</publishTime>
     </File>
     <File Include="bin/de-DE/Kendo.Mvc.resources.dll">
       <publishTime>10/26/2017 16:59:56</publishTime>
@@ -67,43 +67,49 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/26/2017 16:59:56</publishTime>
     </File>
     <File Include="bin/Mah.Common.dll">
-      <publishTime>04/23/2020 23:47:47</publishTime>
+      <publishTime>04/25/2020 22:14:20</publishTime>
     </File>
     <File Include="bin/Mah.Common.dll.config">
       <publishTime>08/22/2019 00:00:03</publishTime>
     </File>
     <File Include="bin/Mah.Common.pdb">
-      <publishTime>04/23/2020 23:47:47</publishTime>
+      <publishTime>04/25/2020 22:14:20</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.BusinessLayer.dll">
-      <publishTime>04/23/2020 23:47:46</publishTime>
+      <publishTime>04/23/2020 00:44:10</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.BusinessLayer.pdb">
-      <publishTime>04/23/2020 23:47:46</publishTime>
+      <publishTime>04/23/2020 00:44:10</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.dll">
-      <publishTime>04/23/2020 23:47:48</publishTime>
+      <publishTime>04/25/2020 22:14:21</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.dll.config">
       <publishTime>02/28/2020 19:37:50</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.pdb">
-      <publishTime>04/23/2020 23:47:48</publishTime>
+      <publishTime>04/25/2020 22:14:21</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Interface.dll">
-      <publishTime>04/23/2020 23:47:47</publishTime>
+      <publishTime>04/23/2020 00:44:11</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Interface.pdb">
-      <publishTime>04/23/2020 23:47:47</publishTime>
+      <publishTime>04/23/2020 00:44:11</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.dll">
-      <publishTime>04/23/2020 23:47:49</publishTime>
+      <publishTime>04/25/2020 22:14:22</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.dll.config">
       <publishTime>08/22/2019 00:18:33</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.pdb">
-      <publishTime>04/23/2020 23:47:49</publishTime>
+      <publishTime>04/25/2020 22:14:22</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.Web.dll">
+      <publishTime>04/26/2020 21:29:20</publishTime>
+    </File>
+    <File Include="bin/Mah.DataCollector.Web.pdb">
+      <publishTime>04/26/2020 21:29:20</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
       <publishTime>12/28/2017 20:58:10</publishTime>
@@ -133,7 +139,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/28/2017 09:39:42</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
-      <publishTime>01/21/2018 21:13:31</publishTime>
+      <publishTime>06/13/2016 23:06:14</publishTime>
     </File>
     <File Include="bin/nl-NL/Kendo.Mvc.resources.dll">
       <publishTime>10/26/2017 16:59:56</publishTime>
@@ -175,7 +181,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/26/2017 16:59:56</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
-      <publishTime>07/09/2013 11:04:28</publishTime>
+      <publishTime>07/09/2013 12:04:28</publishTime>
     </File>
     <File Include="bin/System.Runtime.CompilerServices.Unsafe.dll">
       <publishTime>08/02/2019 00:10:54</publishTime>
@@ -187,7 +193,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/02/2019 00:12:10</publishTime>
     </File>
     <File Include="bin/System.Web.Http.dll">
-      <publishTime>07/09/2013 11:04:28</publishTime>
+      <publishTime>07/09/2013 12:04:28</publishTime>
     </File>
     <File Include="bin/System.Web.Mvc.dll">
       <publishTime>08/02/2019 00:12:11</publishTime>
@@ -604,7 +610,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/12/2017 20:00:02</publishTime>
     </File>
     <File Include="Global.asax">
-      <publishTime>12/28/2017 09:39:14</publishTime>
+      <publishTime>04/26/2020 21:25:43</publishTime>
     </File>
     <File Include="Images/arrow.png">
       <publishTime>02/11/2018 11:42:28</publishTime>
@@ -637,7 +643,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/19/2018 10:54:44</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>02/28/2020 18:45:52</publishTime>
+      <publishTime>04/25/2020 23:15:51</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>12/28/2017 09:39:48</publishTime>
@@ -784,7 +790,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/02/2019 00:37:04</publishTime>
     </File>
     <File Include="Views/Map/Index.cshtml">
-      <publishTime>04/24/2020 22:24:20</publishTime>
+      <publishTime>04/24/2020 21:36:11</publishTime>
     </File>
     <File Include="Views/Setting/AddDomainToField.cshtml">
       <publishTime>02/05/2018 09:15:56</publishTime>
@@ -823,7 +829,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/21/2019 00:34:52</publishTime>
     </File>
     <File Include="Views/Setting/SYSSetting.cshtml">
-      <publishTime>02/28/2020 17:05:42</publishTime>
+      <publishTime>04/20/2020 07:03:02</publishTime>
     </File>
     <File Include="Views/Setting/UniqueStylesList.cshtml">
       <publishTime>02/17/2018 06:25:30</publishTime>
@@ -883,7 +889,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/28/2017 09:39:52</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/26/2020 22:40:16</publishTime>
+      <publishTime>04/26/2020 21:29:21</publishTime>
     </File>
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@ using System.IO;
 using System.Web.Hosting;
 using System.Web.Optimization;
 
-namespace DataCollector
+namespace Mah.DataCollector.Web
 {
     public class BundleConfig
     {

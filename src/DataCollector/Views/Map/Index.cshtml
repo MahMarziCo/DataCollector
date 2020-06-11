@@ -217,45 +217,89 @@ action.Maximize("Map_Class.OnEditWinMaximize");
                     return;
                 }
 
+                $("#loadingLayerWaiting").css("color", "black");
                 $("#loadingLayerWaiting").text("در حال دريافت...");
                 Map_Class.clearSnaps();
+
+                var showLayerError = function (e) {
+                    Map_Class.RequestSending = false;
+                    $("#loadingLayerWaiting").text("خطا در دریافت اطلاعات");
+                    $("#loadingLayerWaiting").css("color", "red");
+                    console.log(e);
+                }
 
                 $.ajax({
                     url: "@Url.Content("~/Map/GetFeatures")",
                     type: "POST",
                     data: { ClassNames: classes,UniqueFields:uniqueFields,pMapExtents : mapExtents,SRID:SRID,mapWidth:$("#map").width() },
-                    success: function (data) {
-                        Object.getOwnPropertyNames(data).forEach(function (layerName, index) {
-                            var layer= Map_Class.getLayer(layerName);
-                            if (layer == null) {
-                                return;
+                    success: function (result) {
+                        try {
+                            result = JSON.parse(result);
+                            if (result.Error) {
+                                showLayerError(result.Error);
                             }
-                            var format = new ol.format.WKT();
+                            else {
+                                if (!result.ErrorLayer)
+                                    result.ErrorLayer = [];
 
-                            var wktFeatures = [];
-                            $.each(data[layerName], function (index, value) {
-                                var feature = Map_Class.format.readFeature(value.geom, {
-                                    dataProjection: 'EPSG:' + layer.get('sr'),
-                                    featureProjection: 'EPSG:3857'
+                                var data = result.LayerData;
+                                Object.getOwnPropertyNames(data).forEach(function (layerName, index) {
+                                    try {
+
+                                        var layer = Map_Class.getLayer(layerName);
+                                        if (layer == null) {
+                                            return;
+                                        }
+                                        var format = new ol.format.WKT();
+
+                                        var wktFeatures = [];
+                                        $.each(data[layerName], function (index, value) {
+
+                                            var feature = Map_Class.format.readFeature(value.geom, {
+                                                dataProjection: 'EPSG:' + layer.get('sr'),
+                                                featureProjection: 'EPSG:3857'
+                                            });
+                                            feature.setProperties(value);
+                                            feature.setId(value.objectid);
+                                            wktFeatures.push(feature);
+                                        });
+
+                                        var source = layer.getSource();
+                                        source.clear();
+                                        source.addFeatures(wktFeatures);
+                                    }
+                                    catch{
+                                        result.ErrorLayer.push(layerName);
+                                    }
                                 });
-                                feature.setProperties(value);
-                                feature.setId(value.objectid);
-                                wktFeatures.push(feature);
-                            });
+                                Map_Class.InitSnap();
+                                Map_Class.RequestSending = false;
 
-                            var source = layer.getSource();
-                            source.clear();
-                            source.addFeatures(wktFeatures);
-                        });
-                        Map_Class.InitSnap();
-                        Map_Class.RequestSending =false;
-                        $("#loadingLayerWaiting").text("");
-                        if(Map_Class.RequestWaiting){
-                            setTimeout(Map_Class.Drawlayers(),1);
+                                $("#loadingLayerWaiting").text("");
+
+                                if (result.ErrorLayer.length > 0)
+                                    $("#loadingLayerWaiting").css("color", "red");
+
+                                for (var jj in result.ErrorLayer) {
+                                    var layer = items.find(a => a.Class_name == result.ErrorLayer[jj]);
+                                    var caption = result.ErrorLayer[jj];
+                                    if (layer)
+                                        caption = layer.Caption;
+
+                                    $("#loadingLayerWaiting").append(`<div>${caption}</div>`);
+                                }
+                            }
+                        }
+                        catch {
+                            showLayerError(e);
+                            console.log(e);
+                        }
+                        if (Map_Class.RequestWaiting) {
+                            setTimeout(Map_Class.Drawlayers(), 1);
                         }
                     },
-                    error:function(){
-                        Map_Class.RequestSending =false;$("#loadingLayerWaiting").text("");
+                    error:function(e){
+                        showLayerError(e);
                         if(Map_Class.RequestWaiting){
                             setTimeout(Map_Class.Drawlayers(),1);
                         }

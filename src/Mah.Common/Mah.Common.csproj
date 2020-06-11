@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Encrypt\Cryptor.cs" />
     <Compile Include="EntityFramework\Migration\MigrationUserAndTimeCodeGenerator.cs" />
+    <Compile Include="Extentions\IExnumerableExtention.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

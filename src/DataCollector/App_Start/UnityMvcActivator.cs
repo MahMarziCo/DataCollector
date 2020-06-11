@@ -3,10 +3,10 @@ using System.Web.Mvc;
 
 using Unity.AspNet.Mvc;
 
-[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(DataCollector.UnityMvcActivator), "Start")]
-[assembly: WebActivatorEx.ApplicationShutdownMethod(typeof(DataCollector.UnityMvcActivator), "Shutdown")]
+[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Mah.DataCollector.Web.UnityMvcActivator), "Start")]
+[assembly: WebActivatorEx.ApplicationShutdownMethod(typeof(Mah.DataCollector.Web.UnityMvcActivator), "Shutdown")]
 
-namespace DataCollector
+namespace Mah.DataCollector.Web
 {
     /// <summary>
     /// Provides the bootstrapping for integrating Unity with ASP.NET MVC.

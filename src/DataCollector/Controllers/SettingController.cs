@@ -1,6 +1,6 @@
 ﻿using Mah.DataCollector.Entity.Entities;
 using DataAccess.Logic;
-using DataCollector.Filters;
+using Mah.DataCollector.Web.Filters;
 using DataCollector.Models;
 using Kendo.Mvc.UI;
 using System;
@@ -14,9 +14,9 @@ using System.Data;
 using System.Globalization;
 using Mah.Common.Encrypt;
 
-namespace DataCollector.Controllers
+namespace Mah.DataCollector.Web.Controllers
 {
-    [UserRoleFilterAttribute(RoleIds = "ADMIN")]
+    [UserRoleFilter(RoleIds = "ADMIN")]
     public class SettingController : Controller
     {
         private SettingBL _SettingBL;

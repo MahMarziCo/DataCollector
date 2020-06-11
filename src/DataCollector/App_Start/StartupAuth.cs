@@ -9,7 +9,7 @@ using System;
 using System.Linq;
 using Mah.Common.Encrypt;
 
-namespace DataCollector
+namespace Mah.DataCollector.Web
 {
     public partial class Startup
     {
