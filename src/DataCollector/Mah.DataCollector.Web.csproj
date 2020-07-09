@@ -197,6 +197,7 @@
     <Compile Include="Models\ClassSymbolViewModel.cs" />
     <Compile Include="Models\FieldsModel.cs" />
     <Compile Include="Models\IdentityModel.cs" />
+    <Compile Include="Models\Map\GetFeaturesViewModel.cs" />
     <Compile Include="Models\Map\MapConfigViewModel.cs" />
     <Compile Include="Models\ObjectPictureViewModel.cs" />
     <Compile Include="Models\SysSettingParam.cs" />

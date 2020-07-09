@@ -1,3 +1,8 @@
+/src/.vs/DataCollector/config/applicationhost.config
+/src/.vs/DataCollector/v16/.suo
+/src/.vs/DataCollector/v16/Server/sqlite3/db.lock
+/src/.vs/DataCollector/v16/Server/sqlite3/storage.ide
+bin
+obj
 packages
-/src/DataCollector.v12.suo
 .vs

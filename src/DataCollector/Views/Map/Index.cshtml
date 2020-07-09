@@ -178,10 +178,7 @@ action.Maximize("Map_Class.OnEditWinMaximize");
             Map_Class.RequestSending = true;
             try{
                 var items = $("#layerList").data("kendoListBox").dataItems();
-                var classes=[];
-                var uniqueFields = [];
-                var mapExtents=[];
-                var SRID=[];
+                var classModels = [];
 
                 var view = Map_Class.map.getView();
                 var extent = view.calculateExtent(Map_Class.map.getSize());
@@ -194,12 +191,15 @@ action.Maximize("Map_Class.OnEditWinMaximize");
                     if((layerItem.Scale &&   Map_Class.map.getView().getZoom() >= layerItem.Scale) || !layerItem.Scale)
                     {
                         if ($("#chb"+layerItem.ID)[0].checked) {
-                            SRID.push(layerItem.SpatialRefrence);
                             var projLbPoint= ol.proj.fromLonLat([lbPoint[0],lbPoint[1]],"EPSG:"+layerItem.SpatialRefrence );
                             var projTrPoint= ol.proj.fromLonLat([trPoint[0],trPoint[1]],"EPSG:"+layerItem.SpatialRefrence );
-                            mapExtents.push([projLbPoint[0],projLbPoint[1],projTrPoint[0],projTrPoint[1]]);
-                            classes.push(layerItem.Class_name);
-                            uniqueFields.push(layerItem.UniqueField);
+
+                            classModels.push({
+                                LayerName: layerItem.Class_name,
+                                UniqueField: layerItem.UniqueField,
+                                MapExtent: [projLbPoint[0], projLbPoint[1], projTrPoint[0], projTrPoint[1]],
+                                SRID: layerItem.SpatialRefrence
+                            });
                         }
                         else{
                             source.clear();
@@ -211,7 +211,7 @@ action.Maximize("Map_Class.OnEditWinMaximize");
                     }
                 });
 
-                if (classes.length==0) {
+                if (classModels.length==0) {
                     $("#loadingLayerWaiting").text("هيچ لايه اي روشن نيست");
                     Map_Class.RequestSending =false;
                     return;
@@ -231,7 +231,8 @@ action.Maximize("Map_Class.OnEditWinMaximize");
                 $.ajax({
                     url: "@Url.Content("~/Map/GetFeatures")",
                     type: "POST",
-                    data: { ClassNames: classes,UniqueFields:uniqueFields,pMapExtents : mapExtents,SRID:SRID,mapWidth:$("#map").width() },
+                    contentType: "application/json",
+                    data: JSON.stringify({ LayerNames: classModels, MapWidth: $("#map").width() }),
                     success: function (result) {
                         try {
                             result = JSON.parse(result);
