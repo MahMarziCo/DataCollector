@@ -9403,8 +9403,8 @@ div.k-navigator .k-navigator-left {
 }
 @font-face {
   font-family: 'WebComponentsIcons';
-  src: url('fonts/glyphs/WebComponentsIcons.eot?gedxeo');
-  src: url('fonts/glyphs/WebComponentsIcons.eot?gedxeo#iefix') format('embedded-opentype'), url('fonts/glyphs/WebComponentsIcons.ttf?gedxeo') format('truetype'), url('fonts/glyphs/WebComponentsIcons.woff?gedxeo') format('woff'), url('fonts/glyphs/WebComponentsIcons.svg?gedxeo#WebComponentsIcons') format('svg');
+  src: url('/Content/Kendo/fonts/glyphs/WebComponentsIcons.eot?gedxeo');
+  src: url('/Content/Kendo/fonts/glyphs/WebComponentsIcons.eot?gedxeo#iefix') format('embedded-opentype'), url('/Content/Kendo/fonts/glyphs/WebComponentsIcons.ttf?gedxeo') format('truetype'), url('/Content/Kendo/fonts/glyphs/WebComponentsIcons.woff?gedxeo') format('woff'), url('/Content/Kendo/fonts/glyphs/WebComponentsIcons.svg?gedxeo#WebComponentsIcons') format('svg');
   font-weight: normal;
   font-style: normal;
 }

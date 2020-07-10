@@ -232,6 +232,7 @@
     <Content Include="Content\Kendo\kendo.rtl.css" />
     <Content Include="Content\Kendo\kendo.silver.css" />
     <Content Include="Content\ol.css" />
+    <Content Include="Scripts\Kendo\kendo.all.min.js" />
     <Content Include="Scripts\Mah\Layout.js" />
     <Content Include="Content\Mah\Layout.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -361,7 +362,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\kendo.modernizr.custom.js" />
     <Content Include="Scripts\Kendo\jszip.min.js" />
-    <Content Include="Scripts\Kendo\kendo.all.js" />
     <Content Include="Scripts\Kendo\kendo.aspnetmvc.js" />
     <Content Include="Scripts\Mah\Symbol.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />

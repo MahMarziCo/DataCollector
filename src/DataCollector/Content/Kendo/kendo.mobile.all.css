@@ -3401,7 +3401,7 @@ html .km-widget .km-view .km-notext {
 /* Icons */
 @font-face {
   font-family: "Kendo UI";
-  src: url("images/kendoui.woff?v=1.1") format("woff"), url("images/kendoui.ttf?v=1.1") format("truetype"), url("images/kendoui.svg#kendoui") format("svg");
+  src: url("/Content/Kendo/Images/kendoui.woff?v=1.1") format("woff"), url("/Content/Kendo/Images/kendoui.ttf?v=1.1") format("truetype"), url("/Content/Kendo/Images/kendoui.svg#kendoui") format("svg");
 }
 body:before {
   font-family: "Kendo UI";
@@ -18653,7 +18653,7 @@ html .km-material .k-overflow-container.km-actionsheet > li {
 }
 @font-face {
   font-family: "Kendo UI";
-  src: url("images/kendoui.woff?v=1.1") format("woff"), url("images/kendoui.ttf?v=1.1") format("truetype"), url("images/kendoui.svg#kendoui") format("svg");
+  src: url("/Content/Kendo/Images/kendoui.woff?v=1.1") format("woff"), url("/Content/Kendo/Images/kendoui.ttf?v=1.1") format("truetype"), url("/Content/Kendo/Images/kendoui.svg#kendoui") format("svg");
 }
 /* ListView */
 .km-nova .km-listinset,

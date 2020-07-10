@@ -31,7 +31,7 @@ namespace Mah.DataCollector.Web
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
-            BundleTable.EnableOptimizations = false;
+            BundleTable.EnableOptimizations = true;
 
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -82,7 +82,7 @@ namespace Mah.DataCollector.Web
 
             bundles.Add(new ScriptBundle("~/bundle/Script/Kendo").Include(
                        "~/Scripts/Kendo/jszip.min.js",
-                       "~/Scripts/Kendo/kendo.all.js",
+                       "~/Scripts/Kendo/kendo.all.min.js",
                        "~/Scripts/Kendo/kendo.aspnetmvc.js",
                        "~/Scripts/kendo.modernizr.custom.js"
                        ));

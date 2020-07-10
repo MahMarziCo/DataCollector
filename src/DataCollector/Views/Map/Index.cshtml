@@ -28,7 +28,9 @@
 
 .Content(
     @<div>
-    @Html.Kendo().CheckBox().Name("selectAllLayer").Label("انتخاب همه لایه ها").Checked(true);
+
+    <input type="checkbox" id="selectAllLayer" checked="checked"  style="height: 25px; width: 20px;" />
+    <label for="selectAllLayer">انتخاب همه لایه ها</label>
     @(Html.Kendo().ListBox().Name("layerList")
                 .DataTextField("Caption")
                     .DataValueField("ID")
