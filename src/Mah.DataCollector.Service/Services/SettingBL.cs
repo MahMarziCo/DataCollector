@@ -27,7 +27,8 @@ namespace DataAccess.Logic
             MapDefultZoom,
             NeedUserPositionLog,
             ExpireDateTime,
-            LicenseText
+            LicenseText,
+            SnapTolorance
         }
 
         public bool insertSetting(SettingParameters pset_name, object value, string userName)

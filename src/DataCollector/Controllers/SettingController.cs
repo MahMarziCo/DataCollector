@@ -13,6 +13,8 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Globalization;
 using Mah.Common.Encrypt;
+using Mah.DataCollector.Web.Models.Setting;
+using Mah.Common.Logger;
 
 namespace Mah.DataCollector.Web.Controllers
 {
@@ -25,9 +27,11 @@ namespace Mah.DataCollector.Web.Controllers
         private string _GdbConnection;
         private DomainBL _DomainBL;
         private UniqueStyleBL _UniqueStyleBL;
+        private ILogger _Logger;
         public SettingController(SettingBL settingBL, ClassesBL classesBL, FieldsBL fieldsBL,
             DomainBL domainBL,
-            UniqueStyleBL uniqueStyleBL, Cryptor cryptor)
+            UniqueStyleBL uniqueStyleBL, Cryptor cryptor,
+             ILogger logger)
         {
             _UniqueStyleBL = uniqueStyleBL;
             _DomainBL = domainBL;
@@ -35,17 +39,17 @@ namespace Mah.DataCollector.Web.Controllers
             _ClassesBL = classesBL;
             _SettingBL = settingBL;
             _GdbConnection = cryptor.Decrypt(System.Configuration.ConfigurationManager.ConnectionStrings["gdbConn"].ConnectionString);
-
+            _Logger = logger;
         }
         #region SysSetting
         [UserRoleFilterAttribute(RoleIds = "SYSADMIN")]
         public ActionResult SYSSetting()
         {
             DateTime? dateOf = _SettingBL.getSettingAsDate(SettingBL.SettingParameters.ExpireDateTime, "SYSTEM");
-           var model = new SysSettingParam();
-           model.MapDefCentroidX = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefCentroidX, User.Identity.Name);
-           model.MapDefCentroidY = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefCentroidY, User.Identity.Name);
-           model.MapDefultZoom = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefultZoom, User.Identity.Name);
+            var model = new SysSettingParam();
+            model.MapDefCentroidX = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefCentroidX, User.Identity.Name);
+            model.MapDefCentroidY = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefCentroidY, User.Identity.Name);
+            model.MapDefultZoom = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefultZoom, User.Identity.Name);
 
 
             PersianCalendar pc = new PersianCalendar();
@@ -767,7 +771,7 @@ namespace Mah.DataCollector.Web.Controllers
                 layer.UniqueField = model.UniqueField;
                 if (layer.UniqueStyles != null)
                 {
-                    var styles =layer.UniqueStyles.Count();
+                    var styles = layer.UniqueStyles.Count();
                     for (int i = 0; i < styles; i++)
                     {
                         _UniqueStyleBL.DeleteUniqueStyles(layer.UniqueStyles.ElementAt(0));
@@ -797,6 +801,33 @@ namespace Mah.DataCollector.Web.Controllers
             {
                 return Json("1");
             }
+        }
+        #endregion
+
+        #region General Setting
+        public PartialViewResult GeneratSetting()
+        {
+            var model = new GeneralSettingViewModel();
+            model.SnapTolerance = _SettingBL.getSettingAsInt(DataAccess.Logic.SettingBL.SettingParameters.SnapTolorance, "SYSTEM");
+            
+            return PartialView(model);
+        }
+
+        [HttpPost]
+        public JsonResult SetSnapTolorance(SnapToleranceViewModel model)
+        {
+            try
+            {
+                _SettingBL.insertSetting(SettingBL.SettingParameters.SnapTolorance, model.SnapValue, "SYSTEM");
+                return Json(true);
+            }
+            catch(Exception ex)
+            {
+                _Logger.LogError(ex, "SetSnapTolorance");
+                ///todo set loger 
+                throw;
+            }
+
         }
         #endregion
     }

@@ -200,6 +200,8 @@
     <Compile Include="Models\Map\GetFeaturesViewModel.cs" />
     <Compile Include="Models\Map\MapConfigViewModel.cs" />
     <Compile Include="Models\ObjectPictureViewModel.cs" />
+    <Compile Include="Models\Setting\GeneralSettingViewModel.cs" />
+    <Compile Include="Models\Setting\SnapToleranceViewModel.cs" />
     <Compile Include="Models\SysSettingParam.cs" />
     <Compile Include="Models\UniquStyleModel.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -434,6 +436,7 @@
     <Content Include="Views\Setting\SYSSetting.cshtml" />
     <Content Include="Views\Shared\_SymbolTemplate.cshtml" />
     <Content Include="Views\Setting\ClassSymbol.cshtml" />
+    <Content Include="Views\Setting\GeneratSetting.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

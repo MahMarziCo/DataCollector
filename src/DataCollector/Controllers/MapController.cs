@@ -61,6 +61,7 @@ namespace Mah.DataCollector.Web.Controllers
             mapConfigViewModel.MapDefCentroidX = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefCentroidX, User.Identity.Name);
             mapConfigViewModel.MapDefCentroidY = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefCentroidY, User.Identity.Name);
             mapConfigViewModel.MapDefultZoom = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefultZoom, User.Identity.Name);
+            mapConfigViewModel.MapSnapTolerance = _SettingBL.getSettingAsInt(DataAccess.Logic.SettingBL.SettingParameters.SnapTolorance, User.Identity.Name);
 
             return View(mapConfigViewModel);
         }

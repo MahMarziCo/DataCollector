@@ -677,7 +677,7 @@ action.Maximize("Map_Class.OnEditWinMaximize");
             Map_Class.Draw = new ol.interaction.Draw({
                 source:Map_Class.getLayer(layerDropdown.value()).getSource(),
                 type: classType,
-                snapTolerance: 20,
+                snapTolerance: @Model.MapSnapTolerance,
                 maxPoints:maxCount,
                 minPoints:minCount,
                 wrapX:true
@@ -889,7 +889,7 @@ action.Maximize("Map_Class.OnEditWinMaximize");
             }
         }
     }
-    $().ready(function () {
+    $(function () {
         Map_Class.initMap();
 
         $("#showLayerList").click(function () {

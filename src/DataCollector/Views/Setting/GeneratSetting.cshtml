@@ -1,0 +1,26 @@
+﻿@using Mah.DataCollector.Web.Models.Setting
+
+@model GeneralSettingViewModel
+<script>
+    let GeneralSetting = {
+        SetSnapTolerance: function () {
+            $.ajax({
+                type: "POST",
+                url: "/Setting/SetSnapTolorance",
+                data: { SnapValue: $("#SnapTolerance").val() },
+                success: function (data) {
+                    Layout_Class.ShowAlert("مقدار با موفقیت ثبت شد","ثبت");
+                },
+                error: function (e) {
+                    Layout_Class.ShowAlert("خطا در ذخیره مقدار");
+                }
+            });
+        }
+    }
+</script>
+<div>
+    @Html.Label("تلورانس اسنپ")
+    @Html.Kendo().NumericTextBoxFor(a=> a.SnapTolerance).Min(0).Decimals(0)
+    @Html.Kendo().Button().Name("setSnap").Content("ثبت").Events(e => e.Click("GeneralSetting.SetSnapTolerance"))
+</div>
+
