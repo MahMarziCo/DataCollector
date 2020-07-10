@@ -27,7 +27,9 @@
         })
 
 .Content(
-    @Html.Kendo().ListBox().Name("layerList")
+    @<div>
+    @Html.Kendo().CheckBox().Name("selectAllLayer").Label("انتخاب همه لایه ها").Checked(true);
+    @(Html.Kendo().ListBox().Name("layerList")
                 .DataTextField("Caption")
                     .DataValueField("ID")
                         .DataSource(dataSource =>
@@ -35,8 +37,9 @@
                                 dataSource.Read(read => read.Action("GetClasses", "Classes"));
                         }
                     ).Events(events => events.DataBound("Map_Class.initLayer"))
-                .TemplateId("class-item-template").ToHtmlString())
-)
+                .TemplateId("class-item-template"))
+    </div>
+))
 
 
 
@@ -470,6 +473,8 @@ action.Maximize("Map_Class.OnEditWinMaximize");
         },
         initLayer: function () {
             $(".LayerNode").change(Map_Class.LayerChangeVisibility);
+            
+            $("#selectAllLayer").change(Map_Class.changeAllVisibillity);
             var items = $("#layerList").data("kendoListBox").dataItems();
             $("#layerDropdown").kendoDropDownList({
                 dataTextField: "Caption",
@@ -609,7 +614,10 @@ action.Maximize("Map_Class.OnEditWinMaximize");
                     }
                 });
         },
-
+        changeAllVisibillity:function () {
+            $(".LayerNode").prop('checked', $("#selectAllLayer").prop('checked'));
+            Map_Class.Drawlayers();
+        },
         LayerChangeVisibility: function (e) {
             Map_Class.Drawlayers();
         },
