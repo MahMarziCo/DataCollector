@@ -347,7 +347,7 @@ html .km-pane-wrapper .k-header {
   border-color: transparent;
 }
 .k-i-loading {
-  background-image: url('Flat/loading.gif');
+  background-image: url('/content/kendo/Flat/loading.gif');
 }
 .k-loading-image {
   background-image: url('Flat/loading-image.gif');
