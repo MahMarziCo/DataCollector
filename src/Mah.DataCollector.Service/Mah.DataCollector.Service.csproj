@@ -52,6 +52,7 @@
     <Compile Include="Services\ClassesBL.cs" />
     <Compile Include="Services\DomainBL.cs" />
     <Compile Include="Services\FeaturePicBL.cs" />
+    <Compile Include="Services\Features\FeatureService.cs" />
     <Compile Include="Services\FieldsBL.cs" />
     <Compile Include="Services\GISFeatureBL.cs" />
     <Compile Include="Services\Logg\LoggService.cs" />

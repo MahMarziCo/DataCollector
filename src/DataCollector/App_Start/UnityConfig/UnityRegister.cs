@@ -7,6 +7,8 @@ using Unity.Injection;
 using DataAccess.Logic;
 using Mah.Common.Logger;
 using Mah.DataCollector.Service.Services.Log;
+using Mah.DataCollector.Service.Services.Features;
+using Mah.DataCollector.Interface.Interfaces.Features;
 
 namespace DataCollector.App_Start.UnityConfig
 {
@@ -24,6 +26,10 @@ namespace DataCollector.App_Start.UnityConfig
             // container.RegisterType<IProductRepository, ProductRepository>();
             container.RegisterType<DataCollectorContext>(new PerRequestLifetimeManager(),
                             new InjectionConstructor(dbConnection)
+                            );
+
+            container.RegisterType<IFeatureService, FeatureService>(new PerRequestLifetimeManager(),
+                            new InjectionConstructor(gdbConnection)
                             );
 
             container.RegisterType<ILogger, LoggService>();

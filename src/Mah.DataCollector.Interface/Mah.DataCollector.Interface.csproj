@@ -40,7 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\Feature\UserOperationReport.cs" />
     <Compile Include="Dto\Feature\FeatureEditModel.cs" />
+    <Compile Include="Interfaces\Features\IFeatureService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

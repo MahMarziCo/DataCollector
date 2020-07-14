@@ -19,10 +19,13 @@ namespace DataAccess.Logic
         }
         public List<Classes> GetAllClass()
         {
+            var oList = _DbContext.Classes.ToList();
 
-            List<Classes> oList = new List<Classes>();
-
-            oList = _DbContext.Classes.ToList();
+            return oList;
+        }
+        public List<Classes> GetClassesWithUserField()
+        {
+            var oList = _DbContext.Classes.Where(a=> !string.IsNullOrEmpty(a.UserId)).ToList();
 
             return oList;
         }

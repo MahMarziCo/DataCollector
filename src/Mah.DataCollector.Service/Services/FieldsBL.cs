@@ -10,6 +10,7 @@ namespace DataAccess.Logic
     {
         private DataCollectorContext _DbContext;
         private ClassesBL _ClassesBl;
+        private FieldsBL _FieldsBL;
         public FieldsBL(DataCollectorContext context, ClassesBL classesBl)
         {
             _DbContext = context;
@@ -51,7 +52,19 @@ namespace DataAccess.Logic
         {
             try
             {
-                return _DbContext.Fields.Where(c => c.Class_ID == pClass.ID).OrderBy(a => a.ORDER).ToList();
+                return getClassFields(pClass.ID);
+            }
+            catch
+            {
+                return new List<Fields>();
+            }
+        }
+
+        public List<Fields> getClassFields(int pClassId)
+        {
+            try
+            {
+                return _DbContext.Fields.Where(c => c.Class_ID == pClassId).OrderBy(a => a.ORDER).ToList();
             }
             catch
             {

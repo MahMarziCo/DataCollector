@@ -65,7 +65,7 @@
         
         [StringLength(50)]
         public string UserId { get; set; }
-
+        
         public int? ClassOrder { get; set; }
         public bool? HasFlow { get; set; }
 

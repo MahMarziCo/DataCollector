@@ -187,6 +187,7 @@
     <Compile Include="Controllers\ClassesController.cs" />
     <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
+    <Compile Include="Controllers\UserOperationController.cs" />
     <Compile Include="Filters\UserRoleFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -205,6 +206,7 @@
     <Compile Include="Models\SysSettingParam.cs" />
     <Compile Include="Models\UniquStyleModel.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\Operation\UserOperationParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
@@ -437,6 +439,7 @@
     <Content Include="Views\Shared\_SymbolTemplate.cshtml" />
     <Content Include="Views\Setting\ClassSymbol.cshtml" />
     <Content Include="Views\Setting\GeneratSetting.cshtml" />
+    <Content Include="Views\UserOperation\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
