@@ -18,6 +18,11 @@
     Dictionary<string, string> flows = new Dictionary<string, string>();
     flows.Add("true", "دارد");
     flows.Add("false", "ندارد");
+
+    Dictionary<string, string>  requiedPhoto = new Dictionary<string, string>();
+    requiedPhoto.Add("true", "اجباری");
+    requiedPhoto.Add("false", "");
+
 }
 
 
@@ -69,7 +74,7 @@
                     ClassSymbolClass.SaveStyleAction = function () {
                         $.ajax({
                             url: "/Setting/SetClassSymbol",
-                            type:"POST",
+                            type: "POST",
                             data: {
                                 model: ClassSymbolClass.Data
                             },
@@ -133,6 +138,7 @@
     cols.Bound(a => a.Caption).Title("عنوان فارسی").Width(150);
     cols.ForeignKey(a => a.Class_type, classTypes, "key", "value").Title("نوع لایه").Width(90);
     cols.ForeignKey(a => a.SpatialRefrence, refrences, "key", "value").Title("سیستم مختصات").Width(150);
+    cols.ForeignKey(a => a.RequieredPhoto, requiedPhoto, "key", "value").Title(" الصاق عکس قبلا از ویرایش").Width(200);
     cols.Command(command =>
     {
     command.Edit().UpdateText("اعمال").CancelText("انصراف").Text("ویرایش");

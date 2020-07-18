@@ -58,7 +58,7 @@ namespace DataAccess.Logic
         }
 
         public bool createNewClass(string pClassName, string pCaption, string pClass_type
-            , string pSpatialRefrence)
+            , string pSpatialRefrence, bool? RequieredPhoto)
         {
             try
             {
@@ -73,6 +73,7 @@ namespace DataAccess.Logic
                 oClass.StrokWidth = 2;
                 oClass.Width = 5;
                 oClass.HasFlow = false;
+                oClass.RequieredPhoto = RequieredPhoto;
                 _DbContext.Classes.Add(oClass);
                 _DbContext.SaveChanges();
                 return true;
@@ -92,6 +93,7 @@ namespace DataAccess.Logic
                 oClass.Class_name = pClass.Class_name;
                 oClass.Class_type = pClass.Class_type;
                 oClass.SpatialRefrence = pClass.SpatialRefrence;
+                oClass.RequieredPhoto = pClass.RequieredPhoto;
 
                 _DbContext.SaveChanges();
                 return true;

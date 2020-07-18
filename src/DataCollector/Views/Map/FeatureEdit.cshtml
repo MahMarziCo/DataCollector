@@ -11,9 +11,9 @@
                     @Html.Hidden("CLASS_NAME", Model.Class.Class_name)
                     @Html.Hidden("OBJECTID", Model.ObjectId)
                     @{if (ViewBag.NeedUserPositionLog)
-                    {
-                        @Html.Hidden("CURRENT_USER_COORDINATE", "", new { data_val = "true", data_val_required = "true" })
-                    }
+                        {
+                            @Html.Hidden("CURRENT_USER_COORDINATE", "", new { data_val = "true", data_val_required = "true" })
+                        }
                     }
                 </div>
                 <div class="container-fluid">
@@ -93,7 +93,7 @@
                                                     List<string> values = new List<string>();
                                                     if (!string.IsNullOrWhiteSpace(item.value.ToString()))
                                                     {
-                                                        values = item.value.ToString().Replace("،",",").Split(',').ToList();
+                                                        values = item.value.ToString().Replace("،", ",").Split(',').ToList();
                                                         foreach (string value in values)
                                                         {
                                                             if (!domains.Contains(value))
@@ -170,11 +170,11 @@
                                 </td>
                                 <td style="width:70%; padding:6px;    vertical-align: top;">
                                     @{Dictionary<string, object>
-                    attrib = new Dictionary<string, object>
-                        ();
-                                    attrib.Add("class", "form-control ");
-                                    attrib.Add("data-val", "true");
-                                    attrib.Add("style", "padding :0px;");
+                      attrib = new Dictionary<string, object>
+                          ();
+                                        attrib.Add("class", "form-control ");
+                                        attrib.Add("data-val", "true");
+                                        attrib.Add("style", "padding :0px;");
                                     }
                                     @if (!ViewBag.IsSupervisor)
                                     {
@@ -199,11 +199,11 @@
                                     </td>
                                     <td style="width:70%; padding:6px;    vertical-align: top;">
                                         @{Dictionary<string, object>
-                    attrib = new Dictionary<string, object>
-                        ();
-                                        attrib.Add("class", "form-control ");
-                                        attrib.Add("data-val", "true");
-                                        attrib.Add("style", "padding :0px;");
+                      attrib = new Dictionary<string, object>
+                          ();
+                                            attrib.Add("class", "form-control ");
+                                            attrib.Add("data-val", "true");
+                                            attrib.Add("style", "padding :0px;");
                                         }
                                         @Html.TextArea(@item.field.FIELD_Name, @item.value.ToString(), attrib)
 
@@ -234,15 +234,22 @@
 
             $("#EditfeatureFormSubmit").click(function (event) {
                 try {
-                    if ($("#CURRENT_USER_COORDINATE").length > 0) {
-                        var feature = Map_Class.currentPositionSource.getFeatures()[0];
-                        var geom = feature.getGeometry();
-                        var coordinate = ol.proj.toLonLat(geom.getCoordinates(), "EPSG:3857");
-                        $("#CURRENT_USER_COORDINATE")[0].value = coordinate[0] + "," + coordinate[1];
+                    if (@(ViewBag.NeedUserPositionLog?"true":"false")) {
 
+                        if ($("#gps-disable").hasClass("k-state-active")) {
+                            $("#CURRENT_USER_COORDINATE").val(0 + "," + 0);
+                        }
+                        else {
+                            var feature = Map_Class.currentPositionSource.getFeatures()[0];
+                            var geom = feature.getGeometry();
+                            var coordinate = ol.proj.toLonLat(geom.getCoordinates(), "EPSG:3857");
+                            $("#CURRENT_USER_COORDINATE").val(coordinate[0] + "," + coordinate[1]);
+                        }
                     }
-                } catch (ex) {
+                }
+                catch (ex) {
                     Layout_Class.ShowAlert('مکان شما توسط سیستم تشخیص داده نشد.مجددا تلاش کنید')
+                    console.log(ex);
                     event.preventDefault();
                     return;
                 }
@@ -333,6 +340,7 @@
             })
 
         }
+
     }
     FeatureEdit_Class.setSubmitEvent();
     $().ready(function () {

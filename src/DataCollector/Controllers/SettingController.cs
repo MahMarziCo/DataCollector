@@ -142,7 +142,8 @@ namespace Mah.DataCollector.Web.Controllers
                     SupervisorDateOfField = classItem.SupervisorDateOfField,
                     SupervisorField = classItem.SupervisorField,
                     DateOf = classItem.DateOf,
-                    UserId = classItem.UserId
+                    UserId = classItem.UserId,
+                    RequieredPhoto = classItem.RequieredPhoto
                 });
             }
             return Json(oList.ToDataSourceResult(request));
@@ -160,7 +161,8 @@ namespace Mah.DataCollector.Web.Controllers
                         if (!_ClassesBL.createNewClass(oClass.Class_name,
                              oClass.Caption,
                              oClass.Class_type,
-                             oClass.SpatialRefrence))
+                             oClass.SpatialRefrence,
+                             oClass.RequieredPhoto))
                         {
                             ModelState.AddModelError("Class_name", "خطایی در ذخیره جدول رخ داده است.مجددا تلاش کنید");
                         }
@@ -205,6 +207,7 @@ namespace Mah.DataCollector.Web.Controllers
                         oClass.SupervisorField = pClass.SupervisorField;
                         oClass.DateOf = pClass.DateOf;
                         oClass.UserId = pClass.UserId;
+                        oClass.RequieredPhoto = pClass.RequieredPhoto;
                         if (!_ClassesBL.UpdateClass(oClass))
                         {
                             ModelState.AddModelError("Class_name", "خطایی در ذخیره جدول رخ داده است.مجددا تلاش کنید");

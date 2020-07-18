@@ -26,6 +26,7 @@ namespace Mah.DataCollector.Entity.Entities
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add<ErrorLogg>(new ErrorLoggEntityConfig());
+            modelBuilder.Configurations.Add<Classes>(new ClassesEntityConfig());
 
             modelBuilder.Entity<Classes>()
                 .HasMany(e => e.Fields)

@@ -62,7 +62,7 @@ namespace Mah.DataCollector.Web.Controllers
             mapConfigViewModel.MapDefCentroidY = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefCentroidY, User.Identity.Name);
             mapConfigViewModel.MapDefultZoom = _SettingBL.getSettingAsDouble(DataAccess.Logic.SettingBL.SettingParameters.MapDefultZoom, User.Identity.Name);
             mapConfigViewModel.MapSnapTolerance = _SettingBL.getSettingAsInt(DataAccess.Logic.SettingBL.SettingParameters.SnapTolorance, User.Identity.Name);
-
+            ViewBag.NeedUserPositionLog = _SettingBL.getSettingAsBool(DataAccess.Logic.SettingBL.SettingParameters.NeedUserPositionLog, "SYSTEM");
             return View(mapConfigViewModel);
         }
 
@@ -75,83 +75,29 @@ namespace Mah.DataCollector.Web.Controllers
             {
                 if (model.LayerNames.Count() > 0)
                 {
-                     await model.LayerNames.ForEachAsync(async (layerItem, i) =>
-                     {
-                         try
-                         {
-                             using (SqlConnection cnn = new SqlConnection(_GdbConnection))
-                             {
-                                 cnn.Open();
-                                 double[] MapExtent = layerItem.MapExtent;
-                                 string polytext = string.Format("POLYGON(({0} {2},{0} {3},{1} {3},{1} {2},{0} {2}))", MapExtent[0], MapExtent[2], MapExtent[1], MapExtent[3]);
-
-
-                                 string ClassName = layerItem.LayerName;
-                                 string uniqueField = string.IsNullOrEmpty(layerItem.UniqueField) ? "" : "," + layerItem.UniqueField;
-                                 using (SqlCommand cmd = cnn.CreateCommand())
-                                 {
-                                     var reduce = (MapExtent[2] - MapExtent[0])/(model.MapWidth);
-
-                                     DataTable dataTable = new DataTable();
-                                     cmd.CommandType = System.Data.CommandType.Text;
-                                     cmd.CommandText = "DECLARE @g geometry; SET @g = geometry::STGeomFromText('" + polytext + "', " + layerItem.SRID + ");  "
-                                     + "SELECT [objectid],[Shape].Reduce(" + reduce + ").STAsText() geom " + uniqueField + " FROM [" + ClassName + "] WHERE shape.STIntersects(@g)=1";
-
-                                     dataTable.Load(await cmd.ExecuteReaderAsync());
-
-                                     List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
-                                     foreach (DataRow row in dataTable.Rows)
-                                     {
-                                         Dictionary<string, object> rowDic = new Dictionary<string, object>();
-                                         foreach (DataColumn col in dataTable.Columns)
-                                         {
-                                             rowDic.Add(col.ColumnName, row[col]);
-                                         }
-                                         list.Add(rowDic);
-                                     }
-
-                                     lock (classObjects)
-                                     {
-                                         classObjects.Add(layerItem.LayerName, list);
-                                     }
-                                 }
-                                 cnn.Close();
-                             }
-                         }
-                         catch (Exception ex)
-                         {
-                             lock (errorLayer)
-                             {
-                                 errorLayer.Add(layerItem.LayerName);
-                             }
-                         }
-                     });
-
-
-                    /*
-                    using (SqlConnection cnn = new SqlConnection(_GdbConnection))
+                    await model.LayerNames.ForEachAsync(async (layerItem, i) =>
                     {
-                        cnn.Open();
-                        model.LayerNames.ForEach((classModel, i) =>
+                        try
                         {
-                            try
+                            using (SqlConnection cnn = new SqlConnection(_GdbConnection))
                             {
-                                double[] MapExtent = classModel.MapExtent;
+                                cnn.Open();
+                                double[] MapExtent = layerItem.MapExtent;
                                 string polytext = string.Format("POLYGON(({0} {2},{0} {3},{1} {3},{1} {2},{0} {2}))", MapExtent[0], MapExtent[2], MapExtent[1], MapExtent[3]);
 
 
-                                string ClassName = classModel.LayerName;
-                                string uniqueField = string.IsNullOrEmpty(classModel.UniqueField) ? "" : "," + classModel.UniqueField;
+                                string ClassName = layerItem.LayerName;
+                                string uniqueField = string.IsNullOrEmpty(layerItem.UniqueField) ? "" : "," + layerItem.UniqueField;
                                 using (SqlCommand cmd = cnn.CreateCommand())
                                 {
-                                    var reduce = (MapExtent[2] - MapExtent[0])  /( model.MapWidth);
+                                    var reduce = (MapExtent[2] - MapExtent[0]) / (model.MapWidth);
 
                                     DataTable dataTable = new DataTable();
                                     cmd.CommandType = System.Data.CommandType.Text;
-                                    cmd.CommandText = "DECLARE @g geometry; SET @g = geometry::STGeomFromText('" + polytext + "', " + classModel.SRID + ");  "
+                                    cmd.CommandText = "DECLARE @g geometry; SET @g = geometry::STGeomFromText('" + polytext + "', " + layerItem.SRID + ");  "
                                     + "SELECT [objectid],[Shape].Reduce(" + reduce + ").STAsText() geom " + uniqueField + " FROM [" + ClassName + "] WHERE shape.STIntersects(@g)=1";
 
-                                    dataTable.Load(cmd.ExecuteReader());
+                                    dataTable.Load(await cmd.ExecuteReaderAsync());
 
                                     List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
                                     foreach (DataRow row in dataTable.Rows)
@@ -163,19 +109,25 @@ namespace Mah.DataCollector.Web.Controllers
                                         }
                                         list.Add(rowDic);
                                     }
-                                    dataTable.Dispose();
 
-                                    classObjects.Add(classModel.LayerName, list);
+                                    lock (classObjects)
+                                    {
+                                        classObjects.Add(layerItem.LayerName, list);
+                                    }
                                 }
+                                cnn.Close();
                             }
-                            catch (Exception ex)
+                        }
+                        catch (Exception ex)
+                        {
+                            lock (errorLayer)
                             {
-                                errorLayer.Add(classModel.LayerName);
+                                errorLayer.Add(layerItem.LayerName);
                             }
-                        });
-                        cnn.Close();
-                        cnn.Dispose();
-                    }*/
+                        }
+                    });
+
+
                 }
 
                 return JsonConvert.SerializeObject(new { LayerData = classObjects, ErrorLayer = errorLayer });
@@ -308,11 +260,10 @@ namespace Mah.DataCollector.Web.Controllers
                 string className = Request.Form["CLASS_NAME"];
                 int objectId = int.Parse(Request.Form["OBJECTID"]);
 
-                double[] userPosition = new double[] { 0, 0 };
-                if (Request.Form["CURRENT_USER_COORDINATE"] == null)
-                    _LoggerService.LogInfo(string.Format("{0}: coordinate is not defined;", User.Identity.Name));
-                else
+                double[] userPosition = null;
+                if (Request.Form["CURRENT_USER_COORDINATE"] != null && Request.Form["CURRENT_USER_COORDINATE"] != "0,0")
                     userPosition = Request.Form["CURRENT_USER_COORDINATE"].Split(',').Select(a => double.Parse(a)).ToArray();
+
                 string commandText = "UPDATE [{0}] SET {1} WHERE OBJECTID = {2};";
                 string updateText = "";
                 Classes oClass = _ClassesBL.getClassByName(className);
@@ -409,8 +360,9 @@ namespace Mah.DataCollector.Web.Controllers
                     connection.Open();
                     Int32 rowsAffected = command.ExecuteNonQuery();
                 }
+                if (userPosition != null)
+                    _UserLocationBL.LogUserLocation(User.Identity.Name, userPosition);
 
-                _UserLocationBL.LogUserLocation(User.Identity.Name, userPosition);
                 _UpdateLogBL.Log(User.Identity.Name, className, objectId, "UPDATE", oDataOf);
             }
             catch (Exception ex)

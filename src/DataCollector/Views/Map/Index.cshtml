@@ -15,6 +15,9 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXvwzlMvuHEUrTAbiZLUuXKzWMa3SImlA&language=fa&region=IR"></script>
 }
 
+
+
+
 @(Html.Kendo().Window().Name("layerWin").Visible(false).Width(250).Title("ليست لايه ها")
         .Animation(anim =>
                             {
@@ -27,20 +30,20 @@
         })
 
 .Content(
-    @<div>
+                @<div>
 
-    <input type="checkbox" id="selectAllLayer" checked="checked"  style="height: 25px; width: 20px;" />
-    <label for="selectAllLayer">انتخاب همه لایه ها</label>
-    @(Html.Kendo().ListBox().Name("layerList")
-                .DataTextField("Caption")
-                    .DataValueField("ID")
-                        .DataSource(dataSource =>
-                        {
-                                dataSource.Read(read => read.Action("GetClasses", "Classes"));
-                        }
-                    ).Events(events => events.DataBound("Map_Class.initLayer"))
-                .TemplateId("class-item-template"))
-    </div>
+                    <input type="checkbox" id="selectAllLayer" checked="checked" style="height: 25px; width: 20px;" />
+                    <label for="selectAllLayer">انتخاب همه لایه ها</label>
+                    @(Html.Kendo().ListBox().Name("layerList")
+                                .DataTextField("Caption")
+                                    .DataValueField("ID")
+                                        .DataSource(dataSource =>
+                                        {
+                                                dataSource.Read(read => read.Action("GetClasses", "Classes"));
+                                        }
+                                    ).Events(events => events.DataBound("Map_Class.initLayer"))
+                                .TemplateId("class-item-template"))
+                </div>
 ))
 
 
@@ -70,6 +73,11 @@ action.Maximize("Map_Class.OnEditWinMaximize");
 </div>
 @Html.Kendo().ToolBar().Name("mapToolbar").Items(items =>
 {
+    if (ViewBag.NeedUserPositionLog)
+    {
+     items.Add().Type(CommandType.Button).Icon("cancel").Id("gps-disable").HtmlAttributes(new { title = "غیر فعال کردن GPS" }).Togglable(true);
+    }
+   
     items.Add().Template("<div id='zoomToMyLocation' class='k-button' style='cursor: pointer;'><img src='/Images/golocation.png' title='برو به مختصات من' /></div>");
     items.Add().Template("<div id='showLayerList' class='k-button' style='cursor: pointer;'><img src='/Images/layers.png' title='نمايش ليست لايه ها' /></div>");
     if (!isSupervisor)
@@ -172,7 +180,7 @@ action.Maximize("Map_Class.OnEditWinMaximize");
         RequestWaiting:false,
         LastIdentifyLocation:null,
         Draw:null,
-        Snaps:[],
+        Snaps: [],
         Drawlayers: function(){
             Map_Class.InitDraw();
             if (Map_Class.RequestSending) {
@@ -274,7 +282,7 @@ action.Maximize("Map_Class.OnEditWinMaximize");
                                         source.clear();
                                         source.addFeatures(wktFeatures);
                                     }
-                                    catch{
+                                    catch(e){
                                         result.ErrorLayer.push(layerName);
                                     }
                                 });
@@ -475,7 +483,7 @@ action.Maximize("Map_Class.OnEditWinMaximize");
         },
         initLayer: function () {
             $(".LayerNode").change(Map_Class.LayerChangeVisibility);
-            
+
             $("#selectAllLayer").change(Map_Class.changeAllVisibillity);
             var items = $("#layerList").data("kendoListBox").dataItems();
             $("#layerDropdown").kendoDropDownList({

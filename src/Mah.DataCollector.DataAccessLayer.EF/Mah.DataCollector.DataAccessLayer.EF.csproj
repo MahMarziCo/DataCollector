@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Context\EntityConfiguration\ClassesEntityConfig.cs" />
     <Compile Include="Context\EntityConfiguration\ErrorLogEntityConfig.cs" />
     <Compile Include="Context\MigrationHistory\201908021532162_InitialCreate.cs" />
     <Compile Include="Context\MigrationHistory\201908021532162_InitialCreate.Designer.cs">
@@ -57,6 +58,10 @@
     <Compile Include="Context\MigrationHistory\202002281610469_createlogtable.cs" />
     <Compile Include="Context\MigrationHistory\202002281610469_createlogtable.Designer.cs">
       <DependentUpon>202002281610469_createlogtable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Context\MigrationHistory\202007181637223_AddRequiredFieldToClass.cs" />
+    <Compile Include="Context\MigrationHistory\202007181637223_AddRequiredFieldToClass.Designer.cs">
+      <DependentUpon>202007181637223_AddRequiredFieldToClass.cs</DependentUpon>
     </Compile>
     <Compile Include="Context\MigrationsContextFactory.cs" />
     <Compile Include="Context\DataCollectorContext.cs" />
@@ -83,6 +88,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Context\MigrationHistory\202002281610469_createlogtable.resx">
       <DependentUpon>202002281610469_createlogtable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Context\MigrationHistory\202007181637223_AddRequiredFieldToClass.resx">
+      <DependentUpon>202007181637223_AddRequiredFieldToClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
