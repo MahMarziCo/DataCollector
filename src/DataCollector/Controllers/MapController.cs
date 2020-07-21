@@ -238,6 +238,7 @@ namespace Mah.DataCollector.Web.Controllers
         {
             ViewBag.NeedUserPositionLog = _SettingBL.getSettingAsBool(DataAccess.Logic.SettingBL.SettingParameters.NeedUserPositionLog, "SYSTEM");
             ViewBag.IsSupervisor = User.IsInRole("SUPERVISOR");
+            ViewBag.RequeiredPhoto = _ClassesBL.getClassByName(ClassName).RequieredPhoto??false;
             if (string.IsNullOrEmpty(ClassName))
             {
                 return PartialView();
@@ -258,8 +259,14 @@ namespace Mah.DataCollector.Web.Controllers
             try
             {
                 string className = Request.Form["CLASS_NAME"];
+                
                 int objectId = int.Parse(Request.Form["OBJECTID"]);
-
+                bool requierdPhotho = _ClassesBL.getClassByName(className).RequieredPhoto??false;
+                int countPicture = _FeaturePicBL.GetFeaturePic(className, objectId).Count;
+                if (requierdPhotho && (countPicture == 0))
+                {
+                    return (Json(new { Status = "ERRORPHOTO" }));
+                }
                 double[] userPosition = null;
                 if (Request.Form["CURRENT_USER_COORDINATE"] != null && Request.Form["CURRENT_USER_COORDINATE"] != "0,0")
                     userPosition = Request.Form["CURRENT_USER_COORDINATE"].Split(',').Select(a => double.Parse(a)).ToArray();
@@ -555,6 +562,7 @@ namespace Mah.DataCollector.Web.Controllers
 
         public ActionResult FeaturePictures(string ClassName, int ObjectId)
         {
+            
             List<Feature_Pic> list = _FeaturePicBL.GetFeaturePic(ClassName, ObjectId);
             ViewBag.ClassName = ClassName;
             ViewBag.ObjectId = ObjectId;

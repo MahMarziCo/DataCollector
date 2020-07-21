@@ -125,6 +125,7 @@
                 Layout_Class.ShowAlert("مرورگر شما فاخوانی فایل را پشتیبانی نمی کند");
             }
         }
+
     };
     $().ready(function () {
         Picture_Class.ClassName= @Html.Raw(Json.Encode(ViewBag.ClassName == null ? -1 : ViewBag.ClassName));

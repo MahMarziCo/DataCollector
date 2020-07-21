@@ -170,8 +170,8 @@
                                 </td>
                                 <td style="width:70%; padding:6px;    vertical-align: top;">
                                     @{Dictionary<string, object>
-                      attrib = new Dictionary<string, object>
-                          ();
+                            attrib = new Dictionary<string, object>
+                                ();
                                         attrib.Add("class", "form-control ");
                                         attrib.Add("data-val", "true");
                                         attrib.Add("style", "padding :0px;");
@@ -199,8 +199,8 @@
                                     </td>
                                     <td style="width:70%; padding:6px;    vertical-align: top;">
                                         @{Dictionary<string, object>
-                      attrib = new Dictionary<string, object>
-                          ();
+                            attrib = new Dictionary<string, object>
+                                ();
                                             attrib.Add("class", "form-control ");
                                             attrib.Add("data-val", "true");
                                             attrib.Add("style", "padding :0px;");
@@ -229,33 +229,8 @@
     }
 </div>
 <script>
+
     FeatureEdit_Class = {
-        setSubmitEvent: function () {
-
-            $("#EditfeatureFormSubmit").click(function (event) {
-                try {
-                    if (@(ViewBag.NeedUserPositionLog?"true":"false")) {
-
-                        if ($("#gps-disable").hasClass("k-state-active")) {
-                            $("#CURRENT_USER_COORDINATE").val(0 + "," + 0);
-                        }
-                        else {
-                            var feature = Map_Class.currentPositionSource.getFeatures()[0];
-                            var geom = feature.getGeometry();
-                            var coordinate = ol.proj.toLonLat(geom.getCoordinates(), "EPSG:3857");
-                            $("#CURRENT_USER_COORDINATE").val(coordinate[0] + "," + coordinate[1]);
-                        }
-                    }
-                }
-                catch (ex) {
-                    Layout_Class.ShowAlert('مکان شما توسط سیستم تشخیص داده نشد.مجددا تلاش کنید')
-                    console.log(ex);
-                    event.preventDefault();
-                    return;
-                }
-                FeatureEdit_Class.Validate(event);
-            })
-        },
         CloseWindow: function (data) {
             $("#EditfeatureForm .validation-summary-errors").remove();
             if (data.Status == "SUCCESS") {
@@ -274,8 +249,47 @@
                     FeatureEdit_Class.InsertInputError($("#" + value.split(":")[0]), value.split(":")[1]);
                 })
             }
+            if (data.Status == "ERRORPHOTO") {
+                  FeatureEdit_Class.InsertInputError($("#EditfeatureFormSubmit"), "برای این لایه الصاق عکس اجباریست!");
+            }
+
         },
+
+        setSubmitEvent: function () {
+
+            $("#EditfeatureFormSubmit").click(function (event) {
+                try {
+                    if (@(ViewBag.NeedUserPositionLog?"true":"false")) {
+
+                        if ($("#gps-disable").hasClass("k-state-active")) {
+                            $("#CURRENT_USER_COORDINATE").val(0 + "," + 0);
+                        }
+                        else {
+                            var feature = Map_Class.currentPositionSource.getFeatures()[0];
+                            var geom = feature.getGeometry();
+                            var coordinate = ol.proj.toLonLat(geom.getCoordinates(), "EPSG:3857");
+                            $("#CURRENT_USER_COORDINATE").val(coordinate[0] + "," + coordinate[1]);
+                        }
+                    }
+                    var countPhoto = $("#pictureTable tbody tr").length;
+                    if (countPhoto == 0 && @(ViewBag.RequeiredPhoto?"true":"false")) {
+                        FeatureEdit_Class.InsertInputError($("#EditfeatureFormSubmit"), "برای این لایه الصاق عکس اجباریست!");
+                        event.preventDefault();
+                        return;
+                    }
+                }
+                catch (ex) {
+                    Layout_Class.ShowAlert('مکان شما توسط سیستم تشخیص داده نشد.مجددا تلاش کنید')
+                    console.log(ex);
+                    event.preventDefault();
+                    return;
+                }
+                FeatureEdit_Class.Validate(event);
+            })
+        },
+
         InsertInputError: function (element, message) {
+            $("#EditfeatureForm .validation-summary-errors").remove();
             $("<span class='validation-summary-errors' >" + message + "</span>").insertAfter(element);
         },
         Validate: function (event) {
@@ -340,9 +354,10 @@
             })
 
         }
-
     }
-    FeatureEdit_Class.setSubmitEvent();
+
+     FeatureEdit_Class.setSubmitEvent();
+
     $().ready(function () {
         $(".showMultiSelect").click(function () {
             var multiSelect = $("#" + this.getAttribute("data-id")).data("kendoMultiSelect");
