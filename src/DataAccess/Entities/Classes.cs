@@ -48,6 +48,7 @@
         public string AdressField { get; set; }
         
         public string DateOf { get; set; }
+        public string TimeOf { get; set; }
 
         public string SupervisorField { get; set; }
 

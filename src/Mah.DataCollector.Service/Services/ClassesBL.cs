@@ -25,7 +25,7 @@ namespace DataAccess.Logic
         }
         public List<Classes> GetClassesWithUserField()
         {
-            var oList = _DbContext.Classes.Where(a=> !string.IsNullOrEmpty(a.UserId)).ToList();
+            var oList = _DbContext.Classes.Where(a => !string.IsNullOrEmpty(a.UserId)).ToList();
 
             return oList;
         }
@@ -109,11 +109,11 @@ namespace DataAccess.Logic
             try
             {
                 _DbContext.Entry(pClass).State = System.Data.Entity.EntityState.Modified;
-                
+
                 _DbContext.SaveChanges();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -170,65 +170,61 @@ namespace DataAccess.Logic
         public List<KeyValuePair<string, string>> GetClassFieldsFromDB(int classId)
         {
             List<KeyValuePair<string, string>> fields = new List<KeyValuePair<string, string>>();
-            try
+
+            Classes classes = this.getClass(classId);
+            using (SqlConnection cnn = new SqlConnection(_GdbConnection))
             {
-                Classes classes = this.getClass(classId);
-                using (SqlConnection cnn = new SqlConnection(_GdbConnection))
+                cnn.Open();
+                using (SqlCommand cmd = cnn.CreateCommand())
                 {
-                    cnn.Open();
-                    using (SqlCommand cmd = cnn.CreateCommand())
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = "select * from " + classes.Class_name + " where 1=2";
+
+                    DataTable table = new DataTable();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    table.Load(reader);
+
+                    foreach (DataColumn column in table.Columns)
                     {
-                        cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.CommandText = "select * from " + classes.Class_name + " where 1=2";
-
-                        DataTable table = new DataTable();
-                        SqlDataReader reader = cmd.ExecuteReader();
-                        table.Load(reader);
-
-                        foreach (DataColumn column in table.Columns)
+                        if (column.ColumnName.ToUpper() != "OBJECTID" && column.ColumnName.ToUpper() != "SHAPE")
                         {
-                            if (column.ColumnName.ToUpper() != "OBJECTID" && column.ColumnName.ToUpper() != "SHAPE")
+                            string fieldType = "";
+                            switch (column.DataType.ToString())
                             {
-                                string fieldType = "";
-                                switch (column.DataType.ToString())
-                                {
-                                    case "System.Boolean":
-                                        fieldType = "BOOL";
-                                        break;
-                                    case "System.DateTime":
-                                        fieldType = "DATE";
-                                        break;
-                                    case "System.Decimal":
-                                        fieldType = "DOUBLE";
-                                        break;
-                                    case "System.Double":
-                                        fieldType = "DOUBLE";
-                                        break;
-                                    case "System.Int32":
-                                        fieldType = "INT";
-                                        break;
-                                    case "System.Int64":
-                                        fieldType = "INT";
-                                        break;
-                                    case "System.Int16":
-                                        fieldType = "INT";
-                                        break;
-                                    case "System.String":
-                                        fieldType = "TEXT";
-                                        break;
-                                    default:
-                                        fieldType = "TEXT";
-                                        break;
-                                }
-                                fields.Add(new KeyValuePair<string, string>(column.ColumnName.ToUpper(), fieldType));
+                                case "System.Boolean":
+                                    fieldType = "BOOL";
+                                    break;
+                                case "System.DateTime":
+                                    fieldType = "DATE";
+                                    break;
+                                case "System.Decimal":
+                                    fieldType = "DOUBLE";
+                                    break;
+                                case "System.Double":
+                                    fieldType = "DOUBLE";
+                                    break;
+                                case "System.Int32":
+                                    fieldType = "INT";
+                                    break;
+                                case "System.Int64":
+                                    fieldType = "INT";
+                                    break;
+                                case "System.Int16":
+                                    fieldType = "INT";
+                                    break;
+                                case "System.String":
+                                    fieldType = "TEXT";
+                                    break;
+                                default:
+                                    fieldType = "TEXT";
+                                    break;
                             }
+                            fields.Add(new KeyValuePair<string, string>(column.ColumnName.ToUpper(), fieldType));
                         }
                     }
                 }
             }
-            catch
-            {
-            }
+
             return fields;
         }
 

@@ -63,6 +63,10 @@
     <Compile Include="Context\MigrationHistory\202007181637223_AddRequiredFieldToClass.Designer.cs">
       <DependentUpon>202007181637223_AddRequiredFieldToClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Context\MigrationHistory\202007222048177_time_field.cs" />
+    <Compile Include="Context\MigrationHistory\202007222048177_time_field.Designer.cs">
+      <DependentUpon>202007222048177_time_field.cs</DependentUpon>
+    </Compile>
     <Compile Include="Context\MigrationsContextFactory.cs" />
     <Compile Include="Context\DataCollectorContext.cs" />
     <Compile Include="Context\MigrationHistory\Configuration.cs" />
@@ -91,6 +95,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Context\MigrationHistory\202007181637223_AddRequiredFieldToClass.resx">
       <DependentUpon>202007181637223_AddRequiredFieldToClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Context\MigrationHistory\202007222048177_time_field.resx">
+      <DependentUpon>202007222048177_time_field.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

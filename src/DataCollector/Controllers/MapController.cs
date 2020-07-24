@@ -181,12 +181,14 @@ namespace Mah.DataCollector.Web.Controllers
                                 fields += "," + oClass.DateOf;
                                 DateTime thisDate = DateTime.Now;
                                 PersianCalendar pc = new PersianCalendar();
-                                values += ",'" + string.Format("{0}/{1}/{2} {3}:{4}",
-                                        pc.GetYear(thisDate),
-                                        pc.GetMonth(thisDate),
-                                        pc.GetDayOfMonth(thisDate),
-                                        pc.GetHour(thisDate),
-                                        pc.GetMinute(thisDate)) + "'";
+                                values += $",'{pc.GetYear(thisDate)}/{pc.GetMonth(thisDate)}/{pc.GetDayOfMonth(thisDate)}'";
+                            }
+                            if (!string.IsNullOrEmpty(oClass.TimeOf))
+                            {
+                                fields += "," + oClass.TimeOf;
+                                DateTime thisDate = DateTime.Now;
+                                PersianCalendar pc = new PersianCalendar();
+                                values += $",'{ pc.GetHour(thisDate)}:{pc.GetMinute(thisDate)}'";
                             }
                             cmd.CommandText = string.Format(insertText, fields, values);
                             int modified = (int)cmd.ExecuteScalar();
@@ -198,8 +200,9 @@ namespace Mah.DataCollector.Web.Controllers
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                _LoggerService.LogError(ex, "خطای ایجاد لایه");
             }
             return Json(oid);
         }
@@ -337,16 +340,26 @@ namespace Mah.DataCollector.Web.Controllers
                     PersianCalendar pc = new PersianCalendar();
                     DateTime thisDate = DateTime.Now;
 
-                    SqlParameter parameter = new SqlParameter("@" + oClass.DateOf, string.Format("{0}/{1}/{2} {3}:{4}",
+                    SqlParameter parameter = new SqlParameter("@" + oClass.DateOf, string.Format("{0}/{1}/{2}",
                       pc.GetYear(thisDate),
                       pc.GetMonth(thisDate),
-                      pc.GetDayOfMonth(thisDate),
-                      pc.GetHour(thisDate),
-                      pc.GetMinute(thisDate)));
+                      pc.GetDayOfMonth(thisDate)));
                     parameters.Add(parameter);
                     if (!string.IsNullOrEmpty(updateText))
                         updateText += ",";
                     updateText += string.Format("{0} = @{0} ", oClass.DateOf);
+                }
+                if (!string.IsNullOrEmpty(oClass.TimeOf))
+                {
+                    DateTime thisDate = DateTime.Now;
+
+                    SqlParameter parameter = new SqlParameter("@" + oClass.TimeOf, string.Format("{0}:{1}",
+                      thisDate.Hour,
+                      thisDate.Minute));
+                    parameters.Add(parameter);
+                    if (!string.IsNullOrEmpty(updateText))
+                        updateText += ",";
+                    updateText += string.Format("{0} = @{0} ", oClass.TimeOf);
                 }
                 if (!string.IsNullOrEmpty(oClass.AdressField))
                 {
@@ -526,6 +539,11 @@ namespace Mah.DataCollector.Web.Controllers
                 {
                     joinFields += "," + oClass.DateOf;
                     dataTable.Columns.Add(new DataColumn(oClass.DateOf) { Caption = "تاریخ ویرایش" });
+                }
+                if (!string.IsNullOrEmpty(oClass.TimeOf))
+                {
+                    joinFields += "," + oClass.TimeOf;
+                    dataTable.Columns.Add(new DataColumn(oClass.TimeOf) { Caption = "ساعت ویرایش" });
                 }
                 if (!string.IsNullOrEmpty(oClass.AdressField))
                 {

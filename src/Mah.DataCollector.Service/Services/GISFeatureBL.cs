@@ -77,6 +77,10 @@ namespace DataAccess.Logic
                         {
                             joinFields += "," + objClass.DateOf;
                         }
+                        if (!string.IsNullOrEmpty(objClass.TimeOf))
+                        {
+                            joinFields += "," + objClass.TimeOf;
+                        }
                         cmd.CommandText = string.Format("SELECT {0} FROM [{1}] WHERE OBJECTID ={2}", joinFields,
                             ClassName, ObjectId);
                         SqlDataReader dr = cmd.ExecuteReader();
@@ -105,6 +109,19 @@ namespace DataAccess.Logic
                                     REQUIERD = false
                                 };
                                 FieldsValueModel fieldValue = new FieldsValueModel(dateOfField, dr[objClass.DateOf],
+                                    null, false, false);
+                                editModel.FieldsValue.Add(fieldValue);
+                            }
+                            if (!string.IsNullOrEmpty(objClass.TimeOf))
+                            {
+                                Fields timeOfField = new Fields()
+                                {
+                                    FIELD_Type = "TEXT",
+                                    FIELD_Name = "TIMEOF_FIELD",
+                                    FIELD_Caption = "ساعت ویرایش",
+                                    REQUIERD = false
+                                };
+                                FieldsValueModel fieldValue = new FieldsValueModel(timeOfField, dr[objClass.TimeOf],
                                     null, false, false);
                                 editModel.FieldsValue.Add(fieldValue);
                             }

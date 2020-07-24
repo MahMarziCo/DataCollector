@@ -26,11 +26,15 @@
                     {
                         @Html.Label(item.field.FIELD_Name, item.value.ToString(), new { style = "color:#929782;    float: left; direction: ltr;" })
                     }
+                    @foreach (var item in Model.FieldsValue.Where(a => a.field.FIELD_Name == "TIMEOF_FIELD"))
+                    {
+                        @Html.Label(item.field.FIELD_Name, item.value.ToString(), new { style = "color:#929782;    float: left; direction: ltr;" })
+                    }
 
                     <table style="line-height:1.44">
 
                         @foreach (var item in Model.FieldsValue.Where(a =>
-                            !(new List<string>() { "USER_ID_FIELD", "DATEOF_FIELD", "ADDRESS_FIELD", "SUPERVISOR_FIELD", "SUPERVISOR_DATOF_FIELD" }.Contains(a.field.FIELD_Name))
+                            !(new List<string>() { "USER_ID_FIELD", "DATEOF_FIELD", "TIMEOF_FIELD", "ADDRESS_FIELD", "SUPERVISOR_FIELD", "SUPERVISOR_DATOF_FIELD" }.Contains(a.field.FIELD_Name))
                             ).OrderBy(a => a.field.ORDER))
                         {
                             <tr>
@@ -170,8 +174,8 @@
                                 </td>
                                 <td style="width:70%; padding:6px;    vertical-align: top;">
                                     @{Dictionary<string, object>
-                            attrib = new Dictionary<string, object>
-                                ();
+                              attrib = new Dictionary<string, object>
+                                  ();
                                         attrib.Add("class", "form-control ");
                                         attrib.Add("data-val", "true");
                                         attrib.Add("style", "padding :0px;");
@@ -199,8 +203,8 @@
                                     </td>
                                     <td style="width:70%; padding:6px;    vertical-align: top;">
                                         @{Dictionary<string, object>
-                            attrib = new Dictionary<string, object>
-                                ();
+                              attrib = new Dictionary<string, object>
+                                  ();
                                             attrib.Add("class", "form-control ");
                                             attrib.Add("data-val", "true");
                                             attrib.Add("style", "padding :0px;");

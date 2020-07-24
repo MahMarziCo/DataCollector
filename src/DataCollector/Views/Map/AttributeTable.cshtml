@@ -93,6 +93,8 @@
             cols.Bound(Model.UserId).Title("نام کاربر").Width(100);
         if (!string.IsNullOrEmpty(Model.DateOf))
             cols.Bound(Model.DateOf).Title("تاریخ ویرایش").Width(100);
+        if (!string.IsNullOrEmpty(Model.TimeOf))
+            cols.Bound(Model.TimeOf).Title("ساعت ویرایش").Width(100);
         if (!string.IsNullOrEmpty(Model.AdressField))
             cols.Bound(Model.AdressField).Title("آدرس").Width(200);
         if (!string.IsNullOrEmpty(Model.SupervisorField))

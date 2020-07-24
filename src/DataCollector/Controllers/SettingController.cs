@@ -142,6 +142,7 @@ namespace Mah.DataCollector.Web.Controllers
                     SupervisorDateOfField = classItem.SupervisorDateOfField,
                     SupervisorField = classItem.SupervisorField,
                     DateOf = classItem.DateOf,
+                    TimeOf = classItem.TimeOf,
                     UserId = classItem.UserId,
                     RequieredPhoto = classItem.RequieredPhoto
                 });
@@ -206,6 +207,7 @@ namespace Mah.DataCollector.Web.Controllers
                         oClass.SupervisorDateOfField = pClass.SupervisorDateOfField;
                         oClass.SupervisorField = pClass.SupervisorField;
                         oClass.DateOf = pClass.DateOf;
+                        oClass.TimeOf = pClass.TimeOf;
                         oClass.UserId = pClass.UserId;
                         oClass.RequieredPhoto = pClass.RequieredPhoto;
                         if (!_ClassesBL.UpdateClass(oClass))
@@ -313,6 +315,12 @@ namespace Mah.DataCollector.Web.Controllers
                     hasError = true;
                     message += "فیلد تاریخ تغییرات تکراری وارد شده است\r\n";
                 }
+                classes.TimeOf = pClass.TimeOf ?? "";
+                if (exixtFields.Where(a => a.FIELD_Name == classes.TimeOf).Count() > 0)
+                {
+                    hasError = true;
+                    message += "فیلد ساعت تغییرات تکراری وارد شده است\r\n";
+                }
                 classes.UserId = pClass.UserId ?? "";
                 if (exixtFields.Where(a => a.FIELD_Name == classes.UserId).Count() > 0)
                 {
@@ -394,8 +402,16 @@ namespace Mah.DataCollector.Web.Controllers
 
         public JsonResult GetClassFieldsFromDB(int ClassID)
         {
-            List<KeyValuePair<string, string>> fields = _ClassesBL.GetClassFieldsFromDB(ClassID);
-            return Json(fields, JsonRequestBehavior.AllowGet);
+            try
+            {
+                List<KeyValuePair<string, string>> fields = _ClassesBL.GetClassFieldsFromDB(ClassID);
+                return Json(fields, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError(ex, "GetClassFieldsFromDB");
+                throw;
+            }
         }
 
         public JsonResult GetFieldDistinctValues(int ClassID, string FieldName)
@@ -812,7 +828,7 @@ namespace Mah.DataCollector.Web.Controllers
         {
             var model = new GeneralSettingViewModel();
             model.SnapTolerance = _SettingBL.getSettingAsInt(DataAccess.Logic.SettingBL.SettingParameters.SnapTolorance, "SYSTEM");
-            
+
             return PartialView(model);
         }
 
@@ -824,7 +840,7 @@ namespace Mah.DataCollector.Web.Controllers
                 _SettingBL.insertSetting(SettingBL.SettingParameters.SnapTolorance, model.SnapValue, "SYSTEM");
                 return Json(true);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _Logger.LogError(ex, "SetSnapTolorance");
                 ///todo set loger 

@@ -19,73 +19,85 @@
         if (Model.ID != -1)
         {
             @Html.HiddenFor(m => m.ID)
-            <table style="width:100%">
-                <tr>
-                    <td style="width:50%;padding: 10px;">فیلد آدرس</td>
-                    <td style="width:50%">
-                        @Html.Kendo().DropDownListFor(m => m.AdressField).Items(items =>
-               {
-                   foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
-                   {
-                       items.Add().Text(item.Key).Value(item.Key);
-                   }
-               }
-                   )
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width:50%;padding: 10px;">فیلد نام کاربر</td>
-                    <td style="width:50%">
-                        @Html.Kendo().DropDownListFor(m => m.UserId).Items(items =>
-               {
-                   foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
-                   {
-                       items.Add().Text(item.Key).Value(item.Key);
-                   }
-               }
-                   )
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width:50%;padding: 10px;">فیلد تاریخ درج</td>
-                    <td style="width:50%">
-                        @Html.Kendo().DropDownListFor(m => m.DateOf).Items(items =>
-               {
-                   foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
-                   {
-                       items.Add().Text(item.Key).Value(item.Key);
-                   }
-               }
-                   )
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width:50%;padding: 10px;">فیلد ثبت ناظر</td>
-                    <td style="width:50%">
-                        @Html.Kendo().DropDownListFor(m => m.SupervisorField).Items(items =>
-               {
-                   foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
-                   {
-                       items.Add().Text(item.Key).Value(item.Key);
-                   }
-               }
-                   )
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width:50%;padding: 10px;">فیلد تاریخ نظارت</td>
-                    <td style="width:50%">
-                        @Html.Kendo().DropDownListFor(m => m.SupervisorDateOfField).Items(items =>
-               {
-                   foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
-                   {
-                       items.Add().Text(item.Key).Value(item.Key);
-                   }
-               }
-                   )
-                    </td>
-                </tr>
-            </table>
+<table style="width:100%">
+    <tr>
+        <td style="width:50%;padding: 10px;">فیلد آدرس</td>
+        <td style="width:50%">
+            @Html.Kendo().DropDownListFor(m => m.AdressField).Items(items =>
+   {
+       foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
+       {
+           items.Add().Text(item.Key).Value(item.Key);
+       }
+   }
+       )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:50%;padding: 10px;">فیلد نام کاربر</td>
+        <td style="width:50%">
+            @Html.Kendo().DropDownListFor(m => m.UserId).Items(items =>
+   {
+       foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
+       {
+           items.Add().Text(item.Key).Value(item.Key);
+       }
+   }
+       )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:50%;padding: 10px;">فیلد تاریخ درج</td>
+        <td style="width:50%">
+            @Html.Kendo().DropDownListFor(m => m.DateOf).Items(items =>
+   {
+       foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
+       {
+           items.Add().Text(item.Key).Value(item.Key);
+       }
+   }
+       )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:50%;padding: 10px;">فیلد ساعت درج</td>
+        <td style="width:50%">
+            @Html.Kendo().DropDownListFor(m => m.TimeOf).Items(items =>
+   			{
+       			foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
+       			{
+           			items.Add().Text(item.Key).Value(item.Key);
+       			}
+   			})
+        </td>
+    </tr>
+    <tr>
+        <td style="width:50%;padding: 10px;">فیلد ثبت ناظر</td>
+        <td style="width:50%">
+            @Html.Kendo().DropDownListFor(m => m.SupervisorField).Items(items =>
+   {
+       foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
+       {
+           items.Add().Text(item.Key).Value(item.Key);
+       }
+   }
+       )
+        </td>
+    </tr>
+    <tr>
+        <td style="width:50%;padding: 10px;">فیلد تاریخ نظارت</td>
+        <td style="width:50%">
+            @Html.Kendo().DropDownListFor(m => m.SupervisorDateOfField).Items(items =>
+   {
+       foreach (var item in (List<KeyValuePair<string, string>>)ViewBag.Fields)
+       {
+           items.Add().Text(item.Key).Value(item.Key);
+       }
+   }
+       )
+        </td>
+    </tr>
+</table>
         }
         @Html.Kendo().Button().Name("btnClassesSpecialFieldsSubmit").Content("اعمال")
         @Html.ValidationMessage("")

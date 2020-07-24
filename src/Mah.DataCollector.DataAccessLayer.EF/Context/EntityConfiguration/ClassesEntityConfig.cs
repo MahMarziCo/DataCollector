@@ -28,6 +28,8 @@ namespace Mah.DataCollector.DataAccessLayer.EF.Context.EntityConfiguration
 
             this.Property(a => a.DateOf).HasColumnName("DATEOF").HasMaxLength(50);
 
+            this.Property(a => a.TimeOf).HasColumnName("TIMEOF").HasMaxLength(10);  
+
             this.Property(a => a.AdressField).HasColumnName("ADRESS_FIELD").HasMaxLength(50);
 
             this.Property(a => a.UniqueField).HasColumnName("UNIQUE_FIELD").HasMaxLength(50);

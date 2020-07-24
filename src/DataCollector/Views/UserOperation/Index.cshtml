@@ -9,41 +9,60 @@
 <script>
     let UserOperationClass = {
         refreshFieldsData: function () {
+            $("#fieldName").data().kendoComboBox.value(null);
             $("#fieldName").data().kendoComboBox.dataSource.read();
         },
         getFieldData: function () {
+
             var classId = $("#layerName").val();
             if (!classId)
                 classId = -1;
             return { classID: classId };
         },
         getReportValue: function () {
-            var userName = $("#userName").val();
-            var layerName = $("#layerName").data().kendoComboBox.dataItem().Class_name;
-            var userId = $("#layerName").data().kendoComboBox.dataItem().UserId;
-            var fieldName = $("#fieldName").data().kendoComboBox.dataItem().FIELD_Name;
-
-            $.ajax({
-                type: "POST",
-                url: "/UserOperation/GetReportModel",
-                data: { UserName: userName, LayerName: layerName, FieldName: fieldName,UserField:userId },
-                success: function (result) {
-                    $(".table th").remove();
-                    $(".table").append(" < tr style = 'background-color: #dddddd' > <th>مقدار </th> <th>تعداد</th></tr >");
-                    $(".table tbody").remove();
-                    var body = $("<tbody>");
-                    var totalCount = 0
-                    for (var i = 0; i < result.length; i++)  {
-                        totalCount+=result[i].Count
-                        body.append(`<tr><td>${result[i].Domain}</td><td>${result[i].Count}</td></tr>`);
-                    }
-                    body.append(`<tr><td><b>مجموع</b></td><td><b>${totalCount}</b></td></tr>`)
-                    $(".table").append(body);                              
-                },
-                error: function (e) {
-                    Layout_Class.ShowAlert("خطا در گزارش");
+            if ($("#userName").val() == "" || $("#layerName").val() == "" || $("#fieldName").val() == "") {
+                let emptyError =[]
+                if ($("#userName").val() == "") {
+                    emptyError.push("نام کاربر") ;
                 }
-            });
+                if ($("#layerName").val() == "") {
+                    emptyError.push("لایه ");
+                }
+                if ($("#fieldName").val() == "") {
+                    emptyError.push("ستون ");
+                }
+                emptyError=emptyError.join("و")
+                Layout_Class.ShowAlert(`لطفا ${emptyError} را انتخاب کنید.`);
+            }
+            else {
+                var userName = $("#userName").val();
+                var layerName = $("#layerName").data().kendoComboBox.dataItem().Class_name;
+                var userId = $("#layerName").data().kendoComboBox.dataItem().UserId;
+                var fieldName = $("#fieldName").data().kendoComboBox.dataItem().FIELD_Name;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/UserOperation/GetReportModel",
+                    data: { UserName: userName, LayerName: layerName, FieldName: fieldName, UserField: userId },
+                    success: function (result) {
+                        $(".table th").remove();
+                        $(".table").append(" < tr style = 'background-color: #dddddd' > <th>مقدار </th> <th>تعداد</th></tr >");
+                        $(".table tbody").remove();
+                        var body = $("<tbody>");
+                        var totalCount = 0
+                        for (var i = 0; i < result.length; i++) {
+                            totalCount += result[i].Count
+                            body.append(`<tr><td>${result[i].Domain}</td><td>${result[i].Count}</td></tr>`);
+                        }
+                        body.append(`<tr><td><b>مجموع</b></td><td><b>${totalCount}</b></td></tr>`)
+                        $(".table").append(body);
+                    },
+                    error: function (e) {
+                        Layout_Class.ShowAlert("خطا در گزارش");
+                    }
+
+                });
+            }
         }
     }
 </script>
@@ -53,13 +72,13 @@
         <div class="col-md-4">
             <label for="userName">نام کاربر</label>
             @(Html.Kendo().ComboBox().Name("userName")
-                .Placeholder("انتخاب لایه...")
+                .Placeholder("انتخاب کاربر...")
                 .DataValueField("UserName")
                 .DataSource(source =>
                         {
                     source.Read(read =>
                     {
-                        read.Action("GetUser", "UserOperation");
+                        read.Action("GetUser", "UserOperation").Data("UserOperationClass.checkUser");
                     });
                 }).HtmlAttributes(new { style = "width:100%;" }))
         </div>
@@ -74,7 +93,7 @@
                         {
                     source.Read(read =>
                     {
-                        read.Action("GetLayer", "UserOperation");
+                        read.Action("GetLayer", "UserOperation").Data("UserOperationClass.checkLayer");
                     });
                 }).HtmlAttributes(new { style = "width:100%;" }))
 
@@ -97,7 +116,7 @@
                 .HtmlAttributes(new { style = "width:100%;" }))
         </div>
     </div>
-    <div  style="padding:20px">
+    <div style="padding:20px">
         @(Html.Kendo().Button().Name("report").Content("گزارش عملکرد")
         .Events(e => e.Click("UserOperationClass.getReportValue"))
         .HtmlAttributes(new { style = "background-color:#10c4b2; color:#4b4444" }))
@@ -105,7 +124,6 @@
     <dive class="row" style="margin:20px">
         <div class="col-md-6">
             <table class="table" style="border-collapse: collapse;  width: 100%;">
-
             </table>
         </div>
     </dive>
