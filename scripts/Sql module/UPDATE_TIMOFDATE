@@ -1,0 +1,8 @@
+SELECT 
+'UPDATE [homepiniir_dc_dc_logic].[DBO].[TB_CLASSES] SET TIMEOF= '''+DATEOF+'_TIME'' WHERE Class_name = '''+CLASS_NAME+''';
+ALTER TABLE  [homepiniir_dc_dc_data].[DBO].'+ CLASS_NAME +' ADD '+DATEOF+'_TIME NVARCHAR(50);',
+'UPDATE [homepiniir_dc_dc_data].[DBO].'+CLASS_NAME+' SET  '+DATEOF+'_TIME =SUBSTRING('+DATEOF+',12,5);
+UPDATE [homepiniir_dc_dc_data].[DBO].'+CLASS_NAME+' SET '+DATEOF+'=SUBSTRING('+DATEOF+',0,12);'
+
+ FROM TB_CLASSES 
+ WHERE DATEOF IS NOT NULL
