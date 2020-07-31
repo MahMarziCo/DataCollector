@@ -1,0 +1,110 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    #file_content p {
+        margin-bottom: 0px;
+    }
+    #file_content {
+        background-color: rgb(246, 248, 250);
+        font-family: Consolas, Liberation Mono, Menlo, monospace;
+        font-size: 12px;
+        border: 1px rgb(225, 228, 232) dashed;
+        padding: 10px;
+    }
+</style>
+@model string
+
+
+<script>
+    let directoryClass = {
+        RootPath: "@Model",
+        GetBackPath: function(dirPath) {
+            return dirPath.substr(0, dirPath.lastIndexOf("/"));
+        },
+        GetFileContent: function (path) {
+            $.ajax({
+                url: "/BackUp/GetFileContent",
+                type: "POST",
+                data: { Path: path },
+                success: function (data) {
+                    $("#file_content").append($("<p>").html(path));
+                    $(data).each((i, item) => {
+                        $("#file_content").append($("<p>").html(item));
+                    });
+                },
+                error: function () {
+                     Layout_Class.ShowAlert("خطا در دریافت اطلاعات فایل");
+                }
+            });
+        },
+        CreateFolderRow: function (contentElement,folderText,folderPath,modifyDate) {
+            let folder = $('<tr >');
+                        folder.html(`<td style="cursor:pointer"><a> <img src="/Images/folder-icon.png" align="top" style="width: 20px;
+                        height: 20px; border: none" /><span>${folderText}</span></td><td></td><td>${modifyDate}</td>`);
+                        folder.click(() => {
+                            directoryClass.GetDirectoryContent(folderPath, folderPath != directoryClass.RootPath);
+                        });
+                        contentElement.append(folder);
+        },
+            GetDirectoryContent: function (dirPath,backBtn) {
+            $.ajax({
+                type: "GET",
+                url:"/backup/GetDirectoryContent",
+                data: {
+                    directoryPath: dirPath
+                },
+                success: function (data) {
+                    $("#contentList").empty();
+                    let contentList = $('<tbody>');
+
+                    let row = $('<tr >');
+                    row.html(`<td colspan="3">${dirPath}</td>`);
+                    contentList.append(row);
+
+                    if (backBtn) {
+                         var backFolder = directoryClass.GetBackPath(dirPath);
+                        directoryClass.CreateFolderRow(contentList, "..", backFolder,"");
+                    }
+                    $.each(data.DirModelList.sort((a, b) => { return (b.DirAccessed).localeCompare(a.DirAccessed) })
+                        , (i, item) => {
+                        directoryClass.CreateFolderRow(contentList, item.DirName,`${item.DirDirectory}/${item.DirName}`, item.DirAccessed);
+                    });
+
+                    $.each(data.FileModelList.sort((a, b) => { return (b.FileAccessed).localeCompare(a.FileAccessed) })
+                        , (i, item) => {
+                        let file = $('<tr>');
+                        file.html(`<td ><i class="glyphicon glyphicon-file"></i><span>${item.FileName}</span></td><td><span>${item.FileSizeText}</span></td><td><span>${item.FileAccessed}</span></td>`)
+                        file.click(() => {
+                            $("#file_content").text("");
+                            directoryClass.GetFileContent(`${dirPath}/${item.FileName}`)
+                        })
+                        contentList.append(file);
+                    });
+                    $("#contentList tr").attr('margin', '20px');
+                    $("#contentList").append(contentList);
+                },
+                error: function (e) {
+                     Layout_Class.ShowAlert("خطا در دریافت محتویات پوشه");
+                }
+            })
+        }
+    }
+    $(() => {
+        directoryClass.GetDirectoryContent(directoryClass.RootPath,false);
+    });
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" style="direction:ltr; margin:50px">
+            <table id="contentList" style="direction:ltr;width:100%">
+            </table>
+        </div>
+    </div>
+    <div class="row" id="file_content" style="direction:ltr;width:100%">
+
+    </div>
+</div>

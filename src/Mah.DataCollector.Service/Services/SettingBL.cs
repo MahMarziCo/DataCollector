@@ -28,7 +28,8 @@ namespace DataAccess.Logic
             NeedUserPositionLog,
             ExpireDateTime,
             LicenseText,
-            SnapTolorance
+            SnapTolorance,
+            BackUpPath
         }
 
         public bool insertSetting(SettingParameters pset_name, object value, string userName)

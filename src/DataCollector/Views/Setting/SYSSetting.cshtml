@@ -11,15 +11,20 @@
 
 <div class="container" style=" padding:10px;">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label>تاریخ انقضا نرم افزار</label>
             <input type="text" id="jalDate" class="pdate  pcalbtn" style="line-height:30px; width:100px" disabled>
             <span id="btnChangeExpiretime" class="btn btn-success">اعمال</span>
             <input type="text" id="ggDate" style="display:none" class="pdate wide">
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label>تایید اعتبار لایسنس نرم افزار</label>
             <span id="btnSetLicenseValidate" class="btn btn-success">اعمال</span>
+        </div>
+        <div class="col-md-4">
+            @Html.Label("تنظیم مسیر بکاپ")
+            @Html.Kendo().TextBoxFor(e => e.BackupPath)
+            <span id="btnBackupPath" class="btn btn-success">اعمال</span>
         </div>
     </div>
     <div class="row">
@@ -28,6 +33,7 @@
             <span id="btnSetMapExtent" style=" position: absolute; top: 3px;" class="btn btn-success">ثبت محدوده نقشه</span>
         </div>
     </div>
+
 </div>
 
 <script>
@@ -91,6 +97,21 @@
                 }
             })
         },
+        btnBackupPath_click: function () {
+            $.ajax({
+                url: "/Setting/SetBackUpPath",
+                type: "GET",
+                data: { Path: $("#BackupPath").val() },
+                success: function (data) {
+                    if (!data) {
+                        Layout_Class.ShowAlert("خطا در ثبت مسیر");
+                    }
+                    else {
+                        Layout_Class.ShowAlert("مسیر ذخیره شد", "تبریک");
+                    }
+                }
+            });
+        },
         initMap: function () {
             SysSetting_Class.map = new ol.Map({
                 layers: [
@@ -106,7 +127,7 @@
                 }),
                 view: new ol.View({
                     center: [ @Html.Raw(Json.Encode(Model.MapDefCentroidX)),@Html.Raw(Json.Encode(Model.MapDefCentroidY))],
-                    zoom:  @Html.Raw(Json.Encode(Model.MapDefultZoom))//10
+                    zoom:  @Html.Raw(Json.Encode(Model.MapDefultZoom))
                     })
             });
         }
@@ -119,6 +140,7 @@
             $("#btnChangeExpiretime").click(SysSetting_Class.btnChangeExpiretime_Click);
             $("#btnSetLicenseValidate").click(SysSetting_Class.btnSetLicenseValidate_Click);
             $("#btnSetMapExtent").click(SysSetting_Class.btnSetMapExtent_Click);
+             $("#btnBackupPath").click(SysSetting_Class.btnBackupPath_click);
         }
     )
 </script>

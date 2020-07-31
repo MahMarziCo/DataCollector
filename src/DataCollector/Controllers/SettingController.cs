@@ -42,7 +42,8 @@ namespace Mah.DataCollector.Web.Controllers
             _Logger = logger;
         }
         #region SysSetting
-        [UserRoleFilterAttribute(RoleIds = "SYSADMIN")]
+        [UserRoleFilter(RoleIds = "SYSADMIN")]
+        [Route("Sys")]
         public ActionResult SYSSetting()
         {
             DateTime? dateOf = _SettingBL.getSettingAsDate(SettingBL.SettingParameters.ExpireDateTime, "SYSTEM");
@@ -55,7 +56,7 @@ namespace Mah.DataCollector.Web.Controllers
             PersianCalendar pc = new PersianCalendar();
             DateTime thisDate = dateOf ?? DateTime.Now.AddDays(2);
             model.ExpireDate = string.Format("'{0}/{1}/{2}'", pc.GetYear(thisDate), pc.GetMonth(thisDate), pc.GetDayOfMonth(thisDate));
-
+            model.BackupPath = _SettingBL.getSettingAsString(DataAccess.Logic.SettingBL.SettingParameters.BackUpPath, User.Identity.Name);
             return View(model);
         }
         [UserRoleFilterAttribute(RoleIds = "SYSADMIN")]
@@ -91,6 +92,23 @@ namespace Mah.DataCollector.Web.Controllers
             return Json(success, JsonRequestBehavior.AllowGet);
         }
 
+
+        [UserRoleFilterAttribute(RoleIds = "SYSADMIN")]
+        public JsonResult SetBackUpPath(BackUpPathModel model)
+        {
+            try
+            {
+                _SettingBL.insertSetting(SettingBL.SettingParameters.BackUpPath,model.Path, "SYSTEM");
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError(ex, "SetBackUpPath");
+                throw;
+            }
+            
+        }
+ 
         [UserRoleFilterAttribute(RoleIds = "SYSADMIN")]
         public JsonResult SetMapExtent(double CenterX, double CenterY, double Zoom)
         {

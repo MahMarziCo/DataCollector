@@ -11,5 +11,6 @@ namespace DataCollector.Models
         public double MapDefCentroidY { get; set; }
         public double MapDefultZoom { get; set; }
         public string ExpireDate { get; set; }
+        public string BackupPath { get; set; }
     }
 }
