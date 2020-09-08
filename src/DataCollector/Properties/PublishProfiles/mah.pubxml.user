@@ -97,19 +97,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/27/2020 22:49:13</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.dll">
-      <publishTime>07/27/2020 22:49:17</publishTime>
+      <publishTime>07/31/2020 23:12:57</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.dll.config">
       <publishTime>08/22/2019 00:18:33</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.pdb">
-      <publishTime>07/27/2020 22:49:17</publishTime>
+      <publishTime>07/31/2020 23:12:57</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Web.dll">
-      <publishTime>07/27/2020 22:49:20</publishTime>
+      <publishTime>07/31/2020 23:13:01</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Web.pdb">
-      <publishTime>07/27/2020 22:49:20</publishTime>
+      <publishTime>07/31/2020 23:13:01</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
       <publishTime>12/28/2017 20:58:10</publishTime>
@@ -621,6 +621,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Images/current-location.png">
       <publishTime>12/15/2017 10:28:44</publishTime>
     </File>
+    <File Include="Images/folder-icon.png">
+      <publishTime>07/30/2020 09:12:00</publishTime>
+    </File>
     <File Include="Images/golocation.png">
       <publishTime>12/15/2017 10:08:32</publishTime>
     </File>
@@ -780,6 +783,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Account/UserView.cshtml">
       <publishTime>08/02/2019 14:55:25</publishTime>
     </File>
+    <File Include="Views/BackUp/Index.cshtml">
+      <publishTime>07/31/2020 23:07:20</publishTime>
+    </File>
     <File Include="Views/Home/Index.cshtml">
       <publishTime>01/11/2018 05:00:44</publishTime>
     </File>
@@ -835,7 +841,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/18/2020 20:47:55</publishTime>
     </File>
     <File Include="Views/Setting/SYSSetting.cshtml">
-      <publishTime>04/20/2020 07:03:02</publishTime>
+      <publishTime>07/31/2020 23:00:48</publishTime>
     </File>
     <File Include="Views/Setting/UniqueStylesList.cshtml">
       <publishTime>02/17/2018 06:25:30</publishTime>
@@ -898,7 +904,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/28/2017 09:39:52</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>07/26/2020 23:23:52</publishTime>
+      <publishTime>07/31/2020 23:13:02</publishTime>
     </File>
   </ItemGroup>
 </Project>
