@@ -4,10 +4,13 @@
 }
 
 <style>
-    #file_content p {
+    .file_content p {
         margin-bottom: 0px;
     }
-    #file_content {
+
+    .file_content {
+        height: calc( 100% - 10px) !important;
+        direction: ltr;
         background-color: rgb(246, 248, 250);
         font-family: Consolas, Liberation Mono, Menlo, monospace;
         font-size: 12px;
@@ -30,10 +33,21 @@
                 type: "POST",
                 data: { Path: path },
                 success: function (data) {
-                    $("#file_content").append($("<p>").html(path));
+                    var div = $("<div>");
+                    div.addClass("file_content").append($("<p>").html(path));
                     $(data).each((i, item) => {
-                        $("#file_content").append($("<p>").html(item));
+                        div.append($("<p>").html(item));
                     });
+
+                    div.kendoWindow({
+                        title: "About backup content",
+                        visible: true,
+                        actions: [
+                            "Minimize",
+                            "Maximize",
+                            "Close"
+                        ]
+                    }).data("kendoWindow").maximize().open();
                 },
                 error: function () {
                      Layout_Class.ShowAlert("خطا در دریافت اطلاعات فایل");
@@ -77,10 +91,9 @@
                         , (i, item) => {
                         let file = $('<tr>');
                         file.html(`<td ><i class="glyphicon glyphicon-file"></i><span>${item.FileName}</span></td><td><span>${item.FileSizeText}</span></td><td><span>${item.FileAccessed}</span></td>`)
-                        file.click(() => {
-                            $("#file_content").text("");
-                            directoryClass.GetFileContent(`${dirPath}/${item.FileName}`)
-                        })
+                            file.click(() => {
+                                directoryClass.GetFileContent(`${dirPath}/${item.FileName}`);
+                            });
                         contentList.append(file);
                     });
                     $("#contentList tr").attr('margin', '20px');
@@ -104,7 +117,5 @@
             </table>
         </div>
     </div>
-    <div class="row" id="file_content" style="direction:ltr;width:100%">
-
-    </div>
 </div>
+

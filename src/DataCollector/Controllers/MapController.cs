@@ -165,10 +165,10 @@ namespace Mah.DataCollector.Web.Controllers
                     }
                     if (validGeometry)
                     {
-                        using (SqlCommand cmd = new SqlCommand())
+                        using (SqlCommand cmd = new SqlCommand("PROC_CREATE_OBJECTID", con))
                         {
-                            cmd.Connection = con;
-                            string insertText = "declare @p1 table (oid int);INSERT INTO [" + ClassName + "] (shape{0}) output INSERTED.OBJECTID into @p1 VALUES(geometry::STGeomFromText('" + Shape + "'," + SRID + "){1});select oid from @p1";
+                            //cmd.Connection = con;
+                            //string insertText = "declare @objectid int;EXEC PROC_CREATE_OBJECTID '" + Shape + "','" + SRID + "','" + ClassName + "'{0}{1},@objectid OUTPUT ;select @objectid";
                             string fields = "";
                             string values = "";
                             if (!string.IsNullOrEmpty(oClass.UserId))
@@ -190,8 +190,17 @@ namespace Mah.DataCollector.Web.Controllers
                                 PersianCalendar pc = new PersianCalendar();
                                 values += $",'{ pc.GetHour(thisDate)}:{pc.GetMinute(thisDate)}'";
                             }
-                            cmd.CommandText = string.Format(insertText, fields, values);
-                            int modified = (int)cmd.ExecuteScalar();
+                           // cmd.CommandText = string.Format(insertText, fields, values);
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@SHAPE", Shape);
+                            cmd.Parameters.AddWithValue("@SRID", SRID);
+                            cmd.Parameters.AddWithValue("@LAYER_NAME", ClassName);
+                            cmd.Parameters.AddWithValue("@FIELDS", fields);
+                            cmd.Parameters.AddWithValue("@VALUES", values);
+                            cmd.Parameters.Add("@OBJECTID", SqlDbType.Int);
+                            cmd.Parameters["@OBJECTID"].Direction = ParameterDirection.Output;
+                            cmd.ExecuteNonQuery();
+                            int modified = (int)cmd.Parameters["@OBJECTID"].Value;
 
                             if (con.State == System.Data.ConnectionState.Open) con.Close();
                             oid = modified;
