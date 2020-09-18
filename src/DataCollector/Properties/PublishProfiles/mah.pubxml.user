@@ -25,13 +25,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/26/2017 16:59:56</publishTime>
     </File>
     <File Include="bin/DataAccess.dll">
-      <publishTime>07/27/2020 22:48:54</publishTime>
+      <publishTime>09/15/2020 15:14:32</publishTime>
     </File>
     <File Include="bin/DataAccess.dll.config">
       <publishTime>08/22/2019 00:18:57</publishTime>
     </File>
     <File Include="bin/DataAccess.pdb">
-      <publishTime>07/27/2020 22:48:54</publishTime>
+      <publishTime>09/15/2020 15:14:32</publishTime>
     </File>
     <File Include="bin/DataCollector.dll">
       <publishTime>04/26/2020 11:46:37</publishTime>
@@ -67,49 +67,49 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/26/2017 16:59:56</publishTime>
     </File>
     <File Include="bin/Mah.Common.dll">
-      <publishTime>07/27/2020 22:48:54</publishTime>
+      <publishTime>09/15/2020 15:14:32</publishTime>
     </File>
     <File Include="bin/Mah.Common.dll.config">
       <publishTime>08/22/2019 00:00:03</publishTime>
     </File>
     <File Include="bin/Mah.Common.pdb">
-      <publishTime>07/27/2020 22:48:54</publishTime>
+      <publishTime>09/15/2020 15:14:32</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.BusinessLayer.dll">
-      <publishTime>07/27/2020 22:48:54</publishTime>
+      <publishTime>09/15/2020 15:14:32</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.BusinessLayer.pdb">
-      <publishTime>07/27/2020 22:48:54</publishTime>
+      <publishTime>09/15/2020 15:14:32</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.dll">
-      <publishTime>07/27/2020 22:49:15</publishTime>
+      <publishTime>09/15/2020 15:14:33</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.dll.config">
       <publishTime>06/26/2020 20:19:22</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.DataAccessLayer.EF.pdb">
-      <publishTime>07/27/2020 22:49:15</publishTime>
+      <publishTime>09/15/2020 15:14:33</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Interface.dll">
-      <publishTime>07/27/2020 22:49:13</publishTime>
+      <publishTime>09/15/2020 15:14:32</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Interface.pdb">
-      <publishTime>07/27/2020 22:49:13</publishTime>
+      <publishTime>09/15/2020 15:14:32</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.dll">
-      <publishTime>07/31/2020 23:12:57</publishTime>
+      <publishTime>09/15/2020 15:14:34</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.dll.config">
       <publishTime>08/22/2019 00:18:33</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Service.pdb">
-      <publishTime>07/31/2020 23:12:57</publishTime>
+      <publishTime>09/15/2020 15:14:34</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Web.dll">
-      <publishTime>07/31/2020 23:13:01</publishTime>
+      <publishTime>09/15/2020 15:14:37</publishTime>
     </File>
     <File Include="bin/Mah.DataCollector.Web.pdb">
-      <publishTime>07/31/2020 23:13:01</publishTime>
+      <publishTime>09/15/2020 15:14:37</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
       <publishTime>12/28/2017 20:58:10</publishTime>
@@ -784,7 +784,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/02/2019 14:55:25</publishTime>
     </File>
     <File Include="Views/BackUp/Index.cshtml">
-      <publishTime>07/31/2020 23:07:20</publishTime>
+      <publishTime>09/15/2020 15:08:58</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
       <publishTime>01/11/2018 05:00:44</publishTime>
@@ -904,7 +904,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/28/2017 09:39:52</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>07/31/2020 23:13:02</publishTime>
+      <publishTime>09/15/2020 15:14:38</publishTime>
     </File>
   </ItemGroup>
 </Project>
