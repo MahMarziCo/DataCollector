@@ -178,48 +178,38 @@ namespace DataAccess.Logic
                 using (SqlCommand cmd = cnn.CreateCommand())
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
-                    cmd.CommandText = "select * from " + classes.Class_name + " where 1=2";
+                    cmd.CommandText = $"SELECT COLUMN_NAME,DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{classes.Class_name}' ";
 
-                    DataTable table = new DataTable();
                     SqlDataReader reader = cmd.ExecuteReader();
-                    table.Load(reader);
-
-                    foreach (DataColumn column in table.Columns)
-                    {
-                        if (column.ColumnName.ToUpper() != "OBJECTID" && column.ColumnName.ToUpper() != "SHAPE")
+                    while (reader.Read()) {
+                        var columnName = reader.GetString(0).ToUpper();
+                        var columnType = reader.GetString(1).ToUpper();
+                        if (columnName  != "OBJECTID" && columnName != "SHAPE")
                         {
                             string fieldType = "";
-                            switch (column.DataType.ToString())
+                            switch (columnType)
                             {
-                                case "System.Boolean":
-                                    fieldType = "BOOL";
-                                    break;
-                                case "System.DateTime":
-                                    fieldType = "DATE";
-                                    break;
-                                case "System.Decimal":
-                                    fieldType = "DOUBLE";
-                                    break;
-                                case "System.Double":
-                                    fieldType = "DOUBLE";
-                                    break;
-                                case "System.Int32":
+                                case "INT":
+                                case "SMALLINT":
                                     fieldType = "INT";
                                     break;
-                                case "System.Int64":
-                                    fieldType = "INT";
-                                    break;
-                                case "System.Int16":
-                                    fieldType = "INT";
-                                    break;
-                                case "System.String":
+                                case "NVARCHAR":
+                                case "VARCHAR":
                                     fieldType = "TEXT";
+                                    break;
+                                case "NUMERIC":
+                                    fieldType = "DOUBLE";
+                                    break;
+                                case "DATETIME2":
+                                case "DATETIME":
+                                case "DATE":
+                                    fieldType = "DATE";
                                     break;
                                 default:
                                     fieldType = "TEXT";
                                     break;
                             }
-                            fields.Add(new KeyValuePair<string, string>(column.ColumnName.ToUpper(), fieldType));
+                            fields.Add(new KeyValuePair<string, string>(columnName, fieldType));
                         }
                     }
                 }
